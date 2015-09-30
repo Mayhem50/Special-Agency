@@ -203,7 +203,7 @@ gulp.task('serve', ['styles', 'elements', 'images', 'server'], function () {
                 }
             }
         },
-        proxy : 'https://localhost:3000',
+        proxy : 'https://127.0.0.1:3000',
         port : 4000,
         browser : 'google chrome',
     // Run as an https by uncommenting 'https: true'

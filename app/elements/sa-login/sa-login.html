@@ -1,0 +1,122 @@
+﻿<dom-module id="sa-login">
+    <style>
+        paper-material {
+            border-radius: 2px;
+            height: 100%;
+            padding: 16px 0 16px 0;
+            width: calc(98.66% - 16px);
+            margin: 16px auto;
+            background: white;
+        }
+
+        .form {
+            padding: 0px 20px 20px 20px;
+        }
+
+        .title {
+            font-size: 34px;
+            padding: 20px 20px 0px 20px;
+        }
+    </style>
+    <template if="{{!showSignup}}">
+        <paper-material elevation="1">
+            <h2 class="title">Loggin</h2>
+            <div class="form">
+                <paper-input is="username" label="Username" name="username" value="{{infos.username::input}}"></paper-input>
+                <paper-input is="password" label="Password" type="password" name="password" value="{{infos.password::input}}"></paper-input>
+
+                </br>
+                <paper-button on-click="login" raised>Loggin</paper-button>
+                <paper-button on-click="resquestSignup" >Loggin</paper-button>
+            </div>
+            <span>Response is: </span><span>{{response.message}}</span>
+        </paper-material>
+
+        <iron-ajax id="login-ajax"
+                   url="https://localhost:3000/login"
+                   params="{{infos}}"
+                   handle-as="json"
+                   method="post"
+                   on-response="handleResponse"
+                   last-response="{{response}}"></iron-ajax>
+    </template>
+
+    <template if="{{showSignup}}">
+        <paper-material elevation="1">
+            <h2 class="title">Sign-up</h2>
+            <div class="form">
+                <paper-input is="username" label="Username" name="username" value="{{infos.username::input}}"></paper-input>
+                <paper-input is="password" label="Password" type="password" name="password" value="{{infos.password::input}}"></paper-input>
+                <paper-input is="passwordConfirm" label="Confirm Password" value="{{}}"></paper-input>
+                <paper-input is="email" label="Email" name="email" value="{{infos.email::input}}"></paper-input>
+                </br>
+                <paper-button on-click="signup" raised>Singup</paper-button>
+            </div>
+            <span>Response is: </span><span>{{response.message}}</span>
+        </paper-material>
+
+        <iron-ajax id="login-ajax"
+                   url="https://localhost:3000/signup"
+                   params="{{infos}}"
+                   handle-as="json"
+                   method="post"
+                   on-response="handleResponse"
+                   last-response="{{response}}"></iron-ajax>
+
+    </template>
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-login',
+                properties: {
+                    infos: {
+                        type: Object,
+                        notify: true,
+                        value: function () {
+                            return {
+                                username: '',
+                                password: '',
+                                email: ''
+                            }
+                        }
+                    },
+                    confirmPassword: {
+                        type: String
+                    },
+                    response: {
+                        type: Object,
+                        notify: true,
+                        value: function () {
+                            message: ""
+                        }
+                    },
+                    showSignup: {
+                        type: Boolean,
+                        notify: true,
+                    }
+                },
+                ready: function () {
+                    showSignup = true;
+                },
+                login: function () {
+                    console.log(this.infos);
+                    document.getElementById('login-ajax').generateRequest();
+                },
+                signup: function () {
+                    console.log(this.infos);
+                    document.getElementById('login-ajax').generateRequest();
+                },
+                handleResponse: function () {
+                    console.log('handle response');
+                    console.log(this.response);
+                },
+                getInfos: function () {
+                    console.log('Get Infos');
+                },
+                resquestSignup: function () {
+                    this.showSignup = true;
+                }
+            });
+        })();
+    </script>
+</dom-module>

@@ -22,6 +22,7 @@ var fs = require('fs');
 var glob = require('glob');
 var historyApiFallback = require('connect-history-api-fallback');
 var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
 var node;
 
 var AUTOPREFIXER_BROWSERS = [
@@ -47,6 +48,14 @@ var styleTask = function (stylesPath, srcs) {
     .pipe(gulp.dest('dist/' + stylesPath))
     .pipe($.size({ title: stylesPath }));
 };
+
+//Start database / Kill it if it run
+gulp.task('mongo', function () {
+    exec('mongod --dbpath ../', function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+    });
+});
 
 //Start server / Kill it if it run
 gulp.task('server', function () {
@@ -191,7 +200,7 @@ gulp.task('precache', function (callback) {
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
 // Watch Files For Changes & Reload
-gulp.task('serve', ['styles', 'elements', 'images', 'server'], function () {
+gulp.task('serve', ['mongo','styles', 'elements', 'images', 'server'], function () {
     browserSync({
         notify: false,
         logPrefix: 'Special-Agency',
@@ -223,8 +232,6 @@ gulp.task('serve', ['styles', 'elements', 'images', 'server'], function () {
     gulp.watch(['app/styles/**/*.css'], ['styles', reload]);
     gulp.watch(['app/elements/**/*.css'], ['elements', reload]);
     gulp.watch(['app/{scripts,elements}/**/*.js'], ['jshint']);
-    gulp.watch(['**/app.js'], ['serve']);
-    gulp.watch(['server/**/*.js'], ['serve']);
     gulp.watch(['app/images/**/*'], reload);
 });
 

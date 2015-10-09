@@ -7,8 +7,6 @@
             width: calc(98.66% - 16px);
             margin: 16px auto;
 
-            background: black;
-
         .form {
             padding: 0px 20px 20px 20px;
         }
@@ -18,52 +16,41 @@
             padding: 20px 20px 0px 20px;
         }
     </style>
-    <template if="{{!showSignup}}">
+    <template is="dom-bind">
+
         <paper-material elevation="1">
             <h2 class="title">Loggin</h2>
+
             <div class="form">
                 <paper-input is="username" label="Username" name="username" value="{{infos.username::input}}"></paper-input>
                 <paper-input is="password" label="Password" type="password" name="password" value="{{infos.password::input}}"></paper-input>
+                
+                <iron-collapse id="showSignup" tabindex="0" opened="{{showSignup}}">
+                    <paper-input is="passwordConfirm" type="password" label="Confirm Password" value="{{confirmPassword}}"></paper-input>
+                    <paper-input is="email" label="Email" name="email" value="{{infos.email::input}}"></paper-input>
+                </iron-collapse>
 
                 </br>
-                <paper-button on-click="login" raised>Loggin</paper-button>
-                <paper-button on-click="resquestSignup" >Loggin</paper-button>
+                <paper-button id="SendInfo" on-click="send" raised>{{buttonText}}</paper-button>
+                </br>
+                <paper-button on-click="resquestSignup">Signup</paper-button>
             </div>
+
             <span>Response is: </span><span>{{response.message}}</span>
+
         </paper-material>
 
         <iron-ajax id="login-ajax"
-                   url="https://127.0.0.1:3000/login"
+                   url="{{route}}"
                    params="{{infos}}"
                    handle-as="json"
                    method="post"
                    on-response="handleResponse"
-                   last-response="{{response}}"></iron-ajax>
-    </template>
-
-    <template if="{{showSignup}}">
-        <paper-material elevation="1">
-            <h2 class="title">Sign-up</h2>
-            <div class="form">
-                <paper-input is="username" label="Username" name="username" value="{{infos.username::input}}"></paper-input>
-                <paper-input is="password" label="Password" type="password" name="password" value="{{infos.password::input}}"></paper-input>
-                <paper-input is="passwordConfirm" label="Confirm Password" value="{{}}"></paper-input>
-                <paper-input is="email" label="Email" name="email" value="{{infos.email::input}}"></paper-input>
-                </br>
-                <paper-button on-click="signup" raised>Singup</paper-button>
-            </div>
-            <span>Response is: </span><span>{{response.message}}</span>
-        </paper-material>
-
-        <iron-ajax id="login-ajax"
-                   url="https://127.0.0:3000/signup"
-                   params="{{infos}}"
-                   handle-as="json"
-                   method="post"
-                   on-response="handleResponse"
-                   last-response="{{response}}"></iron-ajax>
+                   last-response="{{response}}">
+        </iron-ajax>
 
     </template>
+
     <script>
         (function () {
             Polymer({
@@ -83,6 +70,10 @@
                     confirmPassword: {
                         type: String
                     },
+                    route: {
+                        type: String,
+                        value : 'login'
+                    },
                     response: {
                         type: Object,
                         notify: true,
@@ -90,15 +81,15 @@
                             message: ""
                         }
                     },
-                    showSignup: {
-                        type: Boolean,
-                        notify: true,
+                    buttonText: {
+                        type: String,
+                        value: "Sign In"
                     }
+
                 },
                 ready: function () {
-                    showSignup = true;
                 },
-                login: function () {
+                send: function () {
                     console.log(this.infos);
                     document.getElementById('login-ajax').generateRequest();
                 },
@@ -113,9 +104,18 @@
                 getInfos: function () {
                     console.log('Get Infos');
                 },
-                resquestSignup: function () {
-                    this.showSignup = true;
-                }
+                resquestSignup: function(event, detail, sender) {
+                    var val = document.querySelector('#showSignup').toggle();
+
+                    if (this.buttonText === "Sign In") {
+                        this.buttonText = "Sign Up";
+                        this.route = "https://localhost:3000/signup";
+                    }
+                    else {
+                        this.buttonText = "Sign In";
+                        this.route = "https://localhost:3000/signin";
+                    }
+        }
             });
         })();
     </script>

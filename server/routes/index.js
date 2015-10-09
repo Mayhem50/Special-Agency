@@ -23,7 +23,8 @@ module.exports = function (passport) {
     router.post('/signin', function (req, res, next) {
         if (!req.body)
             return;
-        passport.authenticate('signup', function (err, user, info) {
+        passport.authenticate('signin', function (err, user, info) {
+        console.log('signin');
             if(err){ return next(err);}
             if (!user) {
                 return res.status(403).json({
@@ -40,14 +41,8 @@ module.exports = function (passport) {
         })(req, res, next)
     });
     
-    ///* GET Registration Page */
-    //router.get('/signup', function (req, res) {
-    //    res.render('register', { message: req.flash('message') });
-    //});
-    
-    ///* Handle Registration POST */
-    
     router.post('/signup', function (req, res, next) {
+        console.log('signup');
         passport.authenticate('signup', function (err, user, info) {
             if (err) { return next(err); }
             
@@ -56,7 +51,7 @@ module.exports = function (passport) {
                     message: "user exist"
                 });
             }
-            
+                        
             req.login(user, function (err) {
                 if (err) return next(err);
                 console.log(user);
@@ -66,25 +61,6 @@ module.exports = function (passport) {
             });
         })(req, res, next)
     });
-    
-    //router.post('/signup', function (req, res) {
-    //    console.log(JSON.stringify(req.body));
-    //    console.log('Username', req.body['username']);
-    //    console.log('Password', req.body['password']);
-    //    console.log('Email', req.body['email']);
-    //    res.end();
-    //});
-    
-    ///* GET Home Page */
-    //router.get('/home', isAuthenticated, function (req, res) {
-    //    res.render('home', { user: req.user });
-    //});
-    
-    ///* Handle Logout */
-    //router.get('/signout', function (req, res) {
-    //    req.logout();
-    //    res.redirect('/');
-    //});
     
     return router;
 }

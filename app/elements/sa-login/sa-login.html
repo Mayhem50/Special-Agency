@@ -33,7 +33,7 @@
                 </iron-collapse>
 
                 </br>
-                <paper-checkbox is="remember" label="Remember Me" value="{{remember::input}}" checked>Remember Me</paper-checkbox>
+                <paper-checkbox is="remember" label="Remember Me" checked="{{remember}}">Remember Me</paper-checkbox>
                 
                 </br>                
                 </br>
@@ -75,6 +75,7 @@
                     },
                     remember:{
                         type: Boolean,
+                        value: true
                     },
                     confirmPassword: {
                         type: String
@@ -110,9 +111,11 @@
                     console.log(this.response);
 
                     if (this.response.isAuthenticated) {
-                        window.sessionStorage.token = this.response.token;
-                        if (this.remember === true)
-                            window.sessionStorage.remember = true;
+                        console.log(this.remember);
+                        window.localStorage.token = this.response.token;
+                        if (this.remember === true) {
+                            window.localStorage.remember = true;
+                        }
 
                         app.route = 'home';
                     }

@@ -66,9 +66,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 })(document);
 
 window.addEventListener('load', function (event) {
-    if (window.sessionStorage.remember == false)
-        window.sessionStorage.token = '';
-    if (window.sessionStorage.token = '')
+    if (window.localStorage.token = '')
         app.route = 'login';
+});
+
+window.addEventListener('unload', function (event) {
+    if (window.localStorage['remember'] != "true")
+        window.localStorage.token = '';
 });
 

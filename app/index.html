@@ -91,6 +91,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <!-- Main Content -->
                 <div class="content">
                     <iron-pages attr-for-selected="data-route" selected="{{route}}">
+
+                        <section data-route="login">
+                            <sa-login></sa-login>
+                        </section>
+
                         <section data-route="home">
                             <paper-material elevation="1">
                                 <my-greeting></my-greeting>
@@ -147,11 +152,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <p>This is the contact section</p>
                             </paper-material>
                         </section>
-
-                        <section data-route="login">
-                                <sa-login></sa-login>
-                        </section>
-
                     </iron-pages>
                 </div>
             </paper-scroll-header-panel>
@@ -175,7 +175,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
     <!-- build:js scripts/app.js -->
     <script src="scripts/client-app.js"></script>
-    <script src="scripts/sign.js"></script>
     <!-- endbuild-->
 </body>
 </html>

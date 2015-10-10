@@ -6,9 +6,10 @@
             padding: 16px 0 16px 0;
             width: calc(98.66% - 16px);
             margin: 16px auto;
-			background: black;
+            background: black;
+            .form;
 
-        .form {
+        {
             padding: 0px 20px 20px 20px;
         }
 
@@ -25,16 +26,20 @@
             <div class="form">
                 <paper-input is="username" label="Username" name="username" value="{{infos.username::input}}"></paper-input>
                 <paper-input is="password" label="Password" type="password" name="password" value="{{infos.password::input}}"></paper-input>
-                
-                <iron-collapse id="showSignup" tabindex="0" opened="{{showSignup}}">
+
+                <iron-collapse id="togglePart" tabindex="0" opened="{{togglePart}}">
                     <paper-input is="passwordConfirm" type="password" label="Confirm Password" value="{{confirmPassword}}"></paper-input>
                     <paper-input is="email" label="Email" name="email" value="{{infos.email::input}}"></paper-input>
                 </iron-collapse>
 
                 </br>
-                <paper-button id="SendInfo" on-click="send" raised>{{buttonText}}</paper-button>
+                <paper-checkbox is="remember" label="Remember Me" value="{{remember::input}}" checked>Remember Me</paper-checkbox>
+                
+                </br>                
                 </br>
-                <paper-button on-click="resquestSignup">Signup</paper-button>
+                <paper-button id="SendButton" on-click="send" raised>{{sendButtonText}}</paper-button>
+                </br>
+                <paper-button id="ToggleButton" on-click="toggle">{{toggleButtonText}}</paper-button>
             </div>
 
             <span>Response is: </span><span>{{response.message}}</span>
@@ -68,12 +73,15 @@
                             }
                         }
                     },
+                    remember:{
+                        type: Boolean,
+                    },
                     confirmPassword: {
                         type: String
                     },
                     route: {
                         type: String,
-                        value : 'login'
+                        value: 'signin'
                     },
                     response: {
                         type: Object,
@@ -82,11 +90,14 @@
                             message: ""
                         }
                     },
-                    buttonText: {
+                    sendButtonText: {
                         type: String,
                         value: "Sign In"
+                    },
+                    toggleButtonText: {
+                        type: String,
+                        value: "Sign Up"
                     }
-
                 },
                 ready: function () {
                 },
@@ -94,29 +105,35 @@
                     console.log(this.infos);
                     document.getElementById('login-ajax').generateRequest();
                 },
-                signup: function () {
-                    console.log(this.infos);
-                    document.getElementById('login-ajax').generateRequest();
-                },
                 handleResponse: function () {
                     console.log('handle response');
                     console.log(this.response);
+
+                    if (this.response.isAuthenticated) {
+                        window.sessionStorage.token = this.response.token;
+                        if (this.remember === true)
+                            window.sessionStorage.remember = true;
+
+                        app.route = 'home';
+                    }
                 },
                 getInfos: function () {
                     console.log('Get Infos');
                 },
-                resquestSignup: function(event, detail, sender) {
-                    var val = document.querySelector('#showSignup').toggle();
+                toggle: function (event, detail, sender) {
+                    var val = document.querySelector('#togglePart').toggle();
 
-                    if (this.buttonText === "Sign In") {
-                        this.buttonText = "Sign Up";
-                        this.route = "https://localhost:3000/signup";
+                    if (this.sendButtonText === "Sign In") {
+                        this.sendButtonText = "Sign Up";
+                        this.toggleButtonText = "Sign In";
+                        this.route = "https://127.0.0.1:3000/signup";
                     }
                     else {
-                        this.buttonText = "Sign In";
-                        this.route = "https://localhost:3000/signin";
+                        this.sendButtonText = "Sign In";
+                        this.toggleButtonText = "Sign Up";
+                        this.route = "https://127.0.0.1:3000/signin";
                     }
-        }
+                }
             });
         })();
     </script>

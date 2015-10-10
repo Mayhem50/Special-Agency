@@ -32,7 +32,6 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="app\scripts\client-app.js" />
-    <Compile Include="app\scripts\sign.js" />
     <Compile Include="app\sw-import.js" />
     <Compile Include="gulpfile.js" />
     <Compile Include="server\controllers\mongoose.js" />

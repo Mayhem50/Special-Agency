@@ -1,4 +1,5 @@
 ﻿var express = require('express');
+var jwt = require('jwt-simple');
 
 var router = express.Router();
 
@@ -21,11 +22,16 @@ module.exports = function (passport) {
     
     /* Handle Login POST */
     router.post('/signin', function (req, res, next) {
+        console.log('receive signin');
+        console.log(req);
+
         if (!req.body)
             return;
+
         passport.authenticate('signin', function (err, user, info) {
         console.log('signin');
-            if(err){ return next(err);}
+            if (err) { return next(err); }
+
             if (!user) {
                 return res.status(403).json({
                     message: "not found"
@@ -34,15 +40,20 @@ module.exports = function (passport) {
             
             req.login(user, function(err) {
                 if (err) return next(err);
+                
+                var token = jwt.encode(user, 'xbJ9Phit');
                 return res.json({
                     message: "logged in",
+                    token: token,
+                    isAuthenticated: true
                 });
             });
         })(req, res, next)
     });
     
     router.post('/signup', function (req, res, next) {
-        console.log('signup');
+        console.log('receive signup');
+
         passport.authenticate('signup', function (err, user, info) {
             if (err) { return next(err); }
             
@@ -54,9 +65,12 @@ module.exports = function (passport) {
                         
             req.login(user, function (err) {
                 if (err) return next(err);
-                console.log(user);
+
+                var token = jwt.encode(user, 'xbJ9Phit');
                 return res.json({
-                    message: "logged in",
+                    message: "sing up finished",
+                    token: token,
+                    isAuthenticated: true
                 });
             });
         })(req, res, next)

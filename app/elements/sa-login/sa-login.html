@@ -112,12 +112,18 @@
 
                     if (this.response.isAuthenticated) {
                         console.log(this.remember);
-                        window.localStorage.token = this.response.token;
                         if (this.remember === true) {
+                            window.localStorage.token = this.response.token;
                             window.localStorage.remember = true;
+                            window.localStorage.setItem('username', this.infos.username);
+                        }
+                        else {
+                            window.sessionStorage.token = this.response.token;
+                            window.sessionStorage.setItem('username', this.infos.username);
                         }
 
                         app.route = 'home';
+                        //app.loginOrUserInfo = '/users/:' + this.infos.username;
                     }
                 },
                 getInfos: function () {

@@ -2,8 +2,15 @@
 <script>
     window.addEventListener('WebComponentsReady', function () {
         page('/', function () {
-            console.log(window.localStorage.token);
-            if (window.localStorage.token == '' || typeof window.localStorage.token == "undefined")
+            var token;
+            if (window.localStorage['remember'] == "true") {
+                token = window.localStorage.token;
+            }
+            else {
+                token = window.sessionStorage.token;
+            }
+
+            if (token == '' || typeof token == "undefined")
                 app.route = 'login';
             else
                 app.route = 'home';

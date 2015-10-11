@@ -51,7 +51,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-scroll-header-panel drawer fixed>
                 <!-- Drawer Toolbar -->
                 <paper-toolbar id="drawerToolbar">
-                    <span class="paper-font-title">Menu</span>
+                    <span class="paper-font-title flex">Menu</span>
+                    <sa-button icon="account-box" route="{{isLogged}}"></sa-button>
                 </paper-toolbar>
                 <!-- Drawer Content -->
                 <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
@@ -152,6 +153,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <p>This is the contact section</p>
                             </paper-material>
                         </section>
+
+                        <section data-route="profile">
+                            <sa-profile username="{{params.name}}"></sa-profile>
+                        </section>
+
                     </iron-pages>
                 </div>
             </paper-scroll-header-panel>

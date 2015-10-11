@@ -2,18 +2,16 @@
 <script>
     window.addEventListener('WebComponentsReady', function () {
         page('/', function () {
-            var token;
-            if (window.localStorage['remember'] == "true") {
-                token = window.localStorage.token;
-            }
-            else {
-                token = window.sessionStorage.token;
-            }
+            app.route = isAuthenticated('home');
+        });
 
-            if (token == '' || typeof token == "undefined")
-                app.route = 'login';
-            else
-                app.route = 'home';
+        page('/login', function () {
+            app.route = 'login';
+        });
+
+        page('/profile/:name', function (data) {
+            app.route = isAuthenticated('profile');
+            app.params = data.params;
         });
 
         page('/users', function () {
@@ -33,5 +31,21 @@
         page({
             hashbang: true
         });
+
+        function isAuthenticated(route)
+        {
+            var token;
+            if (window.localStorage['remember'] == "true") {
+                token = window.localStorage.token;
+            }
+            else {
+                token = window.sessionStorage.token;
+            }
+
+            if (token == '' || typeof token == "undefined")
+                return 'login';
+            else
+                return route;
+        }
     });
 </script>

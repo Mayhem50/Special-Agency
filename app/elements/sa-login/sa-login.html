@@ -1,15 +1,15 @@
 ﻿<dom-module id="sa-login">
     <style>
-        paper-material {
+        .login{
             border-radius: 2px;
             height: 100%;
             padding: 16px 0 16px 0;
             width: calc(98.66% - 16px);
             margin: 16px auto;
-            background: black;
-            .form;
-
-        {
+            background: white;
+        }
+            
+        .form{
             padding: 0px 20px 20px 20px;
         }
 
@@ -20,7 +20,7 @@
     </style>
     <template is="dom-bind">
 
-        <paper-material elevation="1">
+        <paper-material class="login" elevation="1">
             <h2 class="title">Loggin</h2>
 
             <div class="form">
@@ -123,7 +123,7 @@
                         }
 
                         app.route = 'home';
-                        //app.loginOrUserInfo = '/users/:' + this.infos.username;
+                        app.isLogged = '/profile/' + this.infos.username;
                     }
                 },
                 getInfos: function () {

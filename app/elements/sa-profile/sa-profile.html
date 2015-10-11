@@ -1,0 +1,67 @@
+﻿<dom-module id="sa-profile">
+    <style>
+        .profile {
+            border-radius: 2px;
+            height: 100%;
+            padding: 16px 0 16px 0;
+            width: calc(98.66% - 16px);
+            margin: 16px auto;
+            background: white;
+        }
+
+        .title {
+            font-size: 34px;
+            padding: 20px 20px 0px 20px;
+        }
+
+        iron-image{
+            width:25%;
+            height:25%;
+        }
+
+    </style>
+    <template is="dom-bind">
+
+        <paper-material class="profile" elevation="1">
+            <h2 class="title">{{username}}</h2>
+
+            <div>
+                <iron-image src="../../images/logo/Img-03.png"></iron-image>
+            </div>
+
+            <span>Response is: </span><span>{{response.message}}</span>
+
+        </paper-material>
+
+        <iron-ajax id="profile-ajax"
+                   url="https://127.0.0.1:3000/profile"
+                   params="{{infos}}"
+                   handle-as="json"
+                   method="post"
+                   on-response="handleResponse"
+                   last-response="{{response}}">
+        </iron-ajax>
+
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-profile',
+                properties: {
+                    infos: {
+                        type: Object,
+                        value: {
+                            username : '',
+                        }
+                    },
+                    username: {
+                        type: String
+                    }
+                },
+                ready: function () {
+                }                
+            });
+        })();
+    </script>
+</dom-module>

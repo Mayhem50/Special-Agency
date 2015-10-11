@@ -68,11 +68,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 window.addEventListener('load', function (event) {
     if (window.localStorage.token == '' || typeof window.localStorage.token == "undefined") {
         app.route = 'login';
-        //app.loginOrUserInfo = "login";
+        app.isLogged = "login";
     }
     else {
         app.route = 'home';
-        //app.loginOrUserInfo =  '/users/:' + window.localStorage['username'];
+        app.isLogged = '/profile/' + window.localStorage['username'];
     }
 });
 

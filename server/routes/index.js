@@ -20,6 +20,12 @@ module.exports = function (passport) {
         res.sendFile('index.html');
     });
     
+    router.post('/logout', function (req, res) {
+        console.log('logout');
+        req.logout();
+        res.sendFile('index.html');
+    });
+    
     /* Handle Login POST */
     router.post('/signin', function (req, res, next) {
         console.log('receive signin');

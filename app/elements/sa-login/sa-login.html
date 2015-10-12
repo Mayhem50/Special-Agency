@@ -112,17 +112,8 @@
                     console.log(this.response);
 
                     if (this.response.isAuthenticated) {
-                        document.querySelector('#deconnexionToggle').toggle();
+                        document.querySelector('#deconnexionToggle').show();                        
 
-                        this.infos = function () {
-                            return {
-                                username: '',
-                                password: '',
-                                email: ''
-                            }
-                        }
-
-                        console.log(this.remember);
                         if (this.remember === true) {
                             window.localStorage.token = this.response.token;
                             window.localStorage.remember = true;
@@ -135,6 +126,14 @@
 
                         app.route = 'home';
                         app.isLogged = '/profile/' + this.infos.username;
+
+                        this.infos = function () {
+                            return {
+                                username: '',
+                                password: '',
+                                email: ''
+                            }
+                        }
                     }
                 },
                 getInfos: function () {

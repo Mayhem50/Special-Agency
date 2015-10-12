@@ -73,12 +73,32 @@ window.addEventListener('load', function (event) {
     else {
         app.route = 'home';
         app.isLogged = '/profile/' + window.localStorage['username'];
-        document.querySelector('#deconnexionToggle').show();
     }
 });
 
 window.addEventListener('unload', function (event) {
     if (window.localStorage['remember'] != "true")
         window.localStorage.token = '';
+});
+
+var _wr = function (type) {
+    var orig = history[type];
+    return function () {
+        var rv = orig.apply(this, arguments);
+        var e = new Event(type);
+        e.arguments = arguments;
+        window.dispatchEvent(e);
+        return rv;
+    };
+};
+history.pushState = _wr('pushState'), history.replaceState = _wr('replaceState');
+
+
+window.addEventListener('pushState', function (event) {
+    var currentState = history.state;
+    if (currentState.path === "/logout") {
+        var splited = window.location.href.split('#!');
+        window.history.replaceState(currentState, 'Special-Agency', splited[0]);
+    }
 });
 

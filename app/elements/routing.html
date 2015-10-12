@@ -10,15 +10,17 @@
         });
 
         page('/logout', function () {
-            if (window.localStorage['remember'] == "true") {
-                window.localStorage.token = '';
-            }
-            else {
-                window.sessionStorage.token = '';
-            }
-            document.querySelector('#deconnexionToggle').hide();
-            app.onMenuSelect();
-            app.route = 'login';
+            var token = getToken();
+            if (token !== '' || token === 'undefined') {
+                clearToken();
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("POST", "https://127.0.0.1:3000/logout", true);
+                xhttp.send();
+                document.querySelector('#deconnexionToggle').hide();
+                app.onMenuSelect();
+                app.route = 'login';
+                window.history.go(0);
+            }            
         });
 
         page('/profile/:name', function (data) {
@@ -44,20 +46,33 @@
             hashbang: true
         });
 
-        function isAuthenticated(route)
-        {
-            var token;
-            if (window.localStorage['remember'] == "true") {
-                token = window.localStorage.token;
-            }
-            else {
-                token = window.sessionStorage.token;
-            }
+        function isAuthenticated(route) {
+            var token = getToken();
 
             if (token == '' || typeof token == "undefined")
                 return 'login';
-            else
+            else {
+                document.querySelector('#deconnexionToggle').show();
                 return route;
+            }
+        }
+
+        function getToken() {
+            if (window.localStorage['remember'] == "true") {
+                return window.localStorage.token;
+            }
+            else {
+                return window.sessionStorage.token;
+            }
+        }
+
+        function clearToken() {
+            if (window.localStorage['remember'] == "true") {
+                window.localStorage.token = '';
+            }
+            else {
+                window.sessionStorage.token = '';
+            }
         }
     });
 </script>

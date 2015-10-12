@@ -73,6 +73,7 @@ window.addEventListener('load', function (event) {
     else {
         app.route = 'home';
         app.isLogged = '/profile/' + window.localStorage['username'];
+        document.querySelector('#deconnexionToggle').show();
     }
 });
 

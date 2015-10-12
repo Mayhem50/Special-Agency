@@ -50,7 +50,11 @@
     <Content Include="app\elements\routing.html" />
     <Content Include="app\elements\sa-button\sa-button.html" />
     <Content Include="app\elements\sa-login\sa-login.html" />
+    <Content Include="app\elements\sa-profile\sa-profile.html" />
     <Content Include="app\favicon.ico" />
+    <Content Include="app\images\logo\Img-02.png" />
+    <Content Include="app\images\logo\Img-03 2.png" />
+    <Content Include="app\images\logo\Img-03.png" />
     <Content Include="app\images\touch\apple-touch-icon.png" />
     <Content Include="app\images\touch\chrome-touch-icon-192x192.png" />
     <Content Include="app\images\touch\icon-128x128.png" />
@@ -78,7 +82,9 @@
     <Folder Include="app\elements\my-list\" />
     <Folder Include="app\elements\sa-login\" />
     <Folder Include="app\elements\sa-button\" />
+    <Folder Include="app\elements\sa-profile\" />
     <Folder Include="app\images\" />
+    <Folder Include="app\images\logo\" />
     <Folder Include="app\images\touch\" />
     <Folder Include="app\scripts\" />
     <Folder Include="app\styles\" />

@@ -9,6 +9,18 @@
             app.route = 'login';
         });
 
+        page('/logout', function () {
+            if (window.localStorage['remember'] == "true") {
+                window.localStorage.token = '';
+            }
+            else {
+                window.sessionStorage.token = '';
+            }
+            document.querySelector('#deconnexionToggle').hide();
+            app.onMenuSelect();
+            app.route = 'login';
+        });
+
         page('/profile/:name', function (data) {
             app.route = isAuthenticated('profile');
             app.params = data.params;

@@ -27,7 +27,7 @@
                 <paper-input is="username" label="Username" name="username" value="{{infos.username::input}}"></paper-input>
                 <paper-input is="password" label="Password" type="password" name="password" value="{{infos.password::input}}"></paper-input>
 
-                <iron-collapse id="togglePart" tabindex="0" opened="{{togglePart}}">
+                <iron-collapse id="togglePart" tabindex="0">
                     <paper-input is="passwordConfirm" type="password" label="Confirm Password" value="{{confirmPassword}}"></paper-input>
                     <paper-input is="email" label="Email" name="email" value="{{infos.email::input}}"></paper-input>
                 </iron-collapse>
@@ -101,6 +101,7 @@
                     }
                 },
                 ready: function () {
+                    
                 },
                 send: function () {
                     console.log(this.infos);
@@ -111,6 +112,16 @@
                     console.log(this.response);
 
                     if (this.response.isAuthenticated) {
+                        document.querySelector('#deconnexionToggle').toggle();
+
+                        this.infos = function () {
+                            return {
+                                username: '',
+                                password: '',
+                                email: ''
+                            }
+                        }
+
                         console.log(this.remember);
                         if (this.remember === true) {
                             window.localStorage.token = this.response.token;

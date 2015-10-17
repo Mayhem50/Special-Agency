@@ -14,7 +14,6 @@ app.use(cors());
 var db = require('./server/controllers/mongoose');
 var session = require('./server/controllers/session');
 var passport = require('./server/controllers/passport');
-
 var routes = require('./server/routes/index')(passport);
 
 app.use(express.static(path.join(__dirname, 'app')));
@@ -23,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'app')));
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(flash());

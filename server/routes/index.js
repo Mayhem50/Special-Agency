@@ -1,5 +1,6 @@
 ﻿var express = require('express');
 var jwt = require('jwt-simple');
+var User = require('../models/user');
 
 var router = express.Router();
 
@@ -15,7 +16,6 @@ var isAuthenticated = function (req, res, next) {
 
 module.exports = function (passport) {
     
-    /* GET login page. */
     router.get('/', function (req, res) {
         res.sendFile('index.html');
     });
@@ -26,10 +26,8 @@ module.exports = function (passport) {
         res.sendFile('index.html');
     });
     
-    /* Handle Login POST */
     router.post('/signin', function (req, res, next) {
         console.log('receive signin');
-        console.log(req);
 
         if (!req.body)
             return;
@@ -80,6 +78,46 @@ module.exports = function (passport) {
                 });
             });
         })(req, res, next)
+    });
+    
+    router.post('/checkAvailability/:type', function (req, res) {
+        console.log('usernameAvailability');
+        console.log(req.originalUrl);
+        console.log(req.params.type);
+        
+        var data = new String();
+        var isUsername = true;
+        
+        if (req.params.type === 'username') {
+            data = req.query.username;
+        }
+        else if (req.params.type === 'email') {
+            data = req.query.email;
+            isUsername = false;
+        }
+        
+        return res.end();
+        
+        User.findOne({ 'username' : data }, function (err, user) {
+            if (err) {
+                return next(err);
+            }
+            
+            if (!user) {
+                return res.json({
+                    message: "free",
+                    isUsername: isUsername,
+                    isFree: true
+                });
+            }
+            else {
+                return res.json({
+                    message: "used",
+                    isUsername: isUsername,
+                    isFree: false
+                });
+            }
+        });
     });
     
     return router;

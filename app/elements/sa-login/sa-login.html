@@ -24,12 +24,12 @@
             <h2 class="title">Loggin</h2>
 
             <div class="form">
-                <paper-input is="username" label="Username" name="username" value="{{infos.username::input}}"></paper-input>
-                <paper-input is="password" label="Password" type="password" name="password" value="{{infos.password::input}}"></paper-input>
+                <paper-input id="username" is="username" label="Username" name="username" value="{{infos.username::input}}" on-keyup="checkUserName" error-message="Name albready used"></paper-input>
+                <paper-input id="password" is="password" label="Password" type="password" name="password" value="{{infos.password::input}}"></paper-input>
 
                 <iron-collapse id="togglePart" tabindex="0">
-                    <paper-input is="passwordConfirm" type="password" label="Confirm Password" value="{{confirmPassword}}"></paper-input>
-                    <paper-input is="email" label="Email" name="email" value="{{infos.email::input}}"></paper-input>
+                    <paper-input id="passwordConfirm" is="passwordConfirm" type="password" label="Confirm Password" value="{{passwordConfirm}}" error-message="Not same password"></paper-input>
+                    <paper-input id="email" is="email" label="Email" name="email" value="{{infos.email::input}}" error-message="{{emailErrorMessage}}" on-keyup="checkEmail"></paper-input>
                 </iron-collapse>
 
                 </br>
@@ -51,10 +51,17 @@
                    params="{{infos}}"
                    handle-as="json"
                    method="post"
-                   on-response="handleResponse"
+                   on-response="handlePassportResponse"
                    last-response="{{response}}">
         </iron-ajax>
-
+        <iron-ajax id="check-availability-ajax"
+                   url="{{availabilityRoute}}"
+                   params="{{infos}}"
+                   handle-as="json"
+                   method="post"
+                   on-response="handleAvaibilityResponse"
+                   last-response="{{response}}">
+        </iron-ajax>
     </template>
 
     <script>
@@ -77,12 +84,20 @@
                         type: Boolean,
                         value: true
                     },
-                    confirmPassword: {
+                    passwordConfirm: {
                         type: String
+                    },
+                    emailErrorMessage: {
+                        type: String,
+                        value : 'Not an email'
                     },
                     route: {
                         type: String,
                         value: 'signin'
+                    },
+                    availabilityRoute: {
+                        type: String,
+                        value: ''
                     },
                     response: {
                         type: Object,
@@ -98,18 +113,27 @@
                     toggleButtonText: {
                         type: String,
                         value: "Sign Up"
+                    },
+                    isForLogin:{
+                        type: Boolean,
+                        value: true
                     }
                 },
-                ready: function () {
+                ready: function () { 
                     
                 },
                 send: function () {
                     console.log(this.infos);
-                    document.getElementById('login-ajax').generateRequest();
+                    if (this.validateBeforeSend())
+                        document.getElementById('login-ajax').generateRequest();
                 },
-                handleResponse: function () {
-                    console.log('handle response');
+                handlePassportResponse: function () {
+                    console.log('handle passport response');
                     console.log(this.response);
+
+                    if (typeof this.response == "undefined" || this.response == null) {
+                        return;
+                    }
 
                     if (this.response.isAuthenticated) {
                         document.querySelector('#deconnexionToggle').show();                        
@@ -136,9 +160,6 @@
                         }
                     }
                 },
-                getInfos: function () {
-                    console.log('Get Infos');
-                },
                 toggle: function (event, detail, sender) {
                     var val = document.querySelector('#togglePart').toggle();
 
@@ -146,11 +167,85 @@
                         this.sendButtonText = "Sign Up";
                         this.toggleButtonText = "Sign In";
                         this.route = "https://127.0.0.1:3000/signup";
+                        this.isForLogin = false;
                     }
                     else {
                         this.sendButtonText = "Sign In";
                         this.toggleButtonText = "Sign Up";
                         this.route = "https://127.0.0.1:3000/signin";
+                        this.isForLogin = true;
+                    }
+                },
+                checkEmail: function () {
+                    this.availabilityRoute = "https://127.0.0.1:3000/checkAvailability/email";
+                    var regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
+                    if (!regex.test(this.infos.email)) {
+                        this.emailErrorMessage = 'Not an email';
+                        document.getElementById('email').invalid = true;
+                    }
+                    else {
+                        document.getElementById('email').invalid = false;
+                    }
+                    document.getElementById('check-availability-ajax').generateRequest();
+                },
+                checkUserName: function () {
+                    this.availabilityRoute = "https://127.0.0.1:3000/checkAvailability/username";
+                    document.getElementById('check-availability-ajax').generateRequest();
+                },
+                handleAvaibilityResponse: function () {
+                    console.log('handle availability response');
+                    console.log(this.response);
+
+                    if (typeof this.response == "undefined" || this.response == null) {
+                        return;
+                    }
+
+                    if(this.response.isUsername){
+                        if (!this.response.isFree) {
+                            document.getElementById('username').invalid = true;
+                        }
+                        else {
+                            document.getElementById('username').invalid = false;
+                        }
+                    }
+                    else {
+                        if (!this.response.isFree) {
+                            this.emailErrorMessage = 'Email albready used';
+                            document.getElementById('email').invalid = true;
+                        }
+                        else{
+                            var regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
+                            if (!regex.test(this.infos.email)) {
+                                this.emailErrorMessage = 'Not an email';
+                                document.getElementById('email').invalid = true;
+                            }
+                        }
+                    }
+                },
+                validateBeforeSend: function (event, detail, sender) {
+                    if (!this.isForLogin) {
+                        this.checkUserName;
+                        if( this.infos.password !== this.passwordConfirm){
+                            document.getElementById('password').invalid = true;
+                            document.getElementById('passwordConfirm').invalid = true;
+                        }
+                        else {
+                            document.getElementById('password').invalid = false;
+                            document.getElementById('passwordConfirm').invalid = false;
+                        }
+                        if (document.getElementById('email').validate() &&
+                            this.infos.username !== '' &&
+                            this.infos.email !== '' &&
+                            this.infos.password !== '' &&
+                            this.infos.password === this.passwordConfirm) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    else {
+                        return true
                     }
                 }
             });

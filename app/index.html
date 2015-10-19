@@ -50,12 +50,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <!-- Drawer Scroll Header Panel -->
             <paper-scroll-header-panel drawer fixed>
                 <!-- Drawer Toolbar -->
-                <paper-toolbar id="drawerToolbar">
-                    <span><iron-icon icon="account-circle"></iron-icon></span>
-                    <span class="paper-font-title flex">Profile</span>
-                    <span>
-                        <iron-icon icon="arrow-forward"></iron-icon>
-                    </span>
+                <paper-toolbar id="drawerToolbar" class="medium-tall">
+                    <paper-icon-button icon="account-circle"></paper-icon-button>
+                    <span class="flex">Profile</span>
+                    <iron-icon icon="arrow-forward"></iron-icon>
+                    <div class="middle">
+                        <iron-image sizing="contain" src="images/logo/Img-02.png"></iron-image>
+                    </div>
                 </paper-toolbar>
                 <!-- Drawer Content -->
                 <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
@@ -96,11 +97,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <sa-button icon="search"></sa-button>
                     <!-- Application name -->
                     <div class="middle middle-container center horizontal layout">
-                        <div class="app-name"><img src="images/logo/Img-03.png" alt="Special Agency"></div>
+                        <div class="app-name"><iron-image src="images/logo/Img-03.png" alt="Special Agency" /></div>
                     </div>
                     <!-- Application sub title -->
                     <div class="bottom bottom-container center horizontal layout">
-                        <div class="bottom-title paper-font-subhead"></div>
+                        <div class="bottom-title paper-font-subhead">{{title}}</div>
+                    </div>
+                    <div class="bottom fit">
+                        <paper-progress value="100" max="1200" style="width:100%;"></paper-progress>
                     </div>
                 </paper-toolbar>
                 <!-- Main Content -->

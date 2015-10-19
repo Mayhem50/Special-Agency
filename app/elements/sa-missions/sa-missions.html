@@ -11,32 +11,161 @@
 
         .title {
             font-size: 34px;
-            padding: 20px 20px 0px 20px;
         }
 
         iron-image {
             width: 25%;
             height: 25%;
         }
+
+        .onboard {
+            --iron-icon-height: 48px;
+            --iron-icon-width: 48px;
+        }
+
+        paper-fab {
+            background-color: #118c89;
+        }
+
+        .addMission {
+            position: absolute;
+            bottom: 50px;
+            right: 60px;
+        }
+
+        paper-dialog {
+            background-color: white;
+        }
+
+        .red .paper-header {
+            background-color: #118c89;
+        }
+
+        .wizzard {
+            Position: Fixed;
+            Top: 0;
+            Left: 0;
+            Right: 0;
+            Bottom: 0;
+            Padding: 10px;
+            Margin: 15px;
+        }
+
+        .leftButton{
+            position:absolute;
+            bottom: 100px;
+            left: calc(98% / 2 - 50px);
+        }
+        .rightButton{
+            position:absolute;
+            bottom: 100px;
+            right: calc(98% / 2 - 50px);
+        }
+
+        .type-wrapper {
+            display: inline-block;
+            padding: 2px;
+            margin: 6px 0;
+        }
+
+        .type-wrapper.iron-selected {
+            background-color: #00BCD4;
+            border-radius: 50%;
+        }
+
+        .iconList {
+            margin: 16px 0 8px 0;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
     </style>
     <template>
-
-        <paper-material class="missions" elevation="1">
-            <h2 class="title">Missions</h2>
-
             <div>
-                <iron-image src="../../images/logo/Img-03.png"></iron-image>
-            </div>
+                <template is="dom-repeat" items="{{missions}}">
+                    <paper-item>
+                        <paper-item-body>
 
-        </paper-material>
+                        </paper-item-body>
+                    </paper-item>
+                </template>
+        </div>
+        <div>
+            <paper-fab class="addMission" icon="create" on-tap="addMission"></paper-fab>
+        </div>
 
-        <iron-ajax id="profile-ajax"
+        <paper-dialog id="missionWizzard" no-cancel-on-outside-click class="wizzard" autofitonattach="true">
+            <iron-pages attr-for-selected="data-step" selected="{{step}}">
+
+                <section data-step="1">
+                    <div>First Step</div>
+                    <div class="iconList" flex>
+                        <iron-selector selected="{{mission.type}}" layout horizontal justified wrap>
+                            <div class="type-wrapper">
+                                <iron-icon icon="add"></iron-icon>
+                            </div>
+                            <div class="type-wrapper">
+                                <iron-icon icon="add"></iron-icon>
+                            </div>
+                            <div class="type-wrapper">
+                                <iron-icon icon="add"></iron-icon>
+                            </div>
+                            <div class="type-wrapper">
+                                <iron-icon icon="add"></iron-icon>
+                            </div>
+                            <div class="type-wrapper">
+                                <iron-icon icon="add"></iron-icon>
+                            </div>
+                            <div class="type-wrapper">
+                                <iron-icon icon="add"></iron-icon>
+                            </div>
+                            <div class="type-wrapper">
+                                <iron-icon icon="add"></iron-icon>
+                            </div>
+                            <div class="type-wrapper">
+                                <iron-icon icon="add"></iron-icon>
+                            </div>
+                            <div class="type-wrapper">
+                                <iron-icon icon="add"></iron-icon>
+                            </div>
+                            <div class="type-wrapper">
+                                <iron-icon icon="add"></iron-icon>
+                            </div>
+                        </iron-selector>
+                    </div>
+                    <paper-fab icon="close" class="leftButton" on-tap="cancelMission"></paper-fab>
+                    <paper-fab icon="arrow-forward" class="rightButton" on-tap="incStep"></paper-fab>
+                </section>
+                <section data-step="2">
+                    <div>Second Step</div>
+                    <paper-fab icon="arrow-back" class="leftButton" on-tap="decStep"></paper-fab>
+                    <paper-fab icon="arrow-forward" class="rightButton" on-tap="incStep"></paper-fab>
+
+                </section>
+                <section data-step="3">
+                    <div>Third Step</div>
+                    <paper-fab icon="arrow-back" class="leftButton" on-tap="decStep"></paper-fab>
+                    <paper-fab icon="check" class="rightButton" on-tap="sendMission"></paper-fab>
+
+                </section>
+            </iron-pages>
+        </paper-dialog>
+
+        <iron-ajax id="get-missions-ajax"
                    url="http://127.0.0.1:3000/missions"
                    params=""
                    handle-as="json"
                    method="post"
-                   on-response="handleResponse"
-                   last-response="{{response}}">
+                   on-response=""
+                   last-response="{{missions}}">
+        </iron-ajax>
+
+        <iron-ajax id="add-mission-ajax"
+                   url="http://127.0.0.1:3000/addMission"
+                   params="{{mission}}"
+                   handle-as="json"
+                   method="post"
+                   on-response=""
+                   last-response="{{missions}}">
         </iron-ajax>
 
     </template>
@@ -48,12 +177,47 @@
                 properties: {
                     response: {
                         type: Object
+                    },
+                    missions: {
+                        type: Object,
+                        notify: true
+                    },
+                    step: {
+                        type: Number,
+                        value: 1,
+                        notify: true
                     }
                 },
                 ready: function () {
+                    app.title = 'Missions';
+                },
+                addMission: function () {
+                    var diag = document.getElementById('missionWizzard');
+                    this.step = 1;
+                    diag.open();
+                },
+                cancelMission: function () {
+                    var diag = document.getElementById('missionWizzard');
+                    diag.close();
+                },
+                incStep: function () {
+                    if (this.step == 3) {
+                        return;
+                    }
+
+                    this.step += 1;
+                },
+                decStep: function () {
+                    if (this.step == 1) {
+                        return;
+                    }
+
+                    this.step -= 1;
+                },
+                sendMission: function () {
+                    document.getElementById('add-mission-ajax').generateRequest();
                 }
             });
         })();
     </script>
 </dom-module>
-

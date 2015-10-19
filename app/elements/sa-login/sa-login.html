@@ -23,7 +23,8 @@
         <paper-material class="login" elevation="1">
             <h2 class="title">Loggin</h2>
 
-            <div class="form"><paper-input id="email" is="email" label="Email" name="email" value="{{infos.email::input}}" error-message="{{emailErrorMessage}}" on-keyup="checkEmail"></paper-input>
+            <div class="form">
+                <paper-input id="email" is="email" label="Email" name="email" value="{{infos.email::input}}" error-message="{{emailErrorMessage}}" on-keyup="checkEmail"></paper-input>
                 <paper-input id="password" is="password" label="Password" type="password" name="password" value="{{infos.password::input}}"></paper-input>
 
                 <iron-collapse id="togglePart" tabindex="0">

@@ -23,13 +23,13 @@
         <paper-material class="login" elevation="1">
             <h2 class="title">Loggin</h2>
 
-            <div class="form">
-                <paper-input id="username" is="username" label="Username" name="username" value="{{infos.username::input}}" on-keyup="checkUserName" error-message="Name albready used"></paper-input>
+            <div class="form"><paper-input id="email" is="email" label="Email" name="email" value="{{infos.email::input}}" error-message="{{emailErrorMessage}}" on-keyup="checkEmail"></paper-input>
                 <paper-input id="password" is="password" label="Password" type="password" name="password" value="{{infos.password::input}}"></paper-input>
 
                 <iron-collapse id="togglePart" tabindex="0">
                     <paper-input id="passwordConfirm" is="passwordConfirm" type="password" label="Confirm Password" value="{{passwordConfirm}}" error-message="Not same password"></paper-input>
-                    <paper-input id="email" is="email" label="Email" name="email" value="{{infos.email::input}}" error-message="{{emailErrorMessage}}" on-keyup="checkEmail"></paper-input>
+                    <paper-input id="firstName" is="firstName" label="First Name" name="firstName" value="{{infos.firstName::input}}></paper-input>
+                    <paper-input id="lastName" is="lastName" label="Last Name" name="lastName" value="{{infos.lastName::input}}"></paper-input>
                 </iron-collapse>
 
                 </br>
@@ -74,7 +74,8 @@
                         notify: true,
                         value: function () {
                             return {
-                                username: '',
+                                firstName: '',
+                                lastName: '',
                                 password: '',
                                 email: ''
                             }
@@ -123,14 +124,11 @@
                     
                 },
                 send: function () {
-                    console.log(this.infos);
-                    if (this.validateBeforeSend())
+                    if (this.validateBeforeSend()) {                        
                         document.getElementById('login-ajax').generateRequest();
+                    }
                 },
                 handlePassportResponse: function () {
-                    console.log('handle passport response');
-                    console.log(this.response);
-
                     if (typeof this.response == "undefined" || this.response == null) {
                         return;
                     }
@@ -141,19 +139,20 @@
                         if (this.remember === true) {
                             window.localStorage.token = this.response.token;
                             window.localStorage.remember = true;
-                            window.localStorage.setItem('username', this.infos.username);
+                            window.localStorage.setItem('email', this.infos.email);
                         }
                         else {
                             window.sessionStorage.token = this.response.token;
-                            window.sessionStorage.setItem('username', this.infos.username);
+                            window.sessionStorage.setItem('email', this.infos.email);
                         }
 
                         app.route = 'home';
-                        app.isLogged = '/profile/' + this.infos.username;
+                        app.isLogged = '/profile/' + this.infos.email;
 
                         this.infos = function () {
                             return {
-                                username: '',
+                                firstName: '',
+                                lastName: '',
                                 password: '',
                                 email: ''
                             }
@@ -166,31 +165,29 @@
                     if (this.sendButtonText === "Sign In") {
                         this.sendButtonText = "Sign Up";
                         this.toggleButtonText = "Sign In";
-                        this.route = "https://127.0.0.1:3000/signup";
+                        this.route = "http://127.0.0.1:3000/signup";
                         this.isForLogin = false;
                     }
                     else {
                         this.sendButtonText = "Sign In";
                         this.toggleButtonText = "Sign Up";
-                        this.route = "https://127.0.0.1:3000/signin";
+                        this.route = "http://127.0.0.1:3000/signin";
                         this.isForLogin = true;
                     }
                 },
                 checkEmail: function () {
-                    this.availabilityRoute = "https://127.0.0.1:3000/checkAvailability/email";
-                    var regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
-                    if (!regex.test(this.infos.email)) {
-                        this.emailErrorMessage = 'Not an email';
-                        document.getElementById('email').invalid = true;
+                    if (!this.isForLogin) {
+                        var regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
+                        if (!regex.test(this.infos.email)) {
+                            this.emailErrorMessage = 'Not an email';
+                            document.getElementById('email').invalid = true;
+                        }
+                        else {
+                            document.getElementById('email').invalid = false;
+                        }
+                        this.availabilityRoute = "http://127.0.0.1:3000/checkAvailability/email";
+                        document.getElementById('check-availability-ajax').generateRequest();
                     }
-                    else {
-                        document.getElementById('email').invalid = false;
-                    }
-                    document.getElementById('check-availability-ajax').generateRequest();
-                },
-                checkUserName: function () {
-                    this.availabilityRoute = "https://127.0.0.1:3000/checkAvailability/username";
-                    document.getElementById('check-availability-ajax').generateRequest();
                 },
                 handleAvaibilityResponse: function () {
                     console.log('handle availability response');
@@ -198,33 +195,23 @@
 
                     if (typeof this.response == "undefined" || this.response == null) {
                         return;
-                    }
-
-                    if(this.response.isUsername){
-                        if (!this.response.isFree) {
-                            document.getElementById('username').invalid = true;
-                        }
-                        else {
-                            document.getElementById('username').invalid = false;
-                        }
+                    }                    
+                    
+                    if (!this.response.isFree) {
+                        this.emailErrorMessage = 'Email albready used';
+                        document.getElementById('email').invalid = true;
                     }
                     else {
-                        if (!this.response.isFree) {
-                            this.emailErrorMessage = 'Email albready used';
+                        var regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
+                        if (!regex.test(this.infos.email)) {
+                            this.emailErrorMessage = 'Not an email';
                             document.getElementById('email').invalid = true;
-                        }
-                        else{
-                            var regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
-                            if (!regex.test(this.infos.email)) {
-                                this.emailErrorMessage = 'Not an email';
-                                document.getElementById('email').invalid = true;
-                            }
                         }
                     }
                 },
                 validateBeforeSend: function (event, detail, sender) {
                     if (!this.isForLogin) {
-                        this.checkUserName;
+
                         if( this.infos.password !== this.passwordConfirm){
                             document.getElementById('password').invalid = true;
                             document.getElementById('passwordConfirm').invalid = true;
@@ -233,11 +220,13 @@
                             document.getElementById('password').invalid = false;
                             document.getElementById('passwordConfirm').invalid = false;
                         }
+
                         if (document.getElementById('email').validate() &&
                             this.infos.username !== '' &&
                             this.infos.email !== '' &&
                             this.infos.password !== '' &&
-                            this.infos.password === this.passwordConfirm) {
+                            this.infos.password === this.passwordConfirm &&
+                            this.response.isFree === true) {
                             return true;
                         }
                         else {
@@ -250,5 +239,22 @@
                 }
             });
         })();
+
+
+        window.addEventListener('load', function (event) {
+            if (window.localStorage.token == '' || typeof window.localStorage.token == "undefined") {
+                app.route = 'login';
+                app.isLogged = "login";
+            }
+            else {
+                app.route = 'home';
+                app.isLogged = '/profile/' + window.localStorage['email'];
+            }
+        });
+
+        window.addEventListener('unload', function (event) {
+            if (window.localStorage['remember'] != "true")
+                window.localStorage.token = '';
+        });
     </script>
 </dom-module>

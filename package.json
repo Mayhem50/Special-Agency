@@ -58,16 +58,16 @@
   "engines": {
     "node": ">=0.10.0"
   },
-  "description": "![](https://cloud.githubusercontent.com/assets/110953/7877439/6a69d03e-0590-11e5-9fac-c614246606de.png) ## Polymer Starter Kit",
+  "description": "![](http://cloud.githubusercontent.com/assets/110953/7877439/6a69d03e-0590-11e5-9fac-c614246606de.png) ## Polymer Starter Kit",
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Mayhem50/Special-Agency.git"
+    "url": "git+http://github.com/Mayhem50/Special-Agency.git"
   },
   "author": "BRR",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Mayhem50/Special-Agency/issues"
+    "url": "http://github.com/Mayhem50/Special-Agency/issues"
   },
-  "homepage": "https://github.com/Mayhem50/Special-Agency#readme"
+  "homepage": "http://github.com/Mayhem50/Special-Agency#readme"
 }

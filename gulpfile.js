@@ -212,13 +212,13 @@ gulp.task('serve', ['mongo','styles', 'elements', 'images', 'server'], function 
                 }
             }
         },
-        proxy : 'https://127.0.0.1:3000',
+        proxy : 'http://127.0.0.1:3000',
         port : 4000,
         browser : 'google chrome',
-    // Run as an https by uncommenting 'https: true'
+    // Run as an http by uncommenting 'http: true'
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
-        https: true,
+        http: true,
     //server: {
     //  baseDir: ['.tmp', 'app'],
     //  middleware: [ historyApiFallback() ],
@@ -248,10 +248,10 @@ gulp.task('serve:dist', ['default'], function () {
                 }
             }
         },
-        // Run as an https by uncommenting 'https: true'
+        // Run as an http by uncommenting 'http: true'
         // Note: this uses an unsigned certificate which on first access
         //       will present a certificate warning in the browser.
-        // https: true,
+        // http: true,
         server: 'dist',
         middleware: [historyApiFallback()]
     });

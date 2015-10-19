@@ -25,7 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         console.log('Our app is ready to rock!');
     });
     
-    // See https://github.com/Polymer/polymer/issues/1381
+    // See http://github.com/Polymer/polymer/issues/1381
     window.addEventListener('WebComponentsReady', function () {
     // imports are loaded and elements have been registered
     });
@@ -65,21 +65,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 })(document);
 
-window.addEventListener('load', function (event) {
-    if (window.localStorage.token == '' || typeof window.localStorage.token == "undefined") {
-        app.route = 'login';
-        app.isLogged = "login";
-    }
-    else {
-        app.route = 'home';
-        app.isLogged = '/profile/' + window.localStorage['username'];
-    }
-});
-
-window.addEventListener('unload', function (event) {
-    if (window.localStorage['remember'] != "true")
-        window.localStorage.token = '';
-});
 
 var _wr = function (type) {
     var orig = history[type];
@@ -91,8 +76,8 @@ var _wr = function (type) {
         return rv;
     };
 };
-history.pushState = _wr('pushState'), history.replaceState = _wr('replaceState');
 
+history.pushState = _wr('pushState'), history.replaceState = _wr('replaceState');
 
 window.addEventListener('pushState', function (event) {
     var currentState = history.state;

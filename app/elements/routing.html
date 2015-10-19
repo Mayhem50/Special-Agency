@@ -14,12 +14,11 @@
             if (token !== '' || token === 'undefined') {
                 clearToken();
                 var xhttp = new XMLHttpRequest();
-                xhttp.open("POST", "https://127.0.0.1:3000/logout", true);
+                xhttp.open("POST", "http://127.0.0.1:3000/logout", true);
                 xhttp.send();
                 document.querySelector('#deconnexionToggle').hide();
                 app.onMenuSelect();
                 app.route = 'login';
-                window.history.go(0);
             }            
         });
 

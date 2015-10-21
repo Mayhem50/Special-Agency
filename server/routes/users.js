@@ -28,7 +28,7 @@ module.exports = function (passport) {
             req.login(user, function (err) {
                 if (err) return next(err);
                 
-                var token = jwt.encode(user, 'xbJ9Phit');
+                var token = jwt.encode(user._id, 'xbJ9Phit');
                 return res.json({
                     message: "logged in",
                     token: token,

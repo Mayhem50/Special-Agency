@@ -129,7 +129,7 @@
                         </iron-selector>
                     </div>
 
-                    <paper-input id="reward" is="reward" label="Reward" name="reward" value="{{ajax_params.reward::input}}"></paper-input>
+                    <paper-input id="reward" is="reward" type="number" min="0" label="Reward" name="reward" value="{{ajax_params.reward::input}}"><div prefix>€</div></paper-input>
                     <paper-input id="location" is="location" label="Location" name="location" value="{{ajax_params.location::input}}"></paper-input>
                     <paper-input id="description" is="description" label="Description" name="description" value="{{ajax_params.description::input}}"></paper-input>
 
@@ -250,19 +250,9 @@
                 sendRequest: function () {
                     this.ajax_params.access_token = window.sessionStorage.token;
                     document.getElementById('mission-ajax').generateRequest();
-                    //$.ajax({
-                    //    url: 'http://127.0.0.1:3000/missions',
-                    //    succsess: function (data, status, xhr) {
-                    //            this.ajax_response = data;
-                    //            this.handleResponse;
-                    //        },
-                    //    data: this.ajax_params,
-                    //    dataType: 'JSON',
-                    //    method: this.ajax_method,
-                    //});
                 },
                 handleResponse: function () {
-                    alert('handle missions');
+
                 }
             });
         })();

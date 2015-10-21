@@ -8,25 +8,35 @@ var flash = require('connect-flash');
 var cors = require('cors');
 
 var app = module.exports = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
+app.set('JwtSecret', 'xbJ9Phit');
 
 var db = require('./server/controllers/mongoose');
 var session = require('./server/controllers/session');
 var passport = require('./server/controllers/passport');
-var routes = require('./server/routes/index')(passport);
+
 
 app.use(express.static(path.join(__dirname, 'app')));
 
 //Configure App
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(flash());
-app.use(routes);
+
+var index = require('./server/routes/index')();
+var users = require('./server/routes/users')(passport);
+var missions = require('./server/routes/missions')(passport);
+var helpers = require('./server/routes/helpers')();
+
+app.use(index);
+app.use(users);
+app.use(helpers);
+app.use(missions);
 
 //app.use(csrf());
 

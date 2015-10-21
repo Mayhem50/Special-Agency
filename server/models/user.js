@@ -2,11 +2,21 @@
 
 module.exports = mongoose.model(
     'User', {
-        email: String,
-        password: String,
-        firstName: String,
-        lastName: String,
-        agentName: String,
+        email : { type : String, lowercase : true, required : true },
+        firstName : String,
+        lastName : String,
+        gender : String,
+        address : {
+            number : String,
+            street : String,
+            state : String,
+            zip : String
+        },
+        agentID : String,
+        avatar : String,
+        password : String,
         rank: Number,
+        birthDate : Date,
+        missionsDone : Number
     }
 );

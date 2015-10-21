@@ -27,12 +27,6 @@
             background-color: #118c89;
         }
 
-        .addMission {
-            position: absolute;
-            bottom: 50px;
-            right: 60px;
-        }
-
         paper-dialog {
             background-color: white;
         }
@@ -51,15 +45,22 @@
             Margin: 15px;
         }
 
+        .createButton {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+        }
+
         .leftButton{
             position:absolute;
-            bottom: 100px;
-            left: calc(98% / 2 - 50px);
+            bottom: 20px;
+            left: calc(98% / 2 - 60px);
         }
+
         .rightButton{
             position:absolute;
-            bottom: 100px;
-            right: calc(98% / 2 - 50px);
+            bottom: 20px;
+            right: calc(98% / 2 - 60px);
         }
 
         .type-wrapper {
@@ -90,7 +91,7 @@
                 </template>
         </div>
         <div>
-            <paper-fab class="addMission" icon="create" on-tap="addMission"></paper-fab>
+            <paper-fab class="createButton" icon="create" on-tap="createMission"></paper-fab>
         </div>
 
         <paper-dialog id="missionWizzard" no-cancel-on-outside-click class="wizzard" autofitonattach="true">
@@ -98,43 +99,53 @@
 
                 <section data-step="1">
                     <div>First Step</div>
+                    <paper-input id="title" is="title" label="Title" name="title" value="{{ajax_params.title::input}}"></paper-input>
                     <div class="iconList" flex>
-                        <iron-selector selected="{{mission.type}}" layout horizontal justified wrap>
-                            <div class="type-wrapper">
+                        <iron-selector attr-for-selected="mission-type" selected="{{ajax_params.type}}" layout horizontal justified wrap>
+                            <div>Type</div>
+                            <div class="type-wrapper" mission-type="type-A">
                                 <iron-icon icon="add"></iron-icon>
                             </div>
-                            <div class="type-wrapper">
+                            <div class="type-wrapper" mission-type="type-B">
                                 <iron-icon icon="add"></iron-icon>
                             </div>
-                            <div class="type-wrapper">
-                                <iron-icon icon="add"></iron-icon>
-                            </div>
-                            <div class="type-wrapper">
-                                <iron-icon icon="add"></iron-icon>
-                            </div>
-                            <div class="type-wrapper">
-                                <iron-icon icon="add"></iron-icon>
-                            </div>
-                            <div class="type-wrapper">
-                                <iron-icon icon="add"></iron-icon>
-                            </div>
-                            <div class="type-wrapper">
-                                <iron-icon icon="add"></iron-icon>
-                            </div>
-                            <div class="type-wrapper">
-                                <iron-icon icon="add"></iron-icon>
-                            </div>
-                            <div class="type-wrapper">
-                                <iron-icon icon="add"></iron-icon>
-                            </div>
-                            <div class="type-wrapper">
+                            <div class="type-wrapper" mission-type="type-C">
                                 <iron-icon icon="add"></iron-icon>
                             </div>
                         </iron-selector>
                     </div>
+                    <div class="iconList" flex>
+                        <div>Difficulty</div>
+                        <iron-selector attr-for-selected="mission-level" selected="{{ajax_params.level}}" layo layout horizontal justified wrap>
+                            <div class="type-wrapper" mission-level="easy">
+                                <iron-icon icon="account-circle" style="color:green;"></iron-icon>
+                            </div>
+                            <div class="type-wrapper" mission-level="normal">
+                                <iron-icon icon="account-circle" style="color:blue;"></iron-icon>
+                            </div>
+                            <div class="type-wrapper" mission-level="difficult">
+                                <iron-icon icon="account-circle" style="color:red;"></iron-icon>
+                            </div>
+                        </iron-selector>
+                    </div>
+
+                    <paper-input id="reward" is="reward" label="Reward" name="reward" value="{{ajax_params.reward::input}}"></paper-input>
+                    <paper-input id="location" is="location" label="Location" name="location" value="{{ajax_params.location::input}}"></paper-input>
+                    <paper-input id="description" is="description" label="Description" name="description" value="{{ajax_params.description::input}}"></paper-input>
+
+                    <div class="iconList">
+                            <div class="type-wrapper">
+                                <iron-icon icon="camera-enhance" style="color:blue;"></iron-icon>
+                            </div>
+                            <div class="type-wrapper">
+                                <iron-icon icon="file-upload" style="color:blue;"></iron-icon>
+                            </div>
+                    </div>
+
                     <paper-fab icon="close" class="leftButton" on-tap="cancelMission"></paper-fab>
-                    <paper-fab icon="arrow-forward" class="rightButton" on-tap="incStep"></paper-fab>
+                    <paper-fab icon="check" class="rightButton" on-tap="addMission"></paper-fab>
                 </section>
+
                 <section data-step="2">
                     <div>Second Step</div>
                     <paper-fab icon="arrow-back" class="leftButton" on-tap="decStep"></paper-fab>
@@ -144,31 +155,21 @@
                 <section data-step="3">
                     <div>Third Step</div>
                     <paper-fab icon="arrow-back" class="leftButton" on-tap="decStep"></paper-fab>
-                    <paper-fab icon="check" class="rightButton" on-tap="sendMission"></paper-fab>
 
                 </section>
             </iron-pages>
         </paper-dialog>
 
-        <iron-ajax id="get-missions-ajax"
+        <iron-ajax id="mission-ajax"
                    url="http://127.0.0.1:3000/missions"
-                   params=""
+                   params="{{ajax_params}}"
                    handle-as="json"
-                   method="post"
-                   on-response=""
-                   last-response="{{missions}}">
+                   method="{{ajax_method}}"
+                   on-response="handleResponse"
+                   last-response="{{ajax_response}}">
         </iron-ajax>
 
-        <iron-ajax id="add-mission-ajax"
-                   url="http://127.0.0.1:3000/addMission"
-                   params="{{mission}}"
-                   handle-as="json"
-                   method="post"
-                   on-response=""
-                   last-response="{{missions}}">
-        </iron-ajax>
-
-    </template>
+</template>
 
     <script>
         (function () {
@@ -182,6 +183,30 @@
                         type: Object,
                         notify: true
                     },
+                    ajax_headers:{
+                        type: Object,
+                    },
+                    ajax_response: {
+                        type: Object,
+                        notify: true
+                    },
+                    ajax_params: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                title: '',
+                                type: '',
+                                level: '',
+                                reward: 0,
+                                location: '',
+                                description: '',
+                                image: ''
+                            }
+                        }
+                    },
+                    ajax_method: {
+                        type: String,
+                    },
                     step: {
                         type: Number,
                         value: 1,
@@ -190,8 +215,9 @@
                 },
                 ready: function () {
                     app.title = 'Missions';
+                    this.ajax_headers = $.ajax.headers;
                 },
-                addMission: function () {
+                createMission: function () {
                     var diag = document.getElementById('missionWizzard');
                     this.step = 1;
                     diag.open();
@@ -214,8 +240,29 @@
 
                     this.step -= 1;
                 },
-                sendMission: function () {
-                    document.getElementById('add-mission-ajax').generateRequest();
+                addMission: function () {
+                    this.ajax_method = 'POST';
+                    this.sendRequest();
+
+                    var diag = document.getElementById('missionWizzard');
+                    diag.close();
+                },
+                sendRequest: function () {
+                    this.ajax_params.access_token = window.sessionStorage.token;
+                    document.getElementById('mission-ajax').generateRequest();
+                    //$.ajax({
+                    //    url: 'http://127.0.0.1:3000/missions',
+                    //    succsess: function (data, status, xhr) {
+                    //            this.ajax_response = data;
+                    //            this.handleResponse;
+                    //        },
+                    //    data: this.ajax_params,
+                    //    dataType: 'JSON',
+                    //    method: this.ajax_method,
+                    //});
+                },
+                handleResponse: function () {
+                    alert('handle missions');
                 }
             });
         })();

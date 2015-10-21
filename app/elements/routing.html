@@ -2,7 +2,7 @@
 <script>
     window.addEventListener('WebComponentsReady', function () {
         page('/', function () {
-            app.route = isAuthenticated('home');
+            isAuthenticated('home');
         });
 
         page('/login', function () {
@@ -10,20 +10,21 @@
         });
 
         page('/logout', function () {
-            var token = getToken();
-            if (token !== '' || token === 'undefined') {
-                clearToken();
-                var xhttp = new XMLHttpRequest();
-                xhttp.open("POST", "http://127.0.0.1:3000/logout", true);
-                xhttp.send();
-                document.querySelector('#deconnexionToggle').hide();
-                app.onMenuSelect();
-                app.route = 'login';
-            }            
+            $.ajax({
+                url: 'http://127.0.0.1:3000/logout',
+                statusCode : {
+                    200 : function(){
+                        app.route = 'login';
+                        clearToken();
+                        document.querySelector('#deconnexionToggle').hide();
+                    }
+                },
+                type: 'POST'
+            });
         });
 
         page('/profile/:name', function (data) {
-            app.route = isAuthenticated('profile');
+            isAuthenticated('profile');
             app.params = data.params;
         });
 
@@ -36,38 +37,14 @@
             app.params = data.params;
         });
 
-        page('/contact', function () {
-            app.route = 'contact';
-        });
-
         page('/missions', function () {
-            app.route = 'missions';
+            isAuthenticated('missions');
         })
 
         // add #! before urls
         page({
             hashbang: true
-        });
-
-        function isAuthenticated(route) {
-            var token = getToken();
-
-            if (token == '' || typeof token == "undefined")
-                return 'login';
-            else {
-                document.querySelector('#deconnexionToggle').show();
-                return route;
-            }
-        }
-
-        function getToken() {
-            if (window.localStorage['remember'] == "true") {
-                return window.localStorage.token;
-            }
-            else {
-                return window.sessionStorage.token;
-            }
-        }
+        });        
 
         function clearToken() {
             if (window.localStorage['remember'] == "true") {
@@ -76,6 +53,54 @@
             else {
                 window.sessionStorage.token = '';
             }
+        }
+    });
+
+    function isAuthenticated(route) {
+        $.ajax({
+            url: 'http://127.0.0.1:3000/token',
+            statusCode : {
+                200 : function(){
+                    app.route = route;
+                },
+                403 : function(){
+                    app.route = 'login';
+                }
+            },
+            type : 'POST'
+        });
+    }
+
+    window.addEventListener('load', function (event) {
+        if (window.localStorage['remember'] == "true") {
+            window.sessionStorage.token = window.localStorage.token;
+            document.querySelector('#deconnexionToggle').show();
+            $.ajaxSetup({
+                headers: {
+                    'x-access-token': window.sessionStorage.token
+                }
+            });
+        }
+
+        $.ajax({
+            url: 'http://127.0.0.1:3000/token',
+            statusCode: {
+                200: function () {
+                    app.route = 'home';
+                    app.isLogged = '/profile/' + window.localStorage['email'];
+                },
+                403: function () {
+                    app.route = 'login';
+                    app.isLogged = app.route;
+                }
+            },
+            type: 'POST'
+        });
+    });
+
+    window.addEventListener('unload', function (event) {
+        if (window.localStorage['remember'] != "true") {
+            window.localStorage.token = '';
         }
     });
 </script>

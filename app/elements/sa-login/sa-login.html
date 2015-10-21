@@ -29,7 +29,7 @@
 
                 <iron-collapse id="togglePart" tabindex="0">
                     <paper-input id="passwordConfirm" is="passwordConfirm" type="password" label="Confirm Password" value="{{passwordConfirm}}" error-message="Not same password"></paper-input>
-                    <paper-input id="firstName" is="firstName" label="First Name" name="firstName" value="{{infos.firstName::input}}></paper-input>
+                    <paper-input id="firstName" is="firstName" label="First Name" name="firstName" value="{{infos.firstName::input}}"></paper-input>
                     <paper-input id="lastName" is="lastName" label="Last Name" name="lastName" value="{{infos.lastName::input}}"></paper-input>
                 </iron-collapse>
 
@@ -134,7 +134,7 @@
                         return;
                     }
 
-                    if (this.response.isAuthenticated) {
+                    if (this.response.success) {
                         document.querySelector('#deconnexionToggle').show();                        
 
                         if (this.remember === true) {
@@ -142,9 +142,16 @@
                             window.localStorage.remember = true;
                             window.localStorage.setItem('email', this.infos.email);
                         }
-                        else {
-                            window.sessionStorage.token = this.response.token;
-                            window.sessionStorage.setItem('email', this.infos.email);
+
+                        window.sessionStorage.token = this.response.token;
+                        window.sessionStorage.setItem('email', this.infos.email);
+
+                        if (this.response.token) {
+                            $.ajaxSetup({
+                                headers: {
+                                    'x-access-token': this.response.token
+                                }
+                            });
                         }
 
                         app.route = 'home';
@@ -239,23 +246,6 @@
                     }
                 }
             });
-        })();
-
-
-        window.addEventListener('load', function (event) {
-            if (window.localStorage.token == '' || typeof window.localStorage.token == "undefined") {
-                app.route = 'login';
-                app.isLogged = "login";
-            }
-            else {
-                app.route = 'home';
-                app.isLogged = '/profile/' + window.localStorage['email'];
-            }
-        });
-
-        window.addEventListener('unload', function (event) {
-            if (window.localStorage['remember'] != "true")
-                window.localStorage.token = '';
-        });
+        })();       
     </script>
 </dom-module>

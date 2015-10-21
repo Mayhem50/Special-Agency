@@ -32,16 +32,21 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="app\scripts\client-app.js" />
+    <Compile Include="app\scripts\jquery-1.11.3.js" />
     <Compile Include="app\sw-import.js" />
     <Compile Include="gulpfile.js" />
+    <Compile Include="server\controllers\jwtauth.js" />
     <Compile Include="server\controllers\mongoose.js" />
     <Compile Include="server\controllers\passport.js" />
     <Compile Include="server\controllers\passport\passport-init.js" />
     <Compile Include="server\controllers\passport\passport-login.js" />
     <Compile Include="server\controllers\passport\passport-signup.js" />
     <Compile Include="server\controllers\session.js" />
+    <Compile Include="server\models\mission.js" />
     <Compile Include="server\models\user.js" />
+    <Compile Include="server\routes\helpers.js" />
     <Compile Include="server\routes\index.js" />
+    <Compile Include="server\routes\missions.js" />
     <Compile Include="server\routes\users.js" />
     <Compile Include="bin\www" />
     <Content Include="app\elements\elements.html" />
@@ -56,6 +61,8 @@
     <Content Include="app\images\logo\Img-02.png" />
     <Content Include="app\images\logo\Img-03 2.png" />
     <Content Include="app\images\logo\Img-03.png" />
+    <Content Include="app\images\logo\Title&amp;Symbol-SA.svg" />
+    <Content Include="app\images\logo\White_Logo-01.svg" />
     <Content Include="app\images\touch\apple-touch-icon.png" />
     <Content Include="app\images\touch\chrome-touch-icon-192x192.png" />
     <Content Include="app\images\touch\icon-128x128.png" />

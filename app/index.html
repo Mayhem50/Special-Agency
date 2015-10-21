@@ -110,7 +110,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </paper-toolbar>
                 <!-- Main Content -->
                 <div class="content">
-                    <iron-pages attr-for-selected="data-route" selected="{{route}}">
+                    <iron-pages id="page-content-selector" attr-for-selected="data-route" selected="{{route}}">
 
                         <section data-route="login">
                             <sa-login></sa-login>
@@ -154,7 +154,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         </section>
 
                         <section data-route="missions">
-                            <sa-missions></sa-missions>
+                            <sa-missions notification="{{route}}"></sa-missions>
                         </section>
 
                     </iron-pages>

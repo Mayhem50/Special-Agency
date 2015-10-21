@@ -7,13 +7,45 @@ var router = express.Router();
 
 module.exports = function (passport) {
     router.post('/missions', jwtauth, function (req, res) {
-        console.log('Create a mission'); 
-        res.sendStatus(200);
+        console.log('Create a mission');
+        
+        var mission = new Mission({
+            title : req.query.title,
+            type : req.query.type,
+            subType : '',
+            level : req.query.level,
+            reward : req.query.reward,
+            descritpion : req.query.description,
+            owner : req.user._id,
+            status : 0
+        });
+        
+        mission.save(function (err) {
+            if (err) {
+                console.log('Error in Saving mission: ' + err);
+                throw err;
+            }
+        });
+
+        res.json({
+            method : 'POST',
+            success: true
+        });
     });
     
-    router.get('/missions', function (req, res) {
+    router.get('/missions', jwtauth, function (req, res) {
         console.log('Get all missions');
-        res.end();
+        Mission.find({}, function (err, missions) {
+            if (err) {
+                return res.sendStatus(500);
+            }
+
+            return res.json({
+                'missions': missions,
+                method: 'GET',
+                success : true
+            });
+        });
     });    
     
     router.put('/missions', function (req, res) {

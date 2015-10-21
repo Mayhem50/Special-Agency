@@ -39,7 +39,7 @@
 
         page('/missions', function () {
             isAuthenticated('missions');
-        })
+        });
 
         // add #! before urls
         page({
@@ -49,10 +49,9 @@
         function clearToken() {
             if (window.localStorage['remember'] == "true") {
                 window.localStorage.token = '';
+                window.localStorage['remember'] = '';
             }
-            else {
-                window.sessionStorage.token = '';
-            }
+            window.sessionStorage.token = '';
         }
     });
 
@@ -80,6 +79,9 @@
                     'x-access-token': window.sessionStorage.token
                 }
             });
+        }
+        else {
+            document.querySelector('#deconnexionToggle').hide();
         }
 
         $.ajax({

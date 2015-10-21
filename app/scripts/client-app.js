@@ -61,7 +61,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (drawerPanel.narrow) {
             drawerPanel.closeDrawer();
         }
-    };
+    };  
 
 })(document);
 
@@ -86,4 +86,3 @@ window.addEventListener('pushState', function (event) {
         window.history.replaceState(currentState, 'Special-Agency', splited[0]);
     }
 });
-

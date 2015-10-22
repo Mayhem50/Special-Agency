@@ -1,0 +1,150 @@
+﻿<dom-module id="sa-mission-creation">
+    <style>
+        .title {
+            font-size: 34px;
+        }
+
+        iron-image {
+            width: 25%;
+            height: 25%;
+        }
+
+        .onboard {
+            --iron-icon-height: 48px;
+            --iron-icon-width: 48px;
+        }
+
+        paper-fab {
+            background-color: #118c89;
+            margin : 0px;
+        }
+
+        paper-dialog {
+            background-color: white;
+        }
+
+        .mission-creation {
+            Position: Fixed;
+            Top: 0;
+            Left: 0;
+            Right: 0;
+            Bottom: 0;
+            Padding: 10px;
+            Margin: 15px;
+        }
+
+        .leftButton {
+            position: absolute;
+            bottom: 20px;
+            left: calc(98% / 2 - 60px);
+        }
+
+        .rightButton {
+            position: absolute;
+            bottom: 20px;
+            right: calc(98% / 2 - 60px);
+        }
+
+        .type-wrapper {
+            display: inline-block;
+            padding: 2px;
+            margin: 6px 0;
+        }
+
+        .iconList {
+            margin: 16px 0 8px 0;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+    <template>
+
+        <paper-dialog no-cancel-on-outside-click class="mission-creation" autofitonattach="true">
+
+            <div>First Step</div>
+            <paper-input id="title" is="title" label="Title" name="title" value="{{infos.title::input}}"></paper-input>
+            <div class="iconList" flex>
+                <iron-selector attr-for-selected="mission-type" selected="{{infos.type}}" layout horizontal justified wrap>
+                    <div>Type</div>
+                    <div class="type-wrapper" mission-type="type-A">
+                        <iron-icon icon="add"></iron-icon>
+                    </div>
+                    <div class="type-wrapper" mission-type="type-B">
+                        <iron-icon icon="add"></iron-icon>
+                    </div>
+                    <div class="type-wrapper" mission-type="type-C">
+                        <iron-icon icon="add"></iron-icon>
+                    </div>
+                </iron-selector>
+            </div>
+            <div class="iconList" flex>
+                <div>Difficulty</div>
+                <iron-selector selected="{{infos.level}}" layo layout horizontal justified wrap>
+                    <div class="type-wrapper">
+                        <iron-icon icon="account-circle" style="color:green;"></iron-icon>
+                    </div>
+                    <div class="type-wrapper">
+                        <iron-icon icon="account-circle" style="color:blue;"></iron-icon>
+                    </div>
+                    <div class="type-wrapper">
+                        <iron-icon icon="account-circle" style="color:red;"></iron-icon>
+                    </div>
+                </iron-selector>
+            </div>
+
+            <paper-input id="reward" is="reward" type="number" min="0" label="Reward" name="reward" value="{{infos.reward::input}}"><div prefix>€</div></paper-input>
+            <paper-input id="location" is="location" label="Location" name="location" value="{{infos.location::input}}"></paper-input>
+            <paper-input id="description" is="description" label="Description" name="description" value="{{infos.description::input}}"></paper-input>
+
+            <div class="iconList">
+                <div class="type-wrapper">
+                    <iron-icon icon="camera-enhance" style="color:blue;"></iron-icon>
+                </div>
+                <div class="type-wrapper">
+                    <iron-icon icon="file-upload" style="color:blue;"></iron-icon>
+                </div>
+            </div>
+
+            <div>
+                <paper-fab icon="close" class="leftButton" on-tap="_cancelCreation"></paper-fab>
+                <paper-fab icon="check" class="rightButton" on-tap="_addMission"></paper-fab>
+            </div>
+        </paper-dialog>
+
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-mission-creation',
+                properties: {
+                    infos: {
+                        type: Object,
+                    },
+                    _isClosed: {
+                        type: Boolean,
+                        readOnly : true,
+                    }
+                },
+                open: function () {
+                    var diag = this.querySelector('paper-dialog');
+                    diag.open();
+                    this._isClosed = false;
+                    this.fire('close', { closed: this._isClosed });
+                },
+                _cancelCreation: function () {
+                    var diag = this.querySelector('paper-dialog');
+                    diag.close();
+                    this._isClosed = true;
+                    this.fire('close', { closed: this._isClosed });
+                },
+                _addMission: function () {
+                    var diag = this.querySelector('paper-dialog');
+                    diag.close();
+                    this._isClosed = true;
+                    this.fire('close', {closed : this._isClosed});
+                }
+            });
+        })();
+    </script>
+</dom-module>

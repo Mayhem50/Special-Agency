@@ -34,10 +34,10 @@
         </paper-material>
 
         <iron-ajax id="profile-ajax"
-                   url="http://127.0.0.1:3000/profile"
-                   params="{{infos}}"
+                   url="{{ajax_url}}"
+                   params="{{ajax_params}}"
                    handle-as="json"
-                   method="post"
+                   method="GET"
                    on-response="handleResponse"
                    last-response="{{response}}">
         </iron-ajax>
@@ -49,18 +49,20 @@
             Polymer({
                 is: 'sa-profile',
                 properties: {
-                    infos: {
+                    user: {
                         type: Object,
-                        value: {
-                            username : '',
-                        }
                     },
-                    username: {
-                        type: String
+                    notification: {
+                        type: Boolean,
+                        notify: true,
+                        observer: 'handleNotification'
                     }
                 },
                 ready: function () {
-                }                
+                },
+                handleNotification: function () {
+                    document.getElementById('profile-ajax').generateRequest();
+                }
             });
         })();
     </script>

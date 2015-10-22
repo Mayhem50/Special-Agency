@@ -88,7 +88,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         
         updateMenuBar();
 
-        app.notification = false;
+        app.get_missions = false;
+        app.get_profile = false;
+        app.drawer_route = 0;
     });
     
     addEventListener('unload', function (event) {

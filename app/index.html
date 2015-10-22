@@ -58,21 +58,70 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <paper-icon-button class="drawer-toolbar-button" paper-drawer-toggle icon="arrow-forward"></paper-icon-button>
 
                 </paper-toolbar>
+
+                <paper-tabs class="drawer-tabs" selected="{{drawer_route}}" noink>
+                    <paper-tab class="drawer-tab">Agent</paper-tab>
+                    <paper-tab class="drawer-tab">Sponsor</paper-tab>
+                </paper-tabs>
+
+                <div class="drawer-content">
+
+                    <iron-pages selected="{{drawer_route}}">
+                        <div>Page 1</div>
+                        <div>Page 2</div>
+                    </iron-pages>
+
+                </div>
+
             </paper-scroll-header-panel>
+            
 
             <paper-scroll-header-panel main>
                 <paper-toolbar>
-                    <paper-icon-button class="main-toolbar-button" id="menu-button" paper-drawer-toggle icon="menu"></paper-icon-button>
-
-                    <paper-icon-button class="main-toolbar-button main-collapse-button" paper-drawer-toggle icon="account-circle"></paper-icon-button>
-                    <paper-icon-button class="main-toolbar-button main-collapse-button" icon="mail"></paper-icon-button>
-                    <paper-icon-button class="main-toolbar-button main-collapse-button" icon="info"></paper-icon-button>
+                    <a>
+                        <paper-icon-button class="main-toolbar-button" id="menu-button" paper-drawer-toggle icon="menu"></paper-icon-button>
+                    </a>
+                    <a data-route="missions" href="/missions">
+                        <paper-icon-button class="main-toolbar-button main-collapse-button" icon="explore"></paper-icon-button>
+                    </a>
+                    <a>
+                        <paper-icon-button class="main-toolbar-button main-collapse-button" icon="info"></paper-icon-button>
+                    </a>
+                    <span class="flex"></span>
+                    <div>
+                        <span>{{agent_ID}}</span>
+                        <a data-route="profile" href="/profile">
+                            <paper-icon-button class="main-toolbar-button main-collapse-button" icon="account-circle"></paper-icon-button>
+                        </a>
+                    </div>
 
                 </paper-toolbar>
 
                 <div class="content">
 
+                    <iron-pages id="page-content-selector" attr-for-selected="data-route" selected="{{route}}">
 
+                        <section data-route="login">
+                            <sa-login></sa-login>
+                        </section>
+
+                        <section data-route="home">
+                            <paper-material elevation="1">
+                                <h1>Welcome</h1>
+                                <p class="paper-font-subhead">You now have:</p>
+                                <p class="paper-font-body2">Looking for more Web App layouts? Check out our <a href="http://github.com/PolymerElements/app-layout-templates">layouts</a> collection. You can also <a href="http://polymerelements.github.io/app-layout-templates/">preview</a> them live.</p>
+                            </paper-material>
+                        </section>
+
+                        <section data-route="profile">
+                            <sa-profile></sa-profile>
+                        </section>
+
+                        <section data-route="missions">
+                            <sa-missions-list notification="{{get_missions}}"></sa-missions-list>
+                        </section>
+
+                    </iron-pages>
 
                 </div>
 

@@ -55,6 +55,7 @@
                    on-response="handleResponse"
                    last-response="{{response}}">
         </iron-ajax>
+
         <iron-ajax id="check-availability-ajax"
                    url="{{availabilityRoute}}"
                    params="{{infos}}"
@@ -135,7 +136,7 @@
                     }
 
                     if (this.response.success && this.response.method === 'POST') {
-                        document.querySelector('#deconnexionToggle').show();                        
+                        //document.querySelector('#deconnexionToggle').show();                        
 
                         if (this.remember === true) {
                             window.localStorage.token = this.response.token;
@@ -147,7 +148,7 @@
                         window.sessionStorage.setItem('email', this.infos.email);
 
                         app.route = 'home';
-                        app.isLogged = '/profile/' + this.infos.email;
+                        //app.isLogged = '/profile/' + this.infos.email;
 
                         this.infos = function () {
                             return {

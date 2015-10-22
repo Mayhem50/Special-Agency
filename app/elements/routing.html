@@ -22,9 +22,10 @@
             });
         });
 
-        page('/profile/:name', function (data) {
-            isAuthenticated('profile');
-            app.params = data.params;
+        page('/profile', function (data) {
+            isAuthenticated('profile', function () {
+                app.get_profile = !app.get_profile;
+            });
         });
 
         page('/users', function () {
@@ -38,7 +39,7 @@
 
         page('/missions', function () {
             isAuthenticated('missions', function () {
-                app.notification = !app.notification;
+                app.get_missions = !app.get_missions;
             });
         });
 
@@ -64,7 +65,7 @@
             statusCode : {
                 200 : function(){
                     app.route = route;
-                    app.isLogged = '/profile/' + window.sessionStorage['email'];
+                    app.isLogged = '/profile';
                     if (successCb)
                         successCb();
                 },

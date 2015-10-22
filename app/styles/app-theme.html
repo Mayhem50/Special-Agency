@@ -23,7 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   :root {
     --dark-primary-color: #0f7c77;
-    --default-primary-color: #118c89;
+    --default-primary-color: rgba(0, 34, 111, 0.48);
     --light-primary-color: #C5CAE9;
     --text-primary-color: #ffffff; /*text/icons*/
     --accent-color: #FF4081;
@@ -51,6 +51,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     color: var(--secondary-text-color);
     background-color: var(--drawer-menu-color);
     border-bottom: var(--drawer-toolbar-border-color);    
+  }
+
+  paper-toolbar .main-toolbar-button{
+      color: #ffffff;
+      height: 25%;
+  } 
+
+  paper-toolbar .drawer-toolbar-button{
+      color: #ffffff;
+      height: 25%;
+  } 
+
+  paper-toolbar {
+      height: 64px;
   }
 
   #account {

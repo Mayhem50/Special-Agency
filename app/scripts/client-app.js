@@ -61,28 +61,61 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (drawerPanel.narrow) {
             drawerPanel.closeDrawer();
         }
-    };  
+    };
+    
+    var updateMenuBar = function (event) {        
+        if ($(window).width() < 640) {
+            $('.main-collapse-button').hide();
+            $('#menu-button').show();
+        }
+        else {
+            $('.main-collapse-button').show();
+            $('#menu-button').hide();
+        }
+    };
+    
+    addEventListener('resize', updateMenuBar);
+
+    addEventListener('load', function (event) {
+        if (window.localStorage['remember'] == "true") {
+            window.sessionStorage.token = window.localStorage.token;
+            window.sessionStorage['email'] = window.localStorage['email'];
+            //document.getElementById('deconnexionToggle').show();            
+        }
+        //else {
+        //    document.getElementById('deconnexionToggle').hide();
+        //}
+        
+        updateMenuBar();
+
+        app.notification = false;
+    });
+    
+    addEventListener('unload', function (event) {
+        if (window.localStorage['remember'] != "true") {
+            window.localStorage.token = '';
+        }
+    });
+
+    var _wr = function (type) {
+        var orig = history[type];
+        return function () {
+            var rv = orig.apply(this, arguments);
+            var e = new Event(type);
+            e.arguments = arguments;
+            window.dispatchEvent(e);
+            return rv;
+        };
+    };
+    
+    history.pushState = _wr('pushState'), history.replaceState = _wr('replaceState');
+    
+    window.addEventListener('pushState', function (event) {
+        var currentState = history.state;
+        if (currentState.path === "/logout") {
+            var splited = window.location.href.split('#!');
+            window.history.replaceState(currentState, 'Special-Agency', splited[0]);
+        }
+    });
 
 })(document);
-
-
-var _wr = function (type) {
-    var orig = history[type];
-    return function () {
-        var rv = orig.apply(this, arguments);
-        var e = new Event(type);
-        e.arguments = arguments;
-        window.dispatchEvent(e);
-        return rv;
-    };
-};
-
-history.pushState = _wr('pushState'), history.replaceState = _wr('replaceState');
-
-window.addEventListener('pushState', function (event) {
-    var currentState = history.state;
-    if (currentState.path === "/logout") {
-        var splited = window.location.href.split('#!');
-        window.history.replaceState(currentState, 'Special-Agency', splited[0]);
-    }
-});

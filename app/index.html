@@ -47,127 +47,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved class="fullbleed layout vertical">
     <span id="browser-sync-binding"></span>
     <template is="dom-bind" id="app">
-        <paper-drawer-panel id="paperDrawerPanel">
-            <!-- Drawer Scroll Header Panel -->
-            <paper-scroll-header-panel drawer fixed>
-                <!-- Drawer Toolbar -->
-                <paper-toolbar id="drawerToolbar" class="medium-tall">
-                    <paper-icon-button icon="account-circle"></paper-icon-button>
-                    <span class="flex">Profile</span>
-                    <iron-icon icon="arrow-forward"></iron-icon>
-                    <div class="middle">
-                        <iron-image sizing="contain" src="images/logo/Img-02.png"></iron-image>
-                    </div>
-                </paper-toolbar>
-                <!-- Drawer Content -->
-                <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
-                    <iron-collapse id="deconnexionToggle" tabindex="0">
-                        <a href="/logout">
-                            <iron-icon icon="close"></iron-icon>
-                            <span>Deconnexion</span>
-                        </a>
-                    </iron-collapse>
+        <paper-drawer-panel responsive-width="40000px" id="paper-drawer-panel" selected="main">
+            <paper-scroll-header-panel drawer>
+                <paper-toolbar>
 
-                    <a data-route="home" href="/">
-                        <iron-icon icon="home"></iron-icon>
-                        <span>Home</span>
-                    </a>
-
-                    <a data-route="users" href="/users">
-                        <iron-icon icon="info"></iron-icon>
-                        <span>Users</span>
-                    </a>
-
-                    <a data-route="missions" href="/missions">
-                        <iron-icon icon="explore"></iron-icon>
-                        <span>Missions</span>
-                    </a>
-                </paper-menu>
-            </paper-scroll-header-panel>
-            <!-- Main Area -->
-            <paper-scroll-header-panel main condenses keep-condensed-header>
-                <!-- Main Toolbar -->
-                <paper-toolbar id="mainToolbar" class="tall">
-                    <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+                    <paper-icon-button class="drawer-toolbar-button" icon="account-circle"></paper-icon-button>
+                    <paper-icon-button class="drawer-toolbar-button" icon="mail"></paper-icon-button>
+                    <paper-icon-button class="drawer-toolbar-button" icon="info"></paper-icon-button>
                     <span class="flex"></span>
-                    <!-- Toolbar icons -->
-                    <sa-button icon="account-box" route="{{isLogged}}"></sa-button>
-                    <sa-button icon="refresh" route="{{route}}"></sa-button>
-                    <sa-button icon="search"></sa-button>
-                    <!-- Application name -->
-                    <div class="middle middle-container center horizontal layout">
-                        <div class="app-name"><iron-image src="images/logo/Img-03.png" alt="Special Agency" /></div>
-                    </div>
-                    <!-- Application sub title -->
-                    <div class="bottom bottom-container center horizontal layout">
-                        <div class="bottom-title paper-font-subhead">{{title}}</div>
-                    </div>
-                    <div class="bottom fit">
-                        <paper-progress value="100" max="1200" style="width:100%;"></paper-progress>
-                    </div>
+                    <paper-icon-button class="drawer-toolbar-button" paper-drawer-toggle icon="arrow-forward"></paper-icon-button>
+
                 </paper-toolbar>
-                <!-- Main Content -->
+            </paper-scroll-header-panel>
+
+            <paper-scroll-header-panel main>
+                <paper-toolbar>
+                    <paper-icon-button class="main-toolbar-button" id="menu-button" paper-drawer-toggle icon="menu"></paper-icon-button>
+
+                    <paper-icon-button class="main-toolbar-button main-collapse-button" paper-drawer-toggle icon="account-circle"></paper-icon-button>
+                    <paper-icon-button class="main-toolbar-button main-collapse-button" icon="mail"></paper-icon-button>
+                    <paper-icon-button class="main-toolbar-button main-collapse-button" icon="info"></paper-icon-button>
+
+                </paper-toolbar>
+
                 <div class="content">
-                    <iron-pages id="page-content-selector" attr-for-selected="data-route" selected="{{route}}">
 
-                        <section data-route="login">
-                            <sa-login></sa-login>
-                        </section>
 
-                        <section data-route="home">
-                            <paper-material elevation="1">
-                                <my-greeting></my-greeting>
-                                <p class="paper-font-subhead">You now have:</p>
-                                <my-list></my-list>
-                                <p class="paper-font-body2">Looking for more Web App layouts? Check out our <a href="http://github.com/PolymerElements/app-layout-templates">layouts</a> collection. You can also <a href="http://polymerelements.github.io/app-layout-templates/">preview</a> them live.</p>
-                            </paper-material>
-                        </section>
 
-                        <section data-route="users">
-                            <paper-material elevation="1">
-                                <h2 class="paper-font-display2">Users</h2>
-                                <p>This is the users section</p>
-                                <a href="/users/Rob">Rob</a>
-                            </paper-material>
-                        </section>
-
-                        <section data-route="user-info">
-                            <paper-material elevation="1">
-                                <h2 class="paper-font-display2">
-                                    User:<span>{{params.name}}</span>
-                                </h2>
-                                <div>This is <span>{{params.name}}</span>'s section</div>
-                            </paper-material>
-                        </section>
-
-                        <section data-route="profile">
-                            <sa-profile username="{{params.name}}"></sa-profile>
-                        </section>
-
-                        <section data-route="missions">
-                            <sa-missions notification="{{notification}}"></sa-missions>
-                        </section>
-
-                    </iron-pages>
                 </div>
+
             </paper-scroll-header-panel>
         </paper-drawer-panel>
-        <!-- Uncomment next block to enable Service Worker support (1/2) -->
-        <!--
-        <paper-toast id="caching-complete"
-                     duration="6000"
-                     text="Caching complete! This app will work offline.">
-        </paper-toast>
 
-        <platinum-sw-register auto-register
-                              clients-claim
-                              skip-waiting
-                              on-service-worker-installed="displayInstalledToast">
-          <platinum-sw-cache default-cache-strategy="networkFirst"
-                             precache-file="precache.json">
-          </platinum-sw-cache>
-        </platinum-sw-register>
-        -->
     </template>
     <!-- build:js scripts/app.js -->
     <script src="scripts/client-app.js"></script>

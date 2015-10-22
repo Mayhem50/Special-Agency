@@ -77,24 +77,5 @@
             },
             type : 'POST'
         });
-    }
-
-    window.addEventListener('load', function (event) {
-        if (window.localStorage['remember'] == "true") {
-            window.sessionStorage.token = window.localStorage.token;
-            window.sessionStorage['email'] = window.localStorage['email'];
-            document.getElementById('deconnexionToggle').show();            
-        }
-        else {
-            document.getElementById('deconnexionToggle').hide();
-        }
-
-        app.notification = false;
-    });
-
-    window.addEventListener('unload', function (event) {
-        if (window.localStorage['remember'] != "true") {
-            window.localStorage.token = '';
-        }
-    });
+    }    
 </script>

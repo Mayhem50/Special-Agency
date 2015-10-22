@@ -2,7 +2,6 @@
     <style>
         .missions {
             border-radius: 2px;
-            height: 100%;
             padding: 16px 0 16px 0;
             width: calc(98.66% - 16px);
             margin: 16px auto;
@@ -46,9 +45,9 @@
         }
 
         .createButton {
-            position: absolute;
-            bottom: 10px;
-            right: 15px;
+            position: fixed;
+            bottom: 25px;
+            right: 40px;
         }
 
         .leftButton {
@@ -81,9 +80,11 @@
         }
     </style>
     <template>
+
+        
         <div>
             <template is="dom-repeat" items="{{missions}}">
-                <paper-item>
+                <paper-item on-tap="showMission">
                     <paper-item-body>
                         <div>{{item.title}}</div>
                     </paper-item-body>
@@ -160,6 +161,23 @@
             </iron-pages>
         </paper-dialog>
 
+        <paper-dialog id="missionDetail" no-cancel-on-outside-click class="wizzard" autofitonattach="true">
+            
+                <div id="title" is="title">{{mission.title}}</div>
+                <div class="iconList" flex>                    
+                        <div>Type</div>
+                        <div class="type-wrapper">{{mission.type}}<iron-icon icon="add"></iron-icon></div>
+                        <div class="type-wrapper" >{{mission.owner}}<iron-icon icon="account-circle"></iron-icon></div>
+                    
+                </div>              
+
+                <div id="reward" is="reward" type="number" min="0" label="Reward" name="reward" ></div>
+                <div id="location" is="location" label="Location" name="location"></div>
+                <div id="description" is="description" label="Description" name="description"></div>
+                               
+            
+        </paper-dialog>
+
         <iron-ajax id="mission-ajax"
                    url="http://127.0.0.1:3000/missions"
                    params="{{ajax_params}}"
@@ -187,6 +205,9 @@
                     missions: {
                         type: Object,
                         notify: true
+                    },
+                    currentMission:{
+                        type: Object,
                     },
                     ajax_headers: {
                         type: Object,
@@ -271,7 +292,6 @@
                 },
                 handleResponse: function () {
                     if (this.ajax_response.success) {
-                        alert('Handle response');
                         if (this.ajax_response.method === 'POST') {
                             this.getMissions();
                         }
@@ -279,6 +299,11 @@
                             this.missions = this.ajax_response.missions;
                         }
                     }
+                },
+                showMission: function (e) {
+                    this.mission = e.model.item;
+                    var diag = document.getElementById('missionDetail');
+                    diag.open();
                 }
             });
         })();

@@ -2,7 +2,7 @@
 <script>
     window.addEventListener('WebComponentsReady', function () {
         page('/', function () {
-            isAuthenticated('home');
+            app.route = 'home';
         });
 
         page('/login', function () {
@@ -10,16 +10,9 @@
         });
 
         page('/logout', function () {
-            $.ajax({
-                url: 'http://127.0.0.1:3000/logout',
-                statusCode : {
-                    200 : function(){
-                        app.route = 'login';
-                        clearToken();
-                        document.querySelector('#deconnexionToggle').hide();
-                    }
-                },
-                type: 'POST'
+            clearToken();
+            isAuthenticated('home', function () {
+                document.querySelector('#deconnexionToggle').hide();
             });
         });
 
@@ -46,24 +39,29 @@
             hashbang: true
         });        
 
-        function clearToken() {
-            if (window.localStorage['remember'] == "true") {
-                window.localStorage.token = '';
-                window.localStorage['remember'] = '';
-            }
-            window.sessionStorage.token = '';
-        }
+        
     });
 
-    function isAuthenticated(route) {
+    function clearToken() {
+        window.localStorage.clear();
+        window.sessionStorage.clear();
+    }
+
+    function isAuthenticated(route, callback) {
         $.ajax({
             url: 'http://127.0.0.1:3000/token',
             statusCode : {
                 200 : function(){
                     app.route = route;
+                    app.isLogged = '/profile/' + window.sessionStorage['email'];
+                    if(callback)
+                        callback();
                 },
                 403 : function(){
                     app.route = 'login';
+                    app.isAuthenticated = app.route;
+                    if (callback)
+                        callback();
                 }
             },
             type : 'POST'
@@ -73,6 +71,7 @@
     window.addEventListener('load', function (event) {
         if (window.localStorage['remember'] == "true") {
             window.sessionStorage.token = window.localStorage.token;
+            window.sessionStorage['email'] = window.localStorage['email'];
             document.querySelector('#deconnexionToggle').show();
             $.ajaxSetup({
                 headers: {
@@ -83,21 +82,6 @@
         else {
             document.querySelector('#deconnexionToggle').hide();
         }
-
-        $.ajax({
-            url: 'http://127.0.0.1:3000/token',
-            statusCode: {
-                200: function () {
-                    app.route = 'home';
-                    app.isLogged = '/profile/' + window.localStorage['email'];
-                },
-                403: function () {
-                    app.route = 'login';
-                    app.isLogged = app.route;
-                }
-            },
-            type: 'POST'
-        });
     });
 
     window.addEventListener('unload', function (event) {

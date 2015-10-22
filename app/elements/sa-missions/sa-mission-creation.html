@@ -123,14 +123,13 @@
                     },
                     _isClosed: {
                         type: Boolean,
-                        readOnly : true,
                     }
                 },
                 open: function () {
                     var diag = this.querySelector('paper-dialog');
                     diag.open();
                     this._isClosed = false;
-                    this.fire('close', { closed: this._isClosed });
+                    this.fire('open', { closed: this._isClosed });
                 },
                 _cancelCreation: function () {
                     var diag = this.querySelector('paper-dialog');

@@ -1,0 +1,114 @@
+﻿<link rel="import" href="sa-mission-creation.html">
+<link rel="import" href="sa-mission-info.html">
+
+<dom-module id="sa-missions-list">
+    <style>
+        .missions {
+            border-radius: 2px;
+            padding: 16px 0 16px 0;
+            width: calc(98.66% - 16px);
+            margin: 16px auto;
+            background: white;
+        }
+
+        .title {
+            font-size: 34px;
+        }
+
+        iron-image {
+            width: 25%;
+            height: 25%;
+        }
+
+        .onboard {
+            --iron-icon-height: 48px;
+            --iron-icon-width: 48px;
+        }
+
+        paper-fab {
+            background-color: #118c89;
+        }
+
+        paper-dialog {
+            background-color: white;
+        }
+
+        .red .paper-header {
+            background-color: #118c89;
+        }
+
+        .wizzard {
+            Position: Fixed;
+            Top: 0;
+            Left: 0;
+            Right: 0;
+            Bottom: 0;
+            Padding: 10px;
+            Margin: 15px;
+        }
+
+        .createButton {
+            position: fixed;
+            bottom: 25px;
+            right: 40px;
+        }
+
+        .type-wrapper {
+            display: inline-block;
+            padding: 2px;
+            margin: 6px 0;
+        }
+
+            .type-wrapper.iron-selected {
+                background-color: #00BCD4;
+                border-radius: 50%;
+            }
+
+        .iconList {
+            margin: 16px 0 8px 0;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+
+    <template>
+        <template is="dom-repeat" items="[[missions]]">
+            <paper-item>
+                <paper-item-body>
+                    <div>[[item.title]]</div>
+                </paper-item-body>
+            </paper-item>
+        </template>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-missions-list',
+                properties: {
+                    missions: {
+                        type: Object,
+                        notify: true,
+                        observer: 'handleChange'
+                    }
+                },
+                listeners: {
+                    'click': '_onClick'
+                },
+                handleChange: function () {
+                    this.missions = this.missions;
+                },
+                _onClick: function (event) {
+                    var target = event.target;
+                    while (target !== this && !target._templateInstance) {
+                        target = target.parentNode;
+                    }
+
+                    this.fire('item-click', {
+                        mission: target,
+                    });
+                }
+            });
+        })();
+    </script>
+</dom-module>

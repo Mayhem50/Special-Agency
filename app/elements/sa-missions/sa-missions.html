@@ -1,4 +1,8 @@
-﻿<dom-module id="sa-missions-list">
+﻿<link rel="import" href="sa-mission-creation.html">
+<link rel="import" href="sa-mission-info.html">
+<link rel="import" href="sa-missions-list.html">
+
+<dom-module id="sa-missions">
     <style>
         .missions {
             border-radius: 2px;
@@ -56,10 +60,10 @@
             margin: 6px 0;
         }
 
-        .type-wrapper.iron-selected {
-            background-color: #00BCD4;
-            border-radius: 50%;
-        }
+            .type-wrapper.iron-selected {
+                background-color: #00BCD4;
+                border-radius: 50%;
+            }
 
         .iconList {
             margin: 16px 0 8px 0;
@@ -70,20 +74,14 @@
     <template>
 
         <div>
-            <template is="dom-repeat" items="{{missions}}">
-                <paper-item on-tap="showMission">
-                    <paper-item-body>
-                        <div>{{item.title}}</div>
-                    </paper-item-body>
-                </paper-item>
-            </template>
+            <sa-missions-list missions="[[missions]]" on-item-click="showMission"></sa-missions-list>
         </div>
         <div>
             <paper-fab class="createButton" icon="create" on-tap="createMission"></paper-fab>
         </div>
 
         <sa-mission-creation id="mission-creation" infos="{{ajax_params}}" on-close="_missionCreationClose"></sa-mission-creation>
-        <sa-mission-infos></sa-mission-infos>
+        <sa-mission-infos on-close="_closeMission"></sa-mission-infos>
 
         <iron-ajax id="mission-ajax"
                    url="/missions"
@@ -99,19 +97,12 @@
     <script>
         (function () {
             Polymer({
-                is: 'sa-missions-list',
+                is: 'sa-missions',
                 properties: {
                     notification: {
                         type: Boolean,
                         notify: true,
                         observer: 'handleNotification'
-                    },
-                    missions: {
-                        type: Object,
-                        notify: true
-                    },
-                    mission: {
-                        type: Object,
                     },
                     ajax_response: {
                         type: Object,
@@ -183,7 +174,8 @@
                 showMission: function (e) {
                     var diag = this.querySelector('sa-mission-infos');
                     diag.open();
-                    diag.infos = e.model.item;
+                    diag.mission = e.detail.mission;
+                    this.$.pages.selected = 1;
                 }
             });
         })();

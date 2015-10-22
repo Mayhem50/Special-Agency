@@ -53,9 +53,10 @@
     <Content Include="app\elements\routing.html" />
     <Content Include="app\elements\sa-button\sa-button.html" />
     <Content Include="app\elements\sa-login\sa-login.html" />
-    <Content Include="app\elements\sa-mission-creation\sa-mission-creation.html" />
-    <Content Include="app\elements\sa-mission-infos\sa-mission-infos.html" />
-    <Content Include="app\elements\sa-missions-list\sa-missions-list.html" />
+    <Content Include="app\elements\sa-missions\sa-mission-creation.html" />
+    <Content Include="app\elements\sa-missions\sa-mission-info.html" />
+    <Content Include="app\elements\sa-missions\sa-missions-list.html" />
+    <Content Include="app\elements\sa-missions\sa-missions.html" />
     <Content Include="app\elements\sa-profile\sa-profile.html" />
     <Content Include="app\favicon.ico" />
     <Content Include="app\images\logo\Img-02.png" />
@@ -86,9 +87,7 @@
   <ItemGroup>
     <Folder Include="app\" />
     <Folder Include="app\elements\" />
-    <Folder Include="app\elements\sa-mission-creation\" />
-    <Folder Include="app\elements\sa-mission-infos\" />
-    <Folder Include="app\elements\sa-missions-list\" />
+    <Folder Include="app\elements\sa-missions\" />
     <Folder Include="app\elements\sa-login\" />
     <Folder Include="app\elements\sa-button\" />
     <Folder Include="app\elements\sa-profile\" />

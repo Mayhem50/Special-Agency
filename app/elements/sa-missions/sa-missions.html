@@ -79,7 +79,7 @@
             -webkit-overflow-scrolling: touch;
         }
     </style>
-    <template>
+    <template is="dom-bind">
 
         
         <div>
@@ -179,7 +179,7 @@
         </paper-dialog>
 
         <iron-ajax id="mission-ajax"
-                   url="http://127.0.0.1:3000/missions"
+                   url="/missions"
                    params="{{ajax_params}}"
                    handle-as="json"
                    method="{{ajax_method}}"
@@ -195,7 +195,7 @@
                 is: 'sa-missions',
                 properties: {
                     notification:{
-                        type : String,
+                        type : Boolean,
                         notify: true,
                         observer : 'handleNotification'
                     },
@@ -246,10 +246,8 @@
                 attached: function () {
                     //this.getMissions();
                 },
-                handleNotification : function() {
-                    if (this.notification === 'missions') {
-                        this.getMissions();
-                    }
+                handleNotification: function () {
+                    this.getMissions();
                 },
                 createMission: function () {
                     var diag = document.getElementById('missionWizzard');

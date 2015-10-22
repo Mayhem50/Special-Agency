@@ -11,8 +11,14 @@
 
         page('/logout', function () {
             clearToken();
-            isAuthenticated('home', function () {
-                document.querySelector('#deconnexionToggle').hide();
+
+            $.ajax({
+                url: '/users/logout',                
+                type : 'POST'
+            });
+
+            isAuthenticated('home', null, function () {
+                document.getElementById('deconnexionToggle').hide();
             });
         });
 
@@ -31,7 +37,9 @@
         });
 
         page('/missions', function () {
-            isAuthenticated('missions');
+            isAuthenticated('missions', function () {
+                app.notification = !app.notification;
+            });
         });
 
         // add #! before urls
@@ -47,21 +55,24 @@
         window.sessionStorage.clear();
     }
 
-    function isAuthenticated(route, callback) {
+    function isAuthenticated(route, successCb, failCb) {
         $.ajax({
-            url: 'http://127.0.0.1:3000/token',
+            url: '/token',
+            data: {
+                access_token : window.sessionStorage.token
+            },
             statusCode : {
                 200 : function(){
                     app.route = route;
                     app.isLogged = '/profile/' + window.sessionStorage['email'];
-                    if(callback)
-                        callback();
+                    if (successCb)
+                        successCb();
                 },
                 403 : function(){
                     app.route = 'login';
                     app.isAuthenticated = app.route;
-                    if (callback)
-                        callback();
+                    if (failCb)
+                        failCb();
                 }
             },
             type : 'POST'
@@ -72,16 +83,13 @@
         if (window.localStorage['remember'] == "true") {
             window.sessionStorage.token = window.localStorage.token;
             window.sessionStorage['email'] = window.localStorage['email'];
-            document.querySelector('#deconnexionToggle').show();
-            $.ajaxSetup({
-                headers: {
-                    'x-access-token': window.sessionStorage.token
-                }
-            });
+            document.getElementById('deconnexionToggle').show();            
         }
         else {
-            document.querySelector('#deconnexionToggle').hide();
+            document.getElementById('deconnexionToggle').hide();
         }
+
+        app.notification = false;
     });
 
     window.addEventListener('unload', function (event) {

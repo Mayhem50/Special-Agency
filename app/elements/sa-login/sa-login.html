@@ -47,12 +47,12 @@
 
         </paper-material>
 
-        <iron-ajax id="login-ajax"
-                   url="{{route}}"
+        <iron-ajax id="user-ajax"
+                   url="{{ajax_url}}"
                    params="{{infos}}"
                    handle-as="json"
-                   method="post"
-                   on-response="handlePassportResponse"
+                   method="POST"
+                   on-response="handleResponse"
                    last-response="{{response}}">
         </iron-ajax>
         <iron-ajax id="check-availability-ajax"
@@ -93,9 +93,9 @@
                         type: String,
                         value : 'Not an email'
                     },
-                    route: {
+                    ajax_url: {
                         type: String,
-                        value: 'signin'
+                        value: 'users/login'
                     },
                     availabilityRoute: {
                         type: String,
@@ -126,15 +126,15 @@
                 },
                 send: function () {
                     if (this.validateBeforeSend()) {                        
-                        document.getElementById('login-ajax').generateRequest();
+                        document.getElementById('user-ajax').generateRequest();
                     }
                 },
-                handlePassportResponse: function () {
+                handleResponse: function () {
                     if (typeof this.response == "undefined" || this.response == null) {
                         return;
                     }
 
-                    if (this.response.success) {
+                    if (this.response.success && this.response.method === 'POST') {
                         document.querySelector('#deconnexionToggle').show();                        
 
                         if (this.remember === true) {
@@ -145,14 +145,6 @@
 
                         window.sessionStorage.token = this.response.token;
                         window.sessionStorage.setItem('email', this.infos.email);
-
-                        if (this.response.token) {
-                            $.ajaxSetup({
-                                headers: {
-                                    'x-access-token': this.response.token
-                                }
-                            });
-                        }
 
                         app.route = 'home';
                         app.isLogged = '/profile/' + this.infos.email;
@@ -173,13 +165,13 @@
                     if (this.sendButtonText === "Sign In") {
                         this.sendButtonText = "Sign Up";
                         this.toggleButtonText = "Sign In";
-                        this.route = "http://127.0.0.1:3000/signup";
+                        this.route = "users";
                         this.isForLogin = false;
                     }
                     else {
                         this.sendButtonText = "Sign In";
                         this.toggleButtonText = "Sign Up";
-                        this.route = "http://127.0.0.1:3000/signin";
+                        this.route = "users/login";
                         this.isForLogin = true;
                     }
                 },
@@ -193,7 +185,7 @@
                         else {
                             document.getElementById('email').invalid = false;
                         }
-                        this.availabilityRoute = "http://127.0.0.1:3000/checkAvailability/email";
+                        this.availabilityRoute = "checkAvailability/email";
                         document.getElementById('check-availability-ajax').generateRequest();
                     }
                 },

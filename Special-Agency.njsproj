@@ -54,7 +54,7 @@
     <Content Include="app\elements\sa-button\sa-button.html" />
     <Content Include="app\elements\sa-login\sa-login.html" />
     <Content Include="app\elements\sa-missions\sa-mission-creation.html" />
-    <Content Include="app\elements\sa-missions\sa-mission-info.html" />
+    <Content Include="app\elements\sa-missions\sa-mission-infos.html" />
     <Content Include="app\elements\sa-missions\sa-missions-list.html" />
     <Content Include="app\elements\sa-missions\sa-missions.html" />
     <Content Include="app\elements\sa-profile\sa-profile.html" />

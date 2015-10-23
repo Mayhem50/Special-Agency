@@ -1,11 +1,15 @@
-﻿<link rel="import" href="sa-mission-creation.html">
-<link rel="import" href="sa-mission-info.html">
+﻿<link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
 
 <dom-module id="sa-missions-list">
     <style>
+        :host {
+            display: block;
+            background: #000;
+        }
+
         .missions {
             border-radius: 2px;
-            padding: 16px 0 16px 0;
+            padding: 16px;
             width: calc(98.66% - 16px);
             margin: 16px auto;
             background: white;
@@ -73,7 +77,7 @@
 
     <template>
         <template is="dom-repeat" items="[[missions]]">
-            <paper-item>
+            <paper-item class="missions" style="width:50%;">
                 <paper-item-body>
                     <div>[[item.title]]</div>
                 </paper-item-body>
@@ -85,27 +89,52 @@
         (function () {
             Polymer({
                 is: 'sa-missions-list',
+
+                behaviors: [
+                    Polymer.NeonSharedElementAnimatableBehavior
+                ],
+
                 properties: {
                     missions: {
                         type: Object,
-                        notify: true,
-                        observer: 'handleChange'
+                        notify: true
+                    },
+                    animationConfig: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'exit': [{
+                                    name: 'ripple-animation',
+                                    id: 'ripple',
+                                    fromPage: this
+                                }, {
+                                    name: 'hero-animation',
+                                    id: 'hero',
+                                    fromPage: this
+                                }]
+                            }
+                        }
                     }
                 },
                 listeners: {
                     'click': '_onClick'
-                },
-                handleChange: function () {
-                    this.missions = this.missions;
                 },
                 _onClick: function (event) {
                     var target = event.target;
                     while (target !== this && !target._templateInstance) {
                         target = target.parentNode;
                     }
-
+                    // configure the page animation
+                    this.sharedElements = {
+                        hero: target,
+                        ripple: target
+                    };
+                    this.animationConfig['exit'][0].gesture = {
+                        x: event.x || event.pageX,
+                        y: event.y || event.pageY
+                    };
                     this.fire('item-click', {
-                        mission: target,
+                        data: target._templateInstance.item,
                     });
                 }
             });

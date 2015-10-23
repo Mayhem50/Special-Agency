@@ -1,5 +1,8 @@
-﻿<link rel="import" href="sa-mission-creation.html">
-<link rel="import" href="sa-mission-info.html">
+﻿<link rel="import" href="../../../bower_components/neon-animation/neon-animations.html" >
+<link rel="import" href="../../../bower_components/neon-animation/neon-animated-pages.html">
+
+<link rel="import" href="sa-mission-creation.html">
+<link rel="import" href="sa-mission-infos.html">
 <link rel="import" href="sa-missions-list.html">
 
 <dom-module id="sa-missions">
@@ -10,6 +13,10 @@
             width: calc(98.66% - 16px);
             margin: 16px auto;
             background: white;
+        }
+
+        neon-animated-pages {
+            height: 100%;
         }
 
         .title {
@@ -73,15 +80,17 @@
     </style>
     <template>
 
-        <div>
-            <sa-missions-list missions="[[missions]]" on-item-click="showMission"></sa-missions-list>
-        </div>
+        <neon-animated-pages id="pages" selected="0">
+            <sa-missions-list missions="[[missions]]" on-item-click="_onMissionClick"></sa-missions-list>
+            <sa-mission-infos mission="[[mission]]" hero="hero" on-close="_onCloseMission"></sa-mission-infos>
+        </neon-animated-pages>
+
         <div>
             <paper-fab class="createButton" icon="create" on-tap="createMission"></paper-fab>
         </div>
 
         <sa-mission-creation id="mission-creation" infos="{{ajax_params}}" on-close="_missionCreationClose"></sa-mission-creation>
-        <sa-mission-infos on-close="_closeMission"></sa-mission-infos>
+        
 
         <iron-ajax id="mission-ajax"
                    url="/missions"
@@ -103,6 +112,10 @@
                         type: Boolean,
                         notify: true,
                         observer: 'handleNotification'
+                    },
+                    mission:{
+                        type: Object,
+                        notify: true
                     },
                     ajax_response: {
                         type: Object,
@@ -171,11 +184,14 @@
                         }
                     }
                 },
-                showMission: function (e) {
-                    var diag = this.querySelector('sa-mission-infos');
-                    diag.open();
-                    diag.mission = e.detail.mission;
+                _onMissionClick: function (e) {
+                    this.mission = e.detail.data;
                     this.$.pages.selected = 1;
+                    $('.createButton').hide();
+                },
+                _onCloseMission: function (e) {
+                    this.$.pages.selected = 0;
+                    $('.createButton').show();
                 }
             });
         })();

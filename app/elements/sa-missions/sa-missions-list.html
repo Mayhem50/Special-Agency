@@ -83,6 +83,7 @@
                 </paper-item-body>
             </paper-item>
         </template>
+
     </template>
 
     <script>
@@ -127,7 +128,8 @@
                     // configure the page animation
                     this.sharedElements = {
                         hero: target,
-                        ripple: target
+                        ripple: target,
+                        scale: target
                     };
                     this.animationConfig['exit'][0].gesture = {
                         x: event.x || event.pageX,

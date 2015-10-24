@@ -1,5 +1,23 @@
-﻿<dom-module id="sa-mission-creation">
+﻿<link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+
+<dom-module id="sa-mission-creation">
     <style>
+        .fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
+            background-color: rgba(0, 85, 189, 0.93);
+        }
+
+        .card {
+            position: relative;
+            margin: 40px 100px 0;
+            height: 700px;
+            background-color: rgb(255, 255, 255);
+        }
+
         .title {
             font-size: 34px;
         }
@@ -16,7 +34,7 @@
 
         paper-fab {
             background-color: #118c89;
-            margin : 0px;
+            margin: 0px;
         }
 
         paper-dialog {
@@ -35,13 +53,11 @@
 
         .leftButton {
             position: absolute;
-            bottom: 20px;
             left: calc(98% / 2 - 60px);
         }
 
         .rightButton {
             position: absolute;
-            bottom: 20px;
             right: calc(98% / 2 - 60px);
         }
 
@@ -58,9 +74,9 @@
         }
     </style>
     <template>
+        <div id="fixed" class="fixed"></div>
 
-        <paper-dialog no-cancel-on-outside-click class="mission-creation" autofitonattach="true">
-
+        <div id="card" class="card">
             <div>First Step</div>
             <paper-input id="title" is="title" label="Title" name="title" value="{{infos.title::input}}"></paper-input>
             <div class="iconList" flex>
@@ -104,12 +120,12 @@
                     <iron-icon icon="file-upload" style="color:blue;"></iron-icon>
                 </div>
             </div>
+        </div>
 
-            <div>
-                <paper-fab icon="close" class="leftButton" on-tap="_cancelCreation"></paper-fab>
-                <paper-fab icon="check" class="rightButton" on-tap="_addMission"></paper-fab>
-            </div>
-        </paper-dialog>
+        <div id="buttons">
+            <paper-fab icon="close" id="leftButton" class="leftButton" on-tap="_cancelCreation"></paper-fab>
+            <paper-fab icon="check" id="rightButton" class="rightButton" on-tap="_addMission"></paper-fab>
+        </div>
 
     </template>
 
@@ -117,7 +133,62 @@
         (function () {
             Polymer({
                 is: 'sa-mission-creation',
+
+                behaviors: [
+                    Polymer.NeonSharedElementAnimatableBehavior
+                ],
+
                 properties: {
+                    sharedElements: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'hero': this.$.card,
+                                'ripple': this.$.fixed,
+                                'scale': this.$.buttons
+                            }
+                        }
+                    },
+                    animationConfig: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'entry': [{
+                                    name: 'ripple-animation',
+                                    id: 'ripple',
+                                    toPage: this,
+                                }, {
+                                    name: 'hero-animation',
+                                    id: 'hero',
+                                    toPage: this,
+                                    timing: {
+                                        delay: 150
+                                    }
+                                }, {
+                                    name: 'scale-up-animation',
+                                    id: 'scale',
+                                    toPage: this,
+                                    node: this.$.buttons,
+                                    timing: {
+                                        delay: 150
+                                    }
+                                }],
+                                'exit': [{
+                                    name: 'fade-out-animation',
+                                    node: this.$.fixed
+                                }, {
+                                    name: 'transform-animation',
+                                    transformFrom: 'none',
+                                    transformTo: 'translate(0px,-200vh) scale(0.9,1)',
+                                    node: this.$.card,
+                                }, {
+                                    name: 'scale-down-animation',
+                                    id: 'scale',
+                                    node: this.$.buttons
+                                }]
+                            }
+                        }
+                    },
                     infos: {
                         type: Object,
                     },
@@ -125,23 +196,19 @@
                         type: Boolean,
                     }
                 },
-                open: function () {
-                    var diag = this.querySelector('paper-dialog');
-                    diag.open();
-                    this._isClosed = false;
-                    this.fire('open', { closed: this._isClosed });
-                },
                 _cancelCreation: function () {
-                    var diag = this.querySelector('paper-dialog');
-                    diag.close();
                     this._isClosed = true;
-                    this.fire('close', { closed: this._isClosed });
+                    this.fire('close', {
+                        closed: this._isClosed,
+                        addMission: false
+                    });
                 },
                 _addMission: function () {
-                    var diag = this.querySelector('paper-dialog');
-                    diag.close();
                     this._isClosed = true;
-                    this.fire('close', {closed : this._isClosed});
+                    this.fire('close', {
+                        closed: this._isClosed,
+                        addMission : true
+                    });
                 }
             });
         })();

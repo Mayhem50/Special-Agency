@@ -1,5 +1,6 @@
-﻿<link rel="import" href="../../../bower_components/neon-animation/neon-animations.html" >
+﻿<link rel="import" href="../../../bower_components/neon-animation/neon-animations.html">
 <link rel="import" href="../../../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../../../bower_components/neon-animation/neon-animation-runner-behavior.html">
 
 <link rel="import" href="sa-mission-creation.html">
 <link rel="import" href="sa-mission-infos.html">
@@ -7,52 +8,12 @@
 
 <dom-module id="sa-missions">
     <style>
-        .missions {
-            border-radius: 2px;
-            padding: 16px 0 16px 0;
-            width: calc(98.66% - 16px);
-            margin: 16px auto;
-            background: white;
-        }
-
         neon-animated-pages {
             height: 100%;
         }
 
-        .title {
-            font-size: 34px;
-        }
-
-        iron-image {
-            width: 25%;
-            height: 25%;
-        }
-
-        .onboard {
-            --iron-icon-height: 48px;
-            --iron-icon-width: 48px;
-        }
-
         paper-fab {
             background-color: #118c89;
-        }
-
-        paper-dialog {
-            background-color: white;
-        }
-
-        .red .paper-header {
-            background-color: #118c89;
-        }
-
-        .wizzard {
-            Position: Fixed;
-            Top: 0;
-            Left: 0;
-            Right: 0;
-            Bottom: 0;
-            Padding: 10px;
-            Margin: 15px;
         }
 
         .createButton {
@@ -60,37 +21,21 @@
             bottom: 25px;
             right: 40px;
         }
-
-        .type-wrapper {
-            display: inline-block;
-            padding: 2px;
-            margin: 6px 0;
-        }
-
-            .type-wrapper.iron-selected {
-                background-color: #00BCD4;
-                border-radius: 50%;
-            }
-
-        .iconList {
-            margin: 16px 0 8px 0;
-            overflow: auto;
-            -webkit-overflow-scrolling: touch;
-        }
     </style>
     <template>
 
         <neon-animated-pages id="pages" selected="0">
             <sa-missions-list missions="[[missions]]" on-item-click="_onMissionClick"></sa-missions-list>
             <sa-mission-infos mission="[[mission]]" hero="hero" on-close="_onCloseMission"></sa-mission-infos>
+            <sa-mission-creation id="mission-creation" infos="{{ajax_params}}" on-close="_onMissionCreationClose"></sa-mission-creation>
         </neon-animated-pages>
 
         <div>
-            <paper-fab class="createButton" icon="create" on-tap="createMission"></paper-fab>
+            <paper-fab id="createButton" class="createButton" icon="create" on-tap="_onCreateMissionClick"></paper-fab>
         </div>
 
-        <sa-mission-creation id="mission-creation" infos="{{ajax_params}}" on-close="_missionCreationClose"></sa-mission-creation>
-        
+
+
 
         <iron-ajax id="mission-ajax"
                    url="/missions"
@@ -107,15 +52,39 @@
         (function () {
             Polymer({
                 is: 'sa-missions',
+
+                behaviors: [
+                    Polymer.NeonAnimationRunnerBehavior
+                ],
+
                 properties: {
                     notification: {
                         type: Boolean,
                         notify: true,
                         observer: 'handleNotification'
                     },
-                    mission:{
+                    animationConfig: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'entry': [{
+                                    name: 'scale-down-animation',
+                                    toPage: this,
+                                    node: this.$.createButton
+                                }],
+                                'exit': [{
+                                    name: 'scale-up-animation',
+                                    node: this.$.createButton
+                                }]
+                            }
+                        }
+                    },
+                    mission: {
                         type: Object,
                         notify: true
+                    },
+                    opened: {
+                        type: Boolean
                     },
                     ajax_response: {
                         type: Object,
@@ -152,18 +121,16 @@
                         type: String,
                     }
                 },
-                _missionCreationClose: function (e) {
-                    if (e.detail.closed) {
-                        this.ajax_method = 'POST';
-                        this.sendRequest();
+                listeners: {
+                    'neon-animation-finish': '_onNeonAnimationFinish'
+                },
+                _onNeonAnimationFinish: function () {
+                    if (!this.opened) {
+                        this.$.createButton.style.display = 'none';
                     }
                 },
                 handleNotification: function () {
                     this.getMissions();
-                },
-                createMission: function () {
-                    var diag = this.querySelector('sa-mission-creation');
-                    diag.open();
                 },
                 getMissions: function () {
                     this.ajax_method = 'GET';
@@ -184,14 +151,43 @@
                         }
                     }
                 },
+                _onCreateMissionClick: function (event) {
+
+                    this.animationConfig['exit'][0].gesture = {
+                        x: event.x || event.pageX,
+                        y: event.y || event.pageY
+                    };
+
+                    this.$.pages.selected = 2;
+                    this._playButtonAnimation(false);
+                },
+                _onMissionCreationClose: function (e) {
+                    if (e.detail.addMission) {
+                        this.ajax_method = 'POST';
+                        this.sendRequest();
+                    }
+                    this.$.pages.selected = 0;
+                    this._playButtonAnimation(true);
+                },
                 _onMissionClick: function (e) {
                     this.mission = e.detail.data;
                     this.$.pages.selected = 1;
-                    $('.createButton').hide();
+                    this._playButtonAnimation(false);
                 },
                 _onCloseMission: function (e) {
                     this.$.pages.selected = 0;
-                    $('.createButton').show();
+                    this._playButtonAnimation(true);
+                },
+                _playButtonAnimation: function (goVisible) {
+                    if (goVisible) {
+                        this.opened = true;
+                        this.$.createButton.style.display = '';
+                        this.playAnimation('exit');
+                    }
+                    else {
+                        this.opened = false;
+                        this.playAnimation('entry');
+                    }
                 }
             });
         })();

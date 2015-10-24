@@ -14,27 +14,27 @@
         .card {
             position: relative;
             margin: 40px 100px 0;
-            height: 700px;
+            height: 400px;
             background-color: rgb(255, 255, 255);
         }
 
         paper-fab {
             background-color: #118c89;
         }
-        
-        .leftButton {
-            position: fixed;
-            bottom: 20px;
-            left: calc(100% / 2);
-        }
 
+        .closeButton {
+            bottom: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
     </style>
-    <template>        
+    <template>
         <div id="fixed" class="fixed"></div>
 
         <div id="card" class="card">
             <div id="title" is="title">{{mission.title}}</div>
             <div class="iconList" flex>
+
                 <div>Type</div>
                 <div class="type-wrapper">{{mission.type}}<iron-icon icon="add"></iron-icon></div>
                 <div class="type-wrapper">{{mission.owner}}<iron-icon icon="account-circle"></iron-icon></div>
@@ -46,7 +46,8 @@
             <div id="description" is="description" label="Description" name="description"></div>
         </div>
 
-            <paper-fab icon="close" id="button" class="leftButton" on-tap="_close"></paper-fab>
+        <paper-fab icon="close" id="button" class="closeButton" on-tap="_close"></paper-fab>
+
     </template>
 
     <script>
@@ -64,10 +65,11 @@
                     },
                     sharedElements: {
                         type: Object,
-                        value: function() {
+                        value: function () {
                             return {
                                 'hero': this.$.card,
-                                'ripple': this.$.fixed
+                                'ripple': this.$.fixed,
+                                'scale': this.$.button
                             }
                         }
                     },
@@ -86,6 +88,14 @@
                                     timing: {
                                         delay: 150
                                     }
+                                }, {
+                                    name: 'scale-up-animation',
+                                    id: 'scale',
+                                    toPage: this,
+                                    node: this.$.button,
+                                    timing: {
+                                        delay: 150
+                                    }
                                 }],
                                 'exit': [{
                                     name: 'fade-out-animation',
@@ -95,6 +105,10 @@
                                     transformFrom: 'none',
                                     transformTo: 'translate(0px,-200vh) scale(0.9,1)',
                                     node: this.$.card,
+                                }, {
+                                    name: 'scale-down-animation',
+                                    id: 'scale',
+                                    node: this.$.button
                                 }]
                             }
                         }

@@ -47,10 +47,10 @@ module.exports = function (passport) {
         res.end();
     });
     
-    router.post('/users/:id', function (req, res, next) {
+    router.post('/users/:action', function (req, res, next) {
         console.log('Get user : Login');
         
-        if (req.params.id == 'login') {
+        if (req.params.action == 'login') {
             passport.authenticate('signin', function (err, user, info) {
                 console.log('login');
                 if (err) { return next(err); }
@@ -71,7 +71,7 @@ module.exports = function (passport) {
                 });
             })(req, res, next);
         }
-        else if (req.params.id == 'logout') {
+        else if (req.params.action == 'logout') {
             console.log('logout');
             req.logout();
             res.end();
@@ -83,7 +83,13 @@ module.exports = function (passport) {
     
     router.get('/users/:id', jwtauth, function (req, res, next) {
         console.log('Get user');
+                
+        var id = jwt.decode(req.params.id, 'xbJ9Phit');
         
+        if (id) {
+            return res.json(req.user);
+        }
+
         next();
     });
 

@@ -76,9 +76,7 @@ module.exports = function () {
     router.get('/missions/:id', jwtauth, function (req, res) {
         console.log('Get mission from id');
         Mission.findOne({ _id : req.params.id }, function (err, mission) {
-            if (err) {
-                return res.sendStatus(500);
-            }
+            if (err) { return res.sendStatus(500); }
             
             return res.json({
                 'missions': mission,
@@ -89,8 +87,21 @@ module.exports = function () {
     });
     
     
-    router.put('/missions/:id', jwtauth, function (req, res) {
+    router.put('/missions/:action', jwtauth, function (req, res) {
         console.log('Update mission: ' + req.params.id);
+        
+        if (req.params.action == 'accept') {
+            Mission.findOne({ '_id' : req.query._id }, function (err, mission) {
+                console.log('find missions');
+                if (err) { return res.sendStatus(500); }
+                
+                mission._agent = req.user._id;
+                mission.save();
+
+                var miss = mission;
+            });
+        }
+
         res.end();
     });
     

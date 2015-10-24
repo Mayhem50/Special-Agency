@@ -1,4 +1,6 @@
-﻿<dom-module id="sa-profile">
+﻿<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html" />
+
+<dom-module id="sa-profile">
     <style>
         .profile {
             border-radius: 2px;
@@ -11,7 +13,6 @@
 
         .title {
             font-size: 34px;
-            padding: 20px 20px 0px 20px;
         }
 
         iron-image{
@@ -20,16 +21,18 @@
         }
 
     </style>
-    <template is="dom-bind">
+    <template>
 
-        <paper-material class="profile" elevation="1">
-            <h2 class="title">{{username}}</h2>
-
+        <paper-material class="profile flex-container" elevation="1">
+            <div>
+                <span class="title">{{user.firstName}}</span>
+                <span class="title">{{user.lastName}}</span>
+                <span class="flex"></span>
+                <span>{{user.agentID}}</span>
+            </div>
             <div>
                 <iron-image src="../../images/logo/Img-03.png"></iron-image>
             </div>
-
-            <span>Response is: </span><span>{{response.message}}</span>
 
         </paper-material>
 
@@ -38,8 +41,7 @@
                    params="{{ajax_params}}"
                    handle-as="json"
                    method="GET"
-                   on-response="handleResponse"
-                   last-response="{{response}}">
+                   last-response="{{user}}">
         </iron-ajax>
 
     </template>
@@ -61,7 +63,11 @@
                 ready: function () {
                 },
                 handleNotification: function () {
-                    document.getElementById('profile-ajax').generateRequest();
+                    if (this.notification === 'profile') {
+                        this.ajax_url = '/users/' + window.sessionStorage.token;
+                        this.ajax_params = { 'access_token': window.sessionStorage.token };
+                        document.getElementById('profile-ajax').generateRequest();
+                    }
                 }
             });
         })();

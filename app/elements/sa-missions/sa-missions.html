@@ -26,7 +26,7 @@
 
         <neon-animated-pages id="pages" selected="0">
             <sa-missions-list missions="[[missions]]" on-item-click="_onMissionClick"></sa-missions-list>
-            <sa-mission-infos mission="[[mission]]" hero="hero" on-close="_onCloseMission"></sa-mission-infos>
+            <sa-mission-infos mission="[[mission]]" hero="hero" on-close="_onCloseMission" on-accept-mission="_onAcceptMission"></sa-mission-infos>
             <sa-mission-creation id="mission-creation" infos="{{ajax_params}}" on-close="_onMissionCreationClose"></sa-mission-creation>
         </neon-animated-pages>
 
@@ -38,10 +38,10 @@
 
 
         <iron-ajax id="mission-ajax"
-                   url="/missions"
-                   params="{{ajax_params}}"
+                   url="[[ajax_url]]"
+                   params="[[ajax_params]]"
                    handle-as="json"
-                   method="{{ajax_method}}"
+                   method="[[ajax_method]]"
                    on-response="handleResponse"
                    last-response="{{ajax_response}}">
         </iron-ajax>
@@ -83,17 +83,11 @@
                         type: Object,
                         notify: true
                     },
-                    opened: {
-                        type: Boolean
-                    },
-                    ajax_response: {
-                        type: Object,
-                        notify: true
-                    },
                     ajax_params: {
                         type: Object,
                         value: function () {
                             return {
+                                _id: '',
                                 title: '',
                                 type: '',
                                 subType: '',
@@ -117,8 +111,19 @@
                             }
                         }
                     },
+                    opened: {
+                        type: Boolean
+                    },
+                    ajax_response: {
+                        type: Object,
+                        notify: true
+                    },
                     ajax_method: {
                         type: String,
+                    },
+                    ajax_url: {
+                        type: String,
+                        value: '/missions'
                     }
                 },
                 listeners: {
@@ -134,6 +139,7 @@
                 },
                 getMissions: function () {
                     this.ajax_method = 'GET';
+                    this.ajax_url = '/missions'
                     this.sendRequest();
                     return this.missions;
                 },
@@ -142,8 +148,13 @@
                     this.querySelector('iron-ajax').generateRequest();
                 },
                 handleResponse: function () {
+                    if (!this.ajax_response) {
+                        return;
+                    }
+
                     if (this.ajax_response.success) {
-                        if (this.ajax_response.method === 'POST') {
+                        if (this.ajax_response.method === 'POST' || 
+                            this.ajax_response.method === 'PUT') {
                             this.getMissions();
                         }
                         else if (this.ajax_response.method === 'GET') {
@@ -164,6 +175,7 @@
                 _onMissionCreationClose: function (e) {
                     if (e.detail.addMission) {
                         this.ajax_method = 'POST';
+                        this.ajax_url = '/missions';
                         this.sendRequest();
                     }
                     this.$.pages.selected = 0;
@@ -188,6 +200,14 @@
                         this.opened = false;
                         this.playAnimation('entry');
                     }
+                },
+                _onAcceptMission: function () {
+                    this.ajax_method = 'PUT';                    
+                    this.ajax_params = this.mission;
+                    this.ajax_url = '/missions/accept';
+                    this.sendRequest();
+                    this.$.pages.selected = 0;
+                    this._playButtonAnimation(true);
                 }
             });
         })();

@@ -25,9 +25,9 @@
     <template>
 
         <neon-animated-pages id="pages" selected="0">
-            <sa-missions-list role="{{role}}" missions="[[missions]]" on-item-click="_onMissionClick"></sa-missions-list>
+            <sa-missions-list role="{{role}}" missions="[[missions]]" on-item-click="_onMissionClick" on-mission-delete="_onMissionDelete" on-mission-edit="_onMissionEdit"></sa-missions-list>
             <sa-mission-infos mission="[[mission]]" hero="hero" on-close="_onCloseMission" on-accept-mission="_onAcceptMission" on-request-login="_onRequestLogin"></sa-mission-infos>
-            <sa-mission-creation id="mission-creation" infos="{{ajax_params}}" on-close="_onMissionCreationClose"></sa-mission-creation>
+            <sa-mission-creation id="mission-creation" infos="{{mission}}" on-close="_onMissionCreationClose" is-for-edit="{{_isForEdit}}"></sa-mission-creation>
         </neon-animated-pages>
 
         <div>
@@ -36,7 +36,8 @@
         
         <iron-ajax id="mission-ajax"
                    url="[[ajax_url]]"
-                   params="[[ajax_params]]"
+                   content-type="application/json"
+                   body="[[ajax_params]]"
                    handle-as="json"
                    method="[[ajax_method]]"
                    on-response="handleResponse"
@@ -76,15 +77,20 @@
                             }
                         }
                     },
-                    mission: {
-                        type: Object,
-                        notify: true
-                    },
                     ajax_params: {
                         type: Object,
                         value: function () {
                             return {
-                                _id: '',
+                                mission: new Object(),
+                                access_token: ''
+                            }
+                        }
+                    },
+                    mission: {
+                        type : Object,
+                        value: function () {
+                            return {
+                                //_id: '',
                                 title: '',
                                 type: '',
                                 subType: '',
@@ -103,8 +109,7 @@
                                         state: '',
                                         zip: ''
                                     }
-                                },
-                                access_token: ''
+                                }
                             }
                         }
                     },
@@ -126,6 +131,10 @@
                         type: String,
                         value: 'none',
                         notify: true
+                    },
+                    _isForEdit: {
+                        type: Boolean,
+                        value: false
                     }
                 },
                 listeners: {
@@ -157,10 +166,10 @@
                     this.ajax_method = 'GET';
                     this.ajax_url = '/missions'
                     this.sendRequest();
-                    return this.missions;
                 },
                 sendRequest: function () {
                     this.ajax_params.access_token = window.sessionStorage.token;
+                    this.ajax_params.mission = this.mission;
                     this.querySelector('iron-ajax').generateRequest();
                 },
                 handleResponse: function () {
@@ -170,7 +179,8 @@
 
                     if (this.ajax_response.success) {
                         if (this.ajax_response.method === 'POST' || 
-                            this.ajax_response.method === 'PUT') {
+                            this.ajax_response.method === 'PUT' ||
+                            this.ajax_response.method === 'DELETE') {
                             this.getMissions();
                         }
                         else if (this.ajax_response.method === 'GET') {
@@ -179,22 +189,18 @@
                     }
                 },
                 _onCreateMissionClick: function (event) {
-                    if (!app.isLogged) {
-                        this._onRequestLogin();
-                        return;
-                    }
-                    this.animationConfig['exit'][0].gesture = {
-                        x: event.x || event.pageX,
-                        y: event.y || event.pageY
-                    };
-
-                    this.$.pages.selected = 2;
-                    this._playButtonAnimation(false);
+                    this._opendCreationView(false);
                 },
                 _onMissionCreationClose: function (e) {
-                    if (e.detail.addMission) {
-                        this.ajax_method = 'POST';
-                        this.ajax_url = '/missions';
+                    if (e.detail.validate) {
+                        if (this._isForEdit) {
+                            this.ajax_method = 'PUT';
+                            this.ajax_url = '/missions/update';
+                        }
+                        else {
+                            this.ajax_method = 'POST';
+                            this.ajax_url = '/missions';
+                        }
                         this.sendRequest();
                     }
                     this.$.pages.selected = 0;
@@ -221,8 +227,7 @@
                     }
                 },
                 _onAcceptMission: function () {
-                    this.ajax_method = 'PUT';                    
-                    this.ajax_params = this.mission;
+                    this.ajax_method = 'PUT';                
                     this.ajax_url = '/missions/accept';
                     this.sendRequest();
                     this.$.pages.selected = 0;
@@ -232,6 +237,30 @@
                     this.fire('request-login', {});
                     this.$.pages.selected = 0;
                     this._playButtonAnimation(true);
+                },
+                _onMissionDelete: function (event) {
+                    this.ajax_method = 'DELETE';
+                    this.mission = event.detail.data;
+                    this.ajax_url = '/missions/' + event.detail.data._id;
+                    this.sendRequest();
+                },
+                _onMissionEdit: function (event) {
+                    this.mission = event.detail.data;
+                    this._opendCreationView(true);
+                },
+                _opendCreationView: function (isForEdit) {
+                    if (!app.isLogged) {
+                        this._onRequestLogin();
+                        return;
+                    }
+                    this.animationConfig['exit'][0].gesture = {
+                        x: event.x || event.pageX,
+                        y: event.y || event.pageY
+                    };
+
+                    this.$.pages.selected = 2;
+                    this._playButtonAnimation(false);
+                    this._isForEdit = isForEdit;
                 }
             });
         })();

@@ -8,17 +8,10 @@ var router = express.Router();
 module.exports = function () {
     router.post('/missions', jwtauth, function (req, res) {
         console.log('Create a mission');
+        console.log(req.query.mission);
         
-        var mission = new Mission({
-            title : req.query.title,
-            type : req.query.type,
-            subType : '',
-            level : req.query.level,
-            reward : req.query.reward,
-            descritpion : req.query.description,
-            owner : req.user._id,
-            status : 0
-        });
+        var mission = new Mission(req.body.mission);
+        mission.owner = req.user._id;
         
         mission.save(function (err) {
             if (err) {
@@ -91,23 +84,48 @@ module.exports = function () {
         console.log('Update mission: ' + req.params.id);
         
         if (req.params.action == 'accept') {
-            Mission.findOne({ '_id' : req.query._id }, function (err, mission) {
+            Mission.findOneAndUpdate({ '_id' : req.query._id }, { '_agent' : req.user._id }, function (err, mission) {
+                console.log('find missions');
+                if (err) { return res.sendStatus(500); }
+
+                return res.json({
+                    method: 'PUT',
+                    success: true,
+                });
+            });
+        }
+        else if (req.params.action == 'update') {
+            Mission.findOneAndUpdate({ '_id' : req.body.mission._id }, req.body.mission, function (err, mission) {
                 console.log('find missions');
                 if (err) { return res.sendStatus(500); }
                 
-                mission._agent = req.user._id;
-                mission.save();
-
-                var miss = mission;
+                return res.json( {
+                    method: 'PUT',
+                    success: true,
+                });
             });
         }
-
-        res.end();
+        else{
+            res.end();
+        }
     });
     
     router.delete('/missions/:id', jwtauth, function (req, res) {
         console.log('Delete mission: ' + req.params.id);
-        res.end();
+        
+        Mission.findOne({ '_id' : req.params.id }, function (err, mission){
+            if (err) { return next(err); }
+
+            if (!mission) { return res.sendStatus(500); }
+
+            mission.remove();
+
+            return res.json({
+                success: true,
+                method: 'DELETE',
+                mission: mission._id
+            });
+        })
     });
     
     return router;

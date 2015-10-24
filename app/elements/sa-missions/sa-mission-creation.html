@@ -200,14 +200,14 @@
                     this._isClosed = true;
                     this.fire('close', {
                         closed: this._isClosed,
-                        addMission: false
+                        validate: false
                     });
                 },
                 _addMission: function () {
                     this._isClosed = true;
                     this.fire('close', {
                         closed: this._isClosed,
-                        addMission : true
+                        validate : true
                     });
                 }
             });

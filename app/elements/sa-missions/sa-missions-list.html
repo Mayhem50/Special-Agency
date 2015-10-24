@@ -73,13 +73,22 @@
             overflow: auto;
             -webkit-overflow-scrolling: touch;
         }
+
+        .tool{
+            width: 32px;
+            height: 32px;
+        }
     </style>
 
     <template>
         <template is="dom-repeat" items="[[missions]]" filter="_whichRole">
-            <paper-item class="missions" style="width:50%;">
+            <paper-item class="missions" style="width:50%;" on-click="_onClick">
                 <paper-item-body>
                     <div>[[item.title]]</div>
+                    <div>
+                        <paper-icon-button class="tool" id="delete" icon="delete" on-tap="_onDeleteClick"></paper-icon-button>
+                        <paper-icon-button class="tool" id="modify" icon="create" on-tap="_onEditClick"></paper-icon-button>
+                    </div>
                 </paper-item-body>
             </paper-item>
         </template>
@@ -104,6 +113,10 @@
                         type: String,
                         notify: true
                     },
+                    _isForShow:{
+                        type: Boolean,
+                        value: true
+                    },
                     animationConfig: {
                         type: Object,
                         value: function () {
@@ -122,9 +135,13 @@
                     }
                 },
                 listeners: {
-                    'click': '_onClick'
                 },
                 _onClick: function (event) {
+                    if (!this._isForShow) {
+                        this._isForShow = !this._isForShow;
+                        return;
+                    }
+
                     var target = event.target;
                     while (target !== this && !target._templateInstance) {
                         target = target.parentNode;
@@ -142,6 +159,22 @@
                     this.fire('item-click', {
                         data: target._templateInstance.item,
                     });
+                },
+                _onDeleteClick: function (event) {
+                    var target = event.target;
+                    while (target !== this && !target._templateInstance) {
+                        target = target.parentNode;
+                    }
+                    this.fire('mission-delete', { data: target._templateInstance.item });
+                    this._isForShow = false;
+                },
+                _onEditClick: function (event) {
+                    var target = event.target;
+                    while (target !== this && !target._templateInstance) {
+                        target = target.parentNode;
+                    }
+                    this.fire('mission-edit', { data: target._templateInstance.item });
+                    this._isForShow = false;
                 },
                 _whichRole: function (item) {
                     if (this.role === 'agent') {

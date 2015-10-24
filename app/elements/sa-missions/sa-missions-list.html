@@ -76,7 +76,7 @@
     </style>
 
     <template>
-        <template is="dom-repeat" items="[[missions]]">
+        <template is="dom-repeat" items="[[missions]]" filter="_whichRole">
             <paper-item class="missions" style="width:50%;">
                 <paper-item-body>
                     <div>[[item.title]]</div>
@@ -98,6 +98,10 @@
                 properties: {
                     missions: {
                         type: Object,
+                        notify: true
+                    },
+                    role:{
+                        type: String,
                         notify: true
                     },
                     animationConfig: {
@@ -138,6 +142,17 @@
                     this.fire('item-click', {
                         data: target._templateInstance.item,
                     });
+                },
+                _whichRole: function (item) {
+                    if (this.role === 'agent') {
+                        return item.owner._id !== window.sessionStorage['id'];
+                    }
+                    else if (this.role === 'sponsor') {
+                        return item.owner._id == window.sessionStorage['id'];
+                    }
+                    else {
+                        return true;
+                    }
                 }
             });
         })();

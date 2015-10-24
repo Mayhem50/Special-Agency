@@ -18,7 +18,7 @@
             padding: 20px 20px 0px 20px;
         }
     </style>
-    <template is="dom-bind">
+    <template>
 
         <paper-material class="login" elevation="1">
             <h2 class="title">Loggin</h2>
@@ -142,13 +142,15 @@
                             window.localStorage.token = this.response.token;
                             window.localStorage.remember = true;
                             window.localStorage.setItem('email', this.infos.email);
+                            window.localStorage.setItem('id', this.response.id);
                         }
 
                         window.sessionStorage.token = this.response.token;
                         window.sessionStorage.setItem('email', this.infos.email);
+                        window.sessionStorage.setItem('id', this.response.id);
 
                         app.route = 'home';
-                        //app.isLogged = '/profile/' + this.infos.email;
+                        app.isLogged = true;
 
                         this.infos = function () {
                             return {

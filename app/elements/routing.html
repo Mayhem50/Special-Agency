@@ -6,7 +6,9 @@
         });
 
         page('/login', function () {
-            app.route = 'login';
+            isAuthenticated('profile', function () {
+                app.get_profile = !app.get_profile;
+            });
         });
 
         page('/logout', function () {
@@ -18,7 +20,7 @@
             });
 
             isAuthenticated('home', null, function () {
-                document.getElementById('deconnexionToggle').hide();
+                app.route = 'home';
             });
         });
 
@@ -38,9 +40,8 @@
         });
 
         page('/missions', function () {
-            isAuthenticated('missions', function () {
-                app.get_missions = !app.get_missions;
-            });
+            app.route = 'missions';
+                app.missions_notify = !app.missions_notify;
         });
 
         // add #! before urls
@@ -65,13 +66,13 @@
             statusCode : {
                 200 : function(){
                     app.route = route;
-                    app.isLogged = '/profile';
+                    app.isLogged = true;
                     if (successCb)
                         successCb();
                 },
                 403 : function(){
                     app.route = 'login';
-                    app.isAuthenticated = app.route;
+                    app.isLogged = false;
                     if (failCb)
                         failCb();
                 }

@@ -25,18 +25,15 @@
     <template>
 
         <neon-animated-pages id="pages" selected="0">
-            <sa-missions-list missions="[[missions]]" on-item-click="_onMissionClick"></sa-missions-list>
-            <sa-mission-infos mission="[[mission]]" hero="hero" on-close="_onCloseMission" on-accept-mission="_onAcceptMission"></sa-mission-infos>
+            <sa-missions-list role="{{role}}" missions="[[missions]]" on-item-click="_onMissionClick"></sa-missions-list>
+            <sa-mission-infos mission="[[mission]]" hero="hero" on-close="_onCloseMission" on-accept-mission="_onAcceptMission" on-request-login="_onRequestLogin"></sa-mission-infos>
             <sa-mission-creation id="mission-creation" infos="{{ajax_params}}" on-close="_onMissionCreationClose"></sa-mission-creation>
         </neon-animated-pages>
 
         <div>
             <paper-fab id="createButton" class="createButton" icon="create" on-tap="_onCreateMissionClick"></paper-fab>
         </div>
-
-
-
-
+        
         <iron-ajax id="mission-ajax"
                    url="[[ajax_url]]"
                    params="[[ajax_params]]"
@@ -124,6 +121,11 @@
                     ajax_url: {
                         type: String,
                         value: '/missions'
+                    },
+                    role: {
+                        type: String,
+                        value: 'none',
+                        notify: true
                     }
                 },
                 listeners: {
@@ -135,6 +137,20 @@
                     }
                 },
                 handleNotification: function () {
+                    if (window.sessionStorage.token !== "undefined" && window.sessionStorage.token != '') {
+                        if (app.drawer_route == 0) {
+                            this.role = 'agent';
+                        }
+                        else if (app.drawer_route == 1) {
+                            this.role = 'sponsor';
+                        }
+                        else {
+                            this.role = 'none';
+                        }
+                    }
+                    else {
+                        this.role = 'none';
+                    }
                     this.getMissions();
                 },
                 getMissions: function () {
@@ -163,7 +179,10 @@
                     }
                 },
                 _onCreateMissionClick: function (event) {
-
+                    if (!app.isLogged) {
+                        this._onRequestLogin();
+                        return;
+                    }
                     this.animationConfig['exit'][0].gesture = {
                         x: event.x || event.pageX,
                         y: event.y || event.pageY
@@ -206,6 +225,11 @@
                     this.ajax_params = this.mission;
                     this.ajax_url = '/missions/accept';
                     this.sendRequest();
+                    this.$.pages.selected = 0;
+                    this._playButtonAnimation(true);
+                },
+                _onRequestLogin: function (event) {
+                    this.fire('request-login', {});
                     this.$.pages.selected = 0;
                     this._playButtonAnimation(true);
                 }

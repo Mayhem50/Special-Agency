@@ -57,33 +57,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="info" on-tap="onMenuSelect"></paper-icon-button>
                     </a>
                     <span class="flex"></span>
-                    <div>
-                        <span>{{agent_ID}}</span>
-                        <a data-route="profile" href="/profile">
-                            <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="account-circle" on-tap="onMenuSelect"></paper-icon-button>
-                        </a>
-                    </div>
+
+                        <div hidden$="{{!isLogged}}">
+                            <span>{{agent_ID}}</span>
+                            <a data-route="profile" href="/profile">
+                                <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="account-circle" on-tap="onMenuSelect"></paper-icon-button>
+                            </a>
+                        </div>
+                        <div hidden$="{{isLogged}}">
+                            <span>{{agent_ID}}</span>
+                            <a data-route="login" href="/login">
+                                <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="account-box" on-tap="onMenuSelect"></paper-icon-button>
+                            </a>
+                        </div>
+
                 </paper-toolbar>
 
+                    <paper-tabs hidden$="{{!isLogged}}" class="drawer-tabs" selected="{{drawer_route}}" noink on-iron-select="onRoleChange">
+                        <paper-tab class="drawer-tab">Agent</paper-tab>
+                        <paper-tab class="drawer-tab">Sponsor</paper-tab>
+                    </paper-tabs>
 
-                <paper-tabs class="drawer-tabs" selected="{{drawer_route}}" noink>
-                    <paper-tab class="drawer-tab">Agent</paper-tab>
-                    <paper-tab class="drawer-tab">Sponsor</paper-tab>
-                </paper-tabs>
+                    <div hidden$="{{!isLogged}}" class="drawer-content">
 
-                <div class="drawer-content">
+                        <iron-pages selected="{{drawer_route}}">
+                            <div>Agent</div>
+                            <div>Sponsor</div>
+                        </iron-pages>
 
-                    <iron-pages selected="{{drawer_route}}">
-                        <div>
-
-                        </div>
-                        <div>Page 2</div>
-                    </iron-pages>
-
-                </div>
+                    </div>
 
             </paper-scroll-header-panel>
-
 
             <paper-scroll-header-panel main>
                 <paper-toolbar>
@@ -97,10 +101,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <paper-icon-button class="main-toolbar-button main-collapse-button" icon="info"></paper-icon-button>
                     </a>
                     <span class="flex"></span>
-                    <div>
-                        <span>{{agent_ID}}</span>
+                    <div hidden$="{{!isLogged}}">
                         <a data-route="profile" href="/profile">
                             <paper-icon-button class="main-toolbar-button main-collapse-button" icon="account-circle"></paper-icon-button>
+                        </a>
+                        <a data-route="home" href="/logout">
+                            <paper-icon-button class="main-toolbar-button main-collapse-button" icon="close"></paper-icon-button>
+                        </a>
+                    </div>
+                    <div hidden$="{{isLogged}}">
+                        <a data-route="login" href="/login">
+                            <paper-icon-button class="main-toolbar-button main-collapse-button" icon="account-box"></paper-icon-button>
                         </a>
                     </div>
 
@@ -127,7 +138,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         </section>
 
                         <section data-route="missions">
-                            <sa-missions notification="{{get_missions}}"></sa-missions>
+                            <sa-missions notification="{{missions_notify}}" on-request-login="onRequestLogin"></sa-missions>
                         </section>
 
                     </iron-pages>

@@ -63,6 +63,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
     };
     
+    app.onRoleChange = function () {
+        app.missions_notify = !app.missions_notify;
+    };
+    
+    app.onRequestLogin = function (){
+        app.route = 'login';
+    }
+    
     var updateMenuBar = function (event) {        
         if ($(window).width() < 640) {
             $('.main-collapse-button').hide();
@@ -80,11 +88,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (window.localStorage['remember'] == "true") {
             window.sessionStorage.token = window.localStorage.token;
             window.sessionStorage['email'] = window.localStorage['email'];
+            window.sessionStorage['id'] = window.localStorage['id'];
+            app.isLogged = true;
             //document.getElementById('deconnexionToggle').show();            
         }
-        //else {
+        else {
+            app.isLogged = false;
         //    document.getElementById('deconnexionToggle').hide();
-        //}
+        }
         
         updateMenuBar();
         app.drawer_route = 0;
@@ -93,8 +104,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     addEventListener('unload', function (event) {
         if (window.localStorage['remember'] != "true") {
             window.localStorage.token = '';
+            window.localStorage['email'] = '';
+            window.localStorage['id'] = '';
         }
-    });
+    });    
 
     var _wr = function (type) {
         var orig = history[type];
@@ -118,3 +131,4 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
 })(document);
+

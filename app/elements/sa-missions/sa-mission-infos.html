@@ -42,7 +42,7 @@
 
                 <div>Type</div>
                 <div class="type-wrapper">{{mission.type}}<iron-icon icon="add"></iron-icon></div>
-                <div class="type-wrapper">{{mission.owner}}<iron-icon icon="account-circle"></iron-icon></div>
+                <div class="type-wrapper">{{mission.owner.firstName}}<iron-icon icon="account-circle"></iron-icon></div>
 
             </div>
 
@@ -126,7 +126,12 @@
                     this.fire('close', { closed: true });
                 },
                 _acceptMission: function () {
-                    this.fire('accept-mission', { closed: true });
+                    if(app.isLogged){
+                        this.fire('accept-mission', { closed: true });
+                    }
+                    else {
+                        this.fire('request-login', {});
+                    }
                 }
             });
         })();

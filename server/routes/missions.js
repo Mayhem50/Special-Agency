@@ -33,13 +33,13 @@ module.exports = function () {
         });
     });
     
-    router.get('/missions', jwtauth, function (req, res) {
+    router.get('/missions', function (req, res) {
         console.log('Get all missions');
-        Mission.find({}, function (err, missions) {
+        Mission.find({}).populate('owner').exec(function (err, missions) {
             if (err) {
                 return res.sendStatus(500);
             }
-
+            
             return res.json({
                 'missions': missions,
                 method: 'GET',

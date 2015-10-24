@@ -64,7 +64,7 @@
                 },
                 handleNotification: function () {
                     if (this.notification === 'profile') {
-                        this.ajax_url = '/users/' + window.sessionStorage.token;
+                        this.ajax_url = '/users/' + window.sessionStorage['id'];
                         this.ajax_params = { 'access_token': window.sessionStorage.token };
                         document.getElementById('profile-ajax').generateRequest();
                     }

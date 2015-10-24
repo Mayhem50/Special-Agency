@@ -63,9 +63,10 @@ module.exports = function (passport) {
                     if (err) return next(err);
                     
                     var token = jwt.encode(user._id, 'xbJ9Phit');
-                    return res.json({
+                    return res.json( {
                         method : 'POST',
                         token: token,
+                        id: user._id,
                         success: true
                     });
                 });
@@ -83,14 +84,19 @@ module.exports = function (passport) {
     
     router.get('/users/:id', jwtauth, function (req, res, next) {
         console.log('Get user');
-                
-        var id = jwt.decode(req.params.id, 'xbJ9Phit');
-        
-        if (id) {
-            return res.json(req.user);
-        }
+                        
+        if (req.params.id) {
+            User.findOne({ '_id' : req.params.id }, function (err, user){
+                if (err) { return next(err); }
 
-        next();
+                if (!user) { return res.sendStatus(500); }
+
+                return res.json(user);
+            })
+        }
+        else {
+            next();
+        }
     });
 
     router.put('/users/:id', jwtauth, function (req, res, next) {

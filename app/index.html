@@ -50,14 +50,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-drawer-panel responsive-width="40000px" id="paper-drawer-panel" selected="main">
             <paper-scroll-header-panel drawer>
                 <paper-toolbar>
-
-                    <paper-icon-button class="drawer-toolbar-button" icon="account-circle"></paper-icon-button>
-                    <paper-icon-button class="drawer-toolbar-button" icon="mail"></paper-icon-button>
-                    <paper-icon-button class="drawer-toolbar-button" icon="info"></paper-icon-button>
+                    <a data-route="missions" href="/missions">
+                        <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="explore" on-tap="onMenuSelect"></paper-icon-button>
+                    </a>
+                    <a>
+                        <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="info" on-tap="onMenuSelect"></paper-icon-button>
+                    </a>
                     <span class="flex"></span>
-                    <paper-icon-button class="drawer-toolbar-button" paper-drawer-toggle icon="arrow-forward"></paper-icon-button>
-
+                    <div>
+                        <span>{{agent_ID}}</span>
+                        <a data-route="profile" href="/profile">
+                            <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="account-circle" on-tap="onMenuSelect"></paper-icon-button>
+                        </a>
+                    </div>
                 </paper-toolbar>
+
 
                 <paper-tabs class="drawer-tabs" selected="{{drawer_route}}" noink>
                     <paper-tab class="drawer-tab">Agent</paper-tab>
@@ -74,7 +81,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </div>
 
             </paper-scroll-header-panel>
-            
+
 
             <paper-scroll-header-panel main>
                 <paper-toolbar>

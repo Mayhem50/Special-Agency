@@ -63,8 +63,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
     };
     
-    app.onRoleChange = function () {
+    app.onRoleChange = function (event) {
         app.missions_notify = !app.missions_notify;
+        var target = event.target;
+        
+        if (app.drawer_route === 0) {
+            var agentMenu = document.querySelector('#agent-menu');
+            agentMenu.select('0');
+        }
     };
     
     app.onRequestLogin = function (){

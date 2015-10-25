@@ -72,6 +72,29 @@ module.exports = function (passport) {
                 });
             })(req, res, next);
         }
+        else if (req.params.action == 'google-auth') {
+            passport.authenticate('google', {
+                scope: ['profile', 'email']
+            }),
+             function (req, res) { }
+        }
+        
+        else if (req.params.action == 'google-callback') {
+            passport.authenticate('google', function (err, user, info) {
+                if (err) return next(err);
+                
+                if (!user) { return res.sendStatus(403); }
+                
+                User.findOne({ 'email' : user._json.email }, function (err, usr) {
+                    return res.json({
+                        method: 'GET',
+                        token: usr.token,
+                        success: true
+                    });
+                });
+            });
+        }
+
         else if (req.params.action == 'logout') {
             console.log('logout');
             req.logout();

@@ -73,6 +73,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
     };
     
+    app.onLogIn = function () {
+        app.route = 'home';
+        app.isLogged = true;
+        app.mission_filter = 'search';
+        app.drawer_route = 0;
+        app.missions_notify = !app.missions_notify;
+    };
+    
+    app.onLogOut = function (){
+        app.route = 'home';
+        app.isLogged = true;
+        app.mission_filter = '';
+        app.drawer_route = 0;
+        app.missions_notify = !app.missions_notify;
+    }
+    
     app.onRequestLogin = function (){
         app.route = 'login';
     }

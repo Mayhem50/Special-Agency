@@ -17,6 +17,7 @@ module.exports = mongoose.model(
         password : String,
         rank: Number,
         birthDate : Date,
-        missionsDone : Number
+        missionsDone : Number,
+        googleID: { type: mongoose.Schema.Types.ObjectId, ref: 'Google-ID' }
     }
 );

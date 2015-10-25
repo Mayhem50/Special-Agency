@@ -85,7 +85,7 @@
             <paper-item class="missions" style="width:50%;" on-click="_onClick">
                 <paper-item-body>
                     <div>[[item.title]]</div>
-                    <div>
+                    <div hidden$="{{_hiddenElement}}">
                         <paper-icon-button class="tool" id="delete" icon="delete" on-tap="_onDeleteClick"></paper-icon-button>
                         <paper-icon-button class="tool" id="modify" icon="create" on-tap="_onEditClick"></paper-icon-button>
                     </div>
@@ -132,9 +132,11 @@
                                 }]
                             }
                         }
+                    },
+                    _hiddenElement: {
+                        type: Boolean,
+                        value: true
                     }
-                },
-                listeners: {
                 },
                 _onClick: function (event) {
                     if (!this._isForShow) {
@@ -177,19 +179,25 @@
                     this._isForShow = false;
                 },
                 _whichfilter: function (item) {
+                    this._hiddenElement = true;
                     if (this.filter === 'search') {
-                        if (item._agent)
+                        if (item._agent){
                             return (item._owner._id !== window.sessionStorage['id'] && item._agent._id !== window.sessionStorage['id']);
-                        else
+                        }
+                        else{
                             return item._owner._id !== window.sessionStorage['id'];
+                        }
                     }
                     else if (this.filter === 'event') {
-                        if (item._agent)
+                        if (item._agent){
                             return (item._owner._id !== window.sessionStorage['id'] && item._agent._id === window.sessionStorage['id']);
-                        else
+                        }
+                        else{
                             return false;
+                        }
                     }
                     else if (this.filter === 'sponsor') {
+                        this._hiddenElement = false;
                         return item._owner._id == window.sessionStorage['id'];
                     }
                     else {

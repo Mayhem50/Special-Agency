@@ -1,6 +1,6 @@
 ﻿<dom-module id="sa-login">
     <style>
-        .login{
+        .login {
             border-radius: 2px;
             height: 100%;
             padding: 16px 0 16px 0;
@@ -8,8 +8,8 @@
             margin: 16px auto;
             background: white;
         }
-            
-        .form{
+
+        .form {
             padding: 0px 20px 20px 20px;
         }
 
@@ -31,12 +31,13 @@
                     <paper-input id="passwordConfirm" is="passwordConfirm" type="password" label="Confirm Password" value="{{passwordConfirm}}" error-message="Not same password"></paper-input>
                     <paper-input id="firstName" is="firstName" label="First Name" name="firstName" value="{{infos.firstName::input}}"></paper-input>
                     <paper-input id="lastName" is="lastName" label="Last Name" name="lastName" value="{{infos.lastName::input}}"></paper-input>
+                    
                 </iron-collapse>
 
                 </br>
                 <paper-checkbox is="remember" label="Remember Me" checked="{{remember}}">Remember Me</paper-checkbox>
-                
-                </br>                
+
+                </br>
                 </br>
                 <paper-button id="SendButton" on-click="send" raised>{{sendButtonText}}</paper-button>
                 </br>
@@ -83,7 +84,7 @@
                             }
                         }
                     },
-                    remember:{
+                    remember: {
                         type: Boolean,
                         value: true
                     },
@@ -92,7 +93,7 @@
                     },
                     emailErrorMessage: {
                         type: String,
-                        value : 'Not an email'
+                        value: 'Not an email'
                     },
                     ajax_url: {
                         type: String,
@@ -117,16 +118,17 @@
                         type: String,
                         value: "Sign Up"
                     },
-                    isForLogin:{
+                    isForLogin: {
                         type: Boolean,
                         value: true
                     }
                 },
-                ready: function () { 
-                    
+                ready: function () {
+
                 },
                 send: function () {
-                    if (this.validateBeforeSend()) {                        
+                    if (this.validateBeforeSend()) {
+                        this.ajax_url = "/users/login";
                         document.getElementById('user-ajax').generateRequest();
                     }
                 },
@@ -136,7 +138,7 @@
                     }
 
                     if (this.response.success && this.response.method === 'POST') {
-                        //document.querySelector('#deconnexionToggle').show();                        
+                        //document.querySelector('#deconnexionToggle').show();
 
                         if (this.remember === true) {
                             window.localStorage.token = this.response.token;
@@ -149,8 +151,7 @@
                         window.sessionStorage.setItem('email', this.infos.email);
                         window.sessionStorage.setItem('id', this.response.id);
 
-                        app.route = 'home';
-                        app.isLogged = true;
+                        app.onLogIn();
 
                         this.infos = function () {
                             return {
@@ -198,8 +199,8 @@
 
                     if (typeof this.response == "undefined" || this.response == null) {
                         return;
-                    }                    
-                    
+                    }
+
                     if (!this.response.isFree) {
                         this.emailErrorMessage = 'Email albready used';
                         document.getElementById('email').invalid = true;
@@ -215,7 +216,7 @@
                 validateBeforeSend: function (event, detail, sender) {
                     if (!this.isForLogin) {
 
-                        if( this.infos.password !== this.passwordConfirm){
+                        if (this.infos.password !== this.passwordConfirm) {
                             document.getElementById('password').invalid = true;
                             document.getElementById('passwordConfirm').invalid = true;
                         }
@@ -239,8 +240,12 @@
                     else {
                         return true
                     }
+                },
+                _logGooglePlus: function (event) {
+                    this.ajax_url = "/users/google-auth";
+                    document.getElementById('user-ajax').generateRequest();
                 }
             });
-        })();       
+        })();
     </script>
 </dom-module>

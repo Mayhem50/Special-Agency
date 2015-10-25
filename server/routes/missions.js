@@ -11,7 +11,7 @@ module.exports = function () {
         console.log(req.query.mission);
         
         var mission = new Mission(req.body.mission);
-        mission.owner = req.user._id;
+        mission._owner = req.user._id;
         
         mission.save(function (err) {
             if (err) {
@@ -28,7 +28,7 @@ module.exports = function () {
     
     router.get('/missions', function (req, res) {
         console.log('Get all missions');
-        Mission.find({}).populate('owner').exec(function (err, missions) {
+        Mission.find({}).populate('_owner').populate('_agent').exec(function (err, missions) {
             if (err) {
                 return res.sendStatus(500);
             }
@@ -53,7 +53,7 @@ module.exports = function () {
     
     router.post('/missions/:id', jwtauth, function (req, res) {
         console.log('Get all missions from owner');
-        Mission.find({ 'owner' : req.params.id }, function (err, missions) {
+        Mission.find({ '_owner' : req.params.id }, function (err, missions) {
             if (err) {
                 return res.sendStatus(500);
             }
@@ -84,9 +84,11 @@ module.exports = function () {
         console.log('Update mission: ' + req.params.id);
         
         if (req.params.action == 'accept') {
-            Mission.findOneAndUpdate({ '_id' : req.query._id }, { '_agent' : req.user._id }, function (err, mission) {
+            Mission.findOneAndUpdate({ '_id' : req.body.mission._id }, { '_agent' : req.user._id }, function (err, mission) {
                 console.log('find missions');
                 if (err) { return res.sendStatus(500); }
+                
+                if (!mission) { return res.sendStatus(500); }
 
                 return res.json({
                     method: 'PUT',
@@ -98,6 +100,8 @@ module.exports = function () {
             Mission.findOneAndUpdate({ '_id' : req.body.mission._id }, req.body.mission, function (err, mission) {
                 console.log('find missions');
                 if (err) { return res.sendStatus(500); }
+                
+                if (!mission) { return res.sendStatus(500); }
                 
                 return res.json( {
                     method: 'PUT',

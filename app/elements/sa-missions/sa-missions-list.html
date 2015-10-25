@@ -81,7 +81,7 @@
     </style>
 
     <template>
-        <template is="dom-repeat" items="[[missions]]" filter="_whichRole">
+        <template is="dom-repeat" items="[[missions]]" filter="_whichfilter">
             <paper-item class="missions" style="width:50%;" on-click="_onClick">
                 <paper-item-body>
                     <div>[[item.title]]</div>
@@ -109,7 +109,7 @@
                         type: Object,
                         notify: true
                     },
-                    role:{
+                    filter:{
                         type: String,
                         notify: true
                     },
@@ -176,12 +176,21 @@
                     this.fire('mission-edit', { data: target._templateInstance.item });
                     this._isForShow = false;
                 },
-                _whichRole: function (item) {
-                    if (this.role === 'agent') {
-                        return item.owner._id !== window.sessionStorage['id'];
+                _whichfilter: function (item) {
+                    if (this.filter === 'search') {
+                        if (item._agent)
+                            return (item._owner._id !== window.sessionStorage['id'] && item._agent._id !== window.sessionStorage['id']);
+                        else
+                            return item._owner._id !== window.sessionStorage['id'];
                     }
-                    else if (this.role === 'sponsor') {
-                        return item.owner._id == window.sessionStorage['id'];
+                    else if (this.filter === 'event') {
+                        if (item._agent)
+                            return (item._owner._id !== window.sessionStorage['id'] && item._agent._id === window.sessionStorage['id']);
+                        else
+                            return false;
+                    }
+                    else if (this.filter === 'sponsor') {
+                        return item._owner._id == window.sessionStorage['id'];
                     }
                     else {
                         return true;

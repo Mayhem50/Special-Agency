@@ -71,6 +71,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         app.route = 'login';
     }
     
+    app.getAgentMenuChoice = function (event){
+        var target = event.target;
+        
+        app.mission_filter = target.selectedItem.id;
+        app.missions_notify = !app.missions_notify;
+    }
+    
     var updateMenuBar = function (event) {        
         if ($(window).width() < 640) {
             $('.main-collapse-button').hide();

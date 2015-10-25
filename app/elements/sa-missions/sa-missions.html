@@ -25,7 +25,7 @@
     <template>
 
         <neon-animated-pages id="pages" selected="0">
-            <sa-missions-list role="{{role}}" missions="[[missions]]" on-item-click="_onMissionClick" on-mission-delete="_onMissionDelete" on-mission-edit="_onMissionEdit"></sa-missions-list>
+            <sa-missions-list filter="{{filter}}" missions="[[missions]]" on-item-click="_onMissionClick" on-mission-delete="_onMissionDelete" on-mission-edit="_onMissionEdit"></sa-missions-list>
             <sa-mission-infos mission="[[mission]]" hero="hero" on-close="_onCloseMission" on-accept-mission="_onAcceptMission" on-request-login="_onRequestLogin"></sa-mission-infos>
             <sa-mission-creation id="mission-creation" infos="{{mission}}" on-close="_onMissionCreationClose" is-for-edit="{{_isForEdit}}"></sa-mission-creation>
         </neon-animated-pages>
@@ -127,7 +127,7 @@
                         type: String,
                         value: '/missions'
                     },
-                    role: {
+                    filter: {
                         type: String,
                         value: 'none',
                         notify: true
@@ -147,18 +147,18 @@
                 },
                 handleNotification: function () {
                     if (window.sessionStorage.token !== "undefined" && window.sessionStorage.token != '') {
-                        if (app.drawer_route == 0) {
-                            this.role = 'agent';
+                        if (app.drawer_route == 0) {                            
+                            this.filter = app.mission_filter;
                         }
                         else if (app.drawer_route == 1) {
-                            this.role = 'sponsor';
+                            this.filter = 'sponsor';
                         }
                         else {
-                            this.role = 'none';
+                            this.filter = 'none';
                         }
                     }
                     else {
-                        this.role = 'none';
+                        this.filter = 'none';
                     }
                     this.getMissions();
                 },

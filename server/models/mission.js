@@ -8,7 +8,7 @@ module.exports = mongoose.model(
         level : { type : Number, min : 0, max : 2 },
         reward : Number,
         descritpion : String,
-        owner : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        _owner : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         status : { type : Number, min : 0, max : 2 },
         creationDate : { type : Date, default: Date.now },
         todoDate : { type : Date, default: Date.now },

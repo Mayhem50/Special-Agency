@@ -58,34 +58,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </a>
                     <span class="flex"></span>
 
-                        <div hidden$="{{!isLogged}}">
-                            <span>{{agent_ID}}</span>
-                            <a data-route="profile" href="/profile">
-                                <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="account-circle" on-tap="onMenuSelect"></paper-icon-button>
-                            </a>
-                        </div>
-                        <div hidden$="{{isLogged}}">
-                            <span>{{agent_ID}}</span>
-                            <a data-route="login" href="/login">
-                                <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="account-box" on-tap="onMenuSelect"></paper-icon-button>
-                            </a>
-                        </div>
+                    <div hidden$="{{!isLogged}}">
+                        <span>{{agent_ID}}</span>
+                        <a data-route="profile" href="/profile">
+                            <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="account-circle" on-tap="onMenuSelect"></paper-icon-button>
+                        </a>
+                    </div>
+                    <div hidden$="{{isLogged}}">
+                        <span>{{agent_ID}}</span>
+                        <a data-route="login" href="/login">
+                            <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="account-box" on-tap="onMenuSelect"></paper-icon-button>
+                        </a>
+                    </div>
 
                 </paper-toolbar>
 
-                    <paper-tabs hidden$="{{!isLogged}}" class="drawer-tabs" selected="{{drawer_route}}" noink on-iron-select="onRoleChange">
-                        <paper-tab class="drawer-tab">Agent</paper-tab>
-                        <paper-tab class="drawer-tab">Sponsor</paper-tab>
-                    </paper-tabs>
+                <paper-tabs hidden$="{{!isLogged}}" class="drawer-tabs" selected="{{drawer_route}}" noink on-iron-select="onRoleChange">
+                    <paper-tab class="drawer-tab">Agent</paper-tab>
+                    <paper-tab class="drawer-tab">Sponsor</paper-tab>
+                </paper-tabs>
 
-                    <div hidden$="{{!isLogged}}" class="drawer-content">
+                <div hidden$="{{!isLogged}}" class="drawer-content">
 
-                        <iron-pages selected="{{drawer_route}}">
-                            <div>Agent</div>
-                            <div>Sponsor</div>
-                        </iron-pages>
+                    <iron-pages selected="{{drawer_route}}">
+                        <div>
+                            <paper-menu on-iron-select="getAgentMenuChoice">
+                                <div id="search">
+                                    <iron-icon icon="search"></iron-icon>
+                                    <span>Find Missions</span>
+                                </div>
+                                <div id="event">
+                                    <iron-icon icon="event"></iron-icon>
+                                    <span>My Missions</span>
+                                </div>
+                            </paper-menu>
+                        </div>
 
-                    </div>
+
+                        <div>
+                            Sponsor
+                        </div>
+                    </iron-pages>
+
+                </div>
 
             </paper-scroll-header-panel>
 

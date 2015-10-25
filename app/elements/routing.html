@@ -13,15 +13,7 @@
 
         page('/logout', function () {
             clearToken();
-
-            $.ajax({
-                url: '/users/logout',                
-                type : 'POST'
-            });
-
-            isAuthenticated('home', null, function () {
-                app.onLogOut();
-            });
+            app.onLogOut();
         });
 
         page('/profile', function (data) {

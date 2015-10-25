@@ -1,0 +1,166 @@
+﻿
+<dom-module id="sa-login-signup">
+    <style>
+
+
+
+    </style>
+    <template>
+
+        <div>
+            <paper-input id="firstName" is="firstName" label="First Name" name="firstName" value="{{_firstName::input}}"></paper-input>
+            <paper-input id="lastName" is="lastName" label="Last Name" name="lastName" value="{{_lastName::input}}"></paper-input>
+
+            <paper-input id="email" is="email" label="Email" name="email" value="{{_email::input}}" error-message="{{_emailErrorMessage}}" on-keyup="_checkEmail"></paper-input>
+
+            <paper-input id="password" is="password" label="Password" type="password" name="password" value="{{_password::input}}"></paper-input>
+            <paper-input id="passwordConfirm" is="passwordConfirm" type="password" label="Confirm Password" value="{{_passwordConfirm}}" error-message="Not same password"></paper-input>
+
+            </br>
+            </br>
+        </div>
+
+        <div>
+            <paper-button id="SendButton" on-click="_signup" raised>SIGNUP</paper-button>
+        </div>
+
+        <iron-ajax id="check-availability-ajax"
+                   url="checkAvailability/email"
+                   params="{{_email}}"
+                   handle-as="json"
+                   method="post"
+                   on-response="_handleResponse"
+                   last-response="{{_response}}">
+        </iron-ajax>
+
+</template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-login-signup',
+
+                properties: {
+                    _email: {
+                        type: String
+                    },
+                    _firstName: {
+                        type: String
+                    },
+                    _lastName: {
+                        type: String
+                    },
+                    _password: {
+                        type: String
+                    },
+                    _passwordConfirm: {
+                        type: String
+                    },
+                    _emailErrorMessage: {
+                        type: String,
+                        value: 'Not an email'
+                    },
+                    _response: {
+                        type: Object,
+                        notify: true,
+                        value: function () {
+                            message: ""
+                        }
+                    },
+                    sharedElements: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'hero': this
+                            }
+                        }
+                    },
+                    animationConfig: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'entry': [{
+                                    name: 'fade-in-animation',
+                                    id: 'hero',
+                                    toPage: this,
+                                    timing: {
+                                        delay: 150
+                                    }
+                                }],
+                                'exit': [{
+                                    name: 'fade-out-animation',
+                                    node: this,
+                                }]
+                            }
+                        }
+                    }
+                },
+                _signup: function () {
+                    if (this._validateBeforeSend()) {
+                        this.fire('signup', {
+                            email: this._email,
+                            firstName: this._firstName,
+                            lastName: this._lastName,
+                            password: this._password
+                        });
+                    }
+                },
+                _checkEmail: function () {
+                    if (!this.isForLogin) {
+                        var regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
+                        if (!regex.test(this._email)) {
+                            this.emailErrorMessage = 'Not an email';
+                            document.getElementById('email').invalid = true;
+                        }
+                        else {
+                            document.getElementById('email').invalid = false;
+                        }
+                        this.availabilityRoute = "checkAvailability/email";
+                        document.getElementById('check-availability-ajax').generateRequest();
+                    }
+                },
+                _handleResponse: function () {
+                    console.log(this._response);
+
+                    if (typeof this._response == "undefined" || this._response == null) {
+                        return;
+                    }
+
+                    if (!this._response.isFree) {
+                        this.emailErrorMessage = 'Email albready used';
+                        document.getElementById('email').invalid = true;
+                    }
+                    else {
+                        var regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
+                        if (!regex.test(this._email)) {
+                            this.emailErrorMessage = 'Not an email';
+                            document.getElementById('email').invalid = true;
+                        }
+                    }
+                },
+                _validateBeforeSend: function (event, detail, sender) {
+                    if (this._password !== this._passwordConfirm) {
+                        document.getElementById('password').invalid = true;
+                        document.getElementById('passwordConfirm').invalid = true;
+                    }
+                    else {
+                        document.getElementById('password').invalid = false;
+                        document.getElementById('passwordConfirm').invalid = false;
+                    }
+
+                    if (document.getElementById('email').validate() &&
+                        this._username !== '' &&
+                        this._email !== '' &&
+                        this._password !== '' &&
+                        this._password === this._passwordConfirm &&
+                        this._response.isFree === true) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            });
+        })();
+    </script>
+</dom-module>

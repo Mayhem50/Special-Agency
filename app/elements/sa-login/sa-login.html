@@ -1,70 +1,69 @@
-﻿<dom-module id="sa-login">
+﻿<link rel="import" href="../../../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../../../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../../../bower_components/paper-toggle-button/paper-toggle-button.html">
+
+<link rel="import" href="sa-login-signin.html" />
+<link rel="import" href="sa-login-signup.html" />
+
+<dom-module id="sa-login">
     <style>
-        .login {
-            border-radius: 2px;
-            height: 100%;
-            padding: 16px 0 16px 0;
-            width: calc(98.66% - 16px);
-            margin: 16px auto;
-            background: white;
-        }
-
-        .form {
-            padding: 0px 20px 20px 20px;
-        }
-
         .title {
             font-size: 34px;
             padding: 20px 20px 0px 20px;
         }
+
+        .footer {
+            position: absolute;
+            bottom: 25px;
+        }
+
+        paper-material {
+            max-width: 75%;
+            margin-left: auto;
+            margin-right: auto;
+            width: 95%;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
     </style>
     <template>
 
-        <paper-material class="login" elevation="1">
-            <h2 class="title">Loggin</h2>
+        <paper-material id="login">
 
-            <div class="form">
-                <paper-input id="email" is="email" label="Email" name="email" value="{{infos.email::input}}" error-message="{{emailErrorMessage}}" on-keyup="checkEmail"></paper-input>
-                <paper-input id="password" is="password" label="Password" type="password" name="password" value="{{infos.password::input}}"></paper-input>
+            <div class="content">
+                <h2>Login</h2>
 
-                <iron-collapse id="togglePart" tabindex="0">
-                    <paper-input id="passwordConfirm" is="passwordConfirm" type="password" label="Confirm Password" value="{{passwordConfirm}}" error-message="Not same password"></paper-input>
-                    <paper-input id="firstName" is="firstName" label="First Name" name="firstName" value="{{infos.firstName::input}}"></paper-input>
-                    <paper-input id="lastName" is="lastName" label="Last Name" name="lastName" value="{{infos.lastName::input}}"></paper-input>
-                    
+                <iron-collapse id="signin-collapse">
+                    <sa-login-signin on-signin="_sendSignin"></sa-login-signin>
                 </iron-collapse>
 
-                </br>
-                <paper-checkbox is="remember" label="Remember Me" checked="{{remember}}">Remember Me</paper-checkbox>
+                <iron-collapse id="signup-collapse">
+                    <sa-login-signup on-signup="_sendSignup"></sa-login-signup>
+                </iron-collapse>
 
-                </br>
-                </br>
-                <paper-button id="SendButton" on-click="send" raised>{{sendButtonText}}</paper-button>
-                </br>
-                <paper-button id="ToggleButton" on-click="toggle">{{toggleButtonText}}</paper-button>
             </div>
-
-            <span>Response is: </span><span>{{response.message}}</span>
+            </br>
+            <div>
+                <paper-checkbox is="remember" label="Remember Me" checked="{{_remember}}">Remember Me</paper-checkbox>
+                </br>
+                </br>
+                </br>
+                <div>Signin  <paper-toggle-button on-change="_toggle">Signup</paper-toggle-button></div>
+                </br>
+                <span>Response is: </span><span>{{_response.message}}</span>
+            </div>
 
         </paper-material>
 
-        <iron-ajax id="user-ajax"
-                   url="{{ajax_url}}"
-                   params="{{infos}}"
+        <iron-ajax id="login-ajax"
+                   url="{{_ajax_url}}"
+                   params="{{_infos}}"
                    handle-as="json"
                    method="POST"
-                   on-response="handleResponse"
-                   last-response="{{response}}">
+                   on-response="_handleResponse"
+                   last-response="{{_response}}">
         </iron-ajax>
 
-        <iron-ajax id="check-availability-ajax"
-                   url="{{availabilityRoute}}"
-                   params="{{infos}}"
-                   handle-as="json"
-                   method="post"
-                   on-response="handleAvaibilityResponse"
-                   last-response="{{response}}">
-        </iron-ajax>
     </template>
 
     <script>
@@ -74,176 +73,74 @@
                 properties: {
                     infos: {
                         type: Object,
-                        notify: true,
-                        value: function () {
-                            return {
-                                firstName: '',
-                                lastName: '',
-                                password: '',
-                                email: ''
-                            }
-                        }
                     },
-                    remember: {
+                    _remember: {
                         type: Boolean,
                         value: true
                     },
-                    passwordConfirm: {
-                        type: String
-                    },
-                    emailErrorMessage: {
+                    _ajax_url: {
                         type: String,
-                        value: 'Not an email'
+                        value: '/users'
                     },
-                    ajax_url: {
-                        type: String,
-                        value: 'users/login'
-                    },
-                    availabilityRoute: {
-                        type: String,
-                        value: ''
-                    },
-                    response: {
+                    _response: {
                         type: Object,
                         notify: true,
                         value: function () {
                             message: ""
                         }
-                    },
-                    sendButtonText: {
-                        type: String,
-                        value: "Sign In"
-                    },
-                    toggleButtonText: {
-                        type: String,
-                        value: "Sign Up"
-                    },
-                    isForLogin: {
-                        type: Boolean,
-                        value: true
                     }
                 },
                 ready: function () {
-
+                    this.querySelector('#signin-collapse').show();
+                    this.querySelector('#signup-collapse').hide();
                 },
-                send: function () {
-                    if (this.validateBeforeSend()) {
-                        this.ajax_url = "/users/login";
-                        document.getElementById('user-ajax').generateRequest();
-                    }
-                },
-                handleResponse: function () {
-                    if (typeof this.response == "undefined" || this.response == null) {
+                _handleResponse: function () {
+                    if (typeof this._response == "undefined" || this._response == null) {
                         return;
                     }
 
-                    if (this.response.success && this.response.method === 'POST') {
-                        //document.querySelector('#deconnexionToggle').show();
-
+                    if (this._response.success && this._response.method === 'POST') {
                         if (this.remember === true) {
-                            window.localStorage.token = this.response.token;
+                            window.localStorage.token = this._response.token;
                             window.localStorage.remember = true;
-                            window.localStorage.setItem('email', this.infos.email);
-                            window.localStorage.setItem('id', this.response.id);
+                            window.localStorage.setItem('email', this._infos._email);
+                            window.localStorage.setItem('id', this._response.id);
                         }
 
-                        window.sessionStorage.token = this.response.token;
-                        window.sessionStorage.setItem('email', this.infos.email);
-                        window.sessionStorage.setItem('id', this.response.id);
+                        window.sessionStorage.token = this._response.token;
+                        window.sessionStorage.setItem('email', this._infos._email);
+                        window.sessionStorage.setItem('id', this._response.id);
 
                         app.onLogIn();
-
-                        this.infos = function () {
-                            return {
-                                firstName: '',
-                                lastName: '',
-                                password: '',
-                                email: ''
-                            }
-                        }
                     }
                 },
-                toggle: function (event, detail, sender) {
-                    var val = document.querySelector('#togglePart').toggle();
+                _toggle: function (event) {
+                    var signup = this.querySelector('#signup-collapse');
+                    var signin = this.querySelector('#signin-collapse');
 
-                    if (this.sendButtonText === "Sign In") {
-                        this.sendButtonText = "Sign Up";
-                        this.toggleButtonText = "Sign In";
-                        this.route = "users";
-                        this.isForLogin = false;
-                    }
-                    else {
-                        this.sendButtonText = "Sign In";
-                        this.toggleButtonText = "Sign Up";
-                        this.route = "users/login";
-                        this.isForLogin = true;
-                    }
+                    signin.toggle();
+                    signup.toggle();
                 },
-                checkEmail: function () {
-                    if (!this.isForLogin) {
-                        var regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
-                        if (!regex.test(this.infos.email)) {
-                            this.emailErrorMessage = 'Not an email';
-                            document.getElementById('email').invalid = true;
-                        }
-                        else {
-                            document.getElementById('email').invalid = false;
-                        }
-                        this.availabilityRoute = "checkAvailability/email";
-                        document.getElementById('check-availability-ajax').generateRequest();
-                    }
+                _sendSignup: function (event) {
+                    this._infos = {
+                        firstName: event.detail.firstName,
+                        lastName: event.detail.lastName,
+                        email: event.detail.email,
+                        password: event.detail.password
+                    };
+
+                    this._ajax_url = '/users';
+                    this.querySelector('iron-ajax').generateRequest();
                 },
-                handleAvaibilityResponse: function () {
-                    console.log('handle availability response');
-                    console.log(this.response);
+                _sendSignin: function(event){
 
-                    if (typeof this.response == "undefined" || this.response == null) {
-                        return;
-                    }
+                    this._infos = {
+                        email: event.detail.email,
+                        password: event.detail.password
+                    };
 
-                    if (!this.response.isFree) {
-                        this.emailErrorMessage = 'Email albready used';
-                        document.getElementById('email').invalid = true;
-                    }
-                    else {
-                        var regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
-                        if (!regex.test(this.infos.email)) {
-                            this.emailErrorMessage = 'Not an email';
-                            document.getElementById('email').invalid = true;
-                        }
-                    }
-                },
-                validateBeforeSend: function (event, detail, sender) {
-                    if (!this.isForLogin) {
-
-                        if (this.infos.password !== this.passwordConfirm) {
-                            document.getElementById('password').invalid = true;
-                            document.getElementById('passwordConfirm').invalid = true;
-                        }
-                        else {
-                            document.getElementById('password').invalid = false;
-                            document.getElementById('passwordConfirm').invalid = false;
-                        }
-
-                        if (document.getElementById('email').validate() &&
-                            this.infos.username !== '' &&
-                            this.infos.email !== '' &&
-                            this.infos.password !== '' &&
-                            this.infos.password === this.passwordConfirm &&
-                            this.response.isFree === true) {
-                            return true;
-                        }
-                        else {
-                            return false;
-                        }
-                    }
-                    else {
-                        return true
-                    }
-                },
-                _logGooglePlus: function (event) {
-                    this.ajax_url = "/users/google-auth";
-                    document.getElementById('user-ajax').generateRequest();
+                    this._ajax_url = '/users/login';
+                    this.querySelector('#login-ajax').generateRequest();
                 }
             });
         })();

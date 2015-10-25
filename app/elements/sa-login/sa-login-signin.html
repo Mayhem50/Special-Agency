@@ -1,0 +1,60 @@
+﻿
+<dom-module id="sa-login-signin">
+    <style>
+
+
+
+    </style>
+    <template>
+
+        <div>
+            <paper-input id="email" is="email" label="Email" name="email" value="{{_email::input}}"></paper-input>
+            <paper-input id="password" is="password" label="Password" type="password" name="password" value="{{_password::input}}"></paper-input>
+            </br>
+            </br>
+        </div>
+        <div>
+            <paper-button id="SendButton" on-click="_signin" raised>Signin</paper-button>
+        </div>
+
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-login-signin',
+
+                properties: {
+                    _email: {
+                        type: String
+                    },
+                    _password: {
+                        type: String
+                    },
+                    animationConfig: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                'exit': [{
+                                    name: 'fade-out-animation',
+                                    fromPage: this,
+                                    node: this
+                                }]
+                            }
+                        }
+                    }
+                },
+                _signin: function (event) {
+                    this.sharedElements = {
+                        hero: this
+                    };
+
+                    this.fire('signin', {
+                        email: this._email,
+                        password: this._password
+                    })
+                }
+            });
+        })();
+    </script>
+</dom-module>

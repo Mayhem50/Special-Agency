@@ -1,4 +1,5 @@
 ﻿<link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../../bower_components/google-map/google-map.html" />
 
 <dom-module id="sa-mission-creation">
     <style>
@@ -120,12 +121,11 @@
                     <iron-icon icon="file-upload" style="color:blue;"></iron-icon>
                 </div>
             </div>
-        </div>
 
-        <div id="buttons">
-            <paper-fab icon="close" id="leftButton" class="leftButton" on-tap="_cancelCreation"></paper-fab>
-            <paper-fab icon="check" id="rightButton" class="rightButton" on-tap="_addMission"></paper-fab>
-        </div>
+            <div id="buttons">
+                <paper-fab icon="close" id="leftButton" class="leftButton" on-tap="_cancelCreation"></paper-fab>
+                <paper-fab icon="check" id="rightButton" class="rightButton" on-tap="_addMission"></paper-fab>
+            </div>
 
     </template>
 
@@ -148,6 +148,9 @@
                                 'scale': this.$.buttons
                             }
                         }
+                    },
+                    _map: {
+                        type: Object
                     },
                     animationConfig: {
                         type: Object,
@@ -196,6 +199,8 @@
                         type: Boolean,
                     }
                 },
+                ready: function () {
+                },
                 _cancelCreation: function () {
                     this._isClosed = true;
                     this.fire('close', {
@@ -207,8 +212,11 @@
                     this._isClosed = true;
                     this.fire('close', {
                         closed: this._isClosed,
-                        validate : true
+                        validate: true
                     });
+                },
+                _gmapReady: function (event) {
+                    console.log(event);
                 }
             });
         })();

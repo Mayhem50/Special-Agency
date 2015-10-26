@@ -100,7 +100,7 @@
                     }
 
                     if (this._response.success && this._response.method === 'POST') {
-                        if (this.remember === true) {
+                        if (this._remember === true) {
                             window.localStorage.token = this._response.token;
                             window.localStorage.remember = true;
                             window.localStorage.setItem('email', this._infos._email);

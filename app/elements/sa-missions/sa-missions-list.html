@@ -84,11 +84,11 @@
         <template is="dom-repeat" items="[[missions]]" filter="_whichfilter">
             <paper-item class="missions" style="width:50%;" on-click="_onClick">
                 <paper-item-body>
-                    <div>[[item.title]]</div>
-                    <div hidden$="{{_hiddenElement}}">
+                    <span class="flex">[[item.title]]</span>
+                    <span hidden$="{{_hiddenElement}}" class="right-align">
                         <paper-icon-button class="tool" id="delete" icon="delete" on-tap="_onDeleteClick"></paper-icon-button>
                         <paper-icon-button class="tool" id="modify" icon="create" on-tap="_onEditClick"></paper-icon-button>
-                    </div>
+                    </span>
                 </paper-item-body>
             </paper-item>
         </template>
@@ -136,7 +136,26 @@
                     _hiddenElement: {
                         type: Boolean,
                         value: true
+                    },
+                    xPos: {
+                        type: Number
+                    },
+                    yPos: {
+                        type: Number
                     }
+                },
+                ready:function(){                    
+                    this.sharedElements = {
+                        hero: this,
+                        ripple: this,
+                        scale: this
+                    };
+                },
+                setAnimationConfig: function (X, Y) {
+                    this.animationConfig['exit'][0].gesture = {
+                        x: X,
+                        y: Y
+                    };
                 },
                 _onClick: function (event) {
                     if (!this._isForShow) {

@@ -31,7 +31,7 @@
         </neon-animated-pages>
 
         <div>
-            <paper-fab id="createButton" class="createButton" icon="create" on-tap="_onCreateMissionClick"></paper-fab>
+            <paper-fab id="createButton" class="createButton" icon="create" on-click="_onCreateMissionClick"></paper-fab>
         </div>
         
         <iron-ajax id="mission-ajax"
@@ -189,6 +189,7 @@
                     }
                 },
                 _onCreateMissionClick: function (event) {
+                    this.querySelector('sa-missions-list').setAnimationConfig(event.x || event.pageX, event.y || event.pageY);
                     this._opendCreationView(false);
                 },
                 _onMissionCreationClose: function (e) {

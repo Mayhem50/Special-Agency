@@ -37,6 +37,7 @@
     <Compile Include="app\scripts\jquery-1.11.3.js" />
     <Compile Include="app\sw-import.js" />
     <Compile Include="gulpfile.js" />
+    <Compile Include="server\controllers\jwtauth-socket.js" />
     <Compile Include="server\controllers\jwtauth.js" />
     <Compile Include="server\controllers\mongoose.js" />
     <Compile Include="server\controllers\passport.js" />

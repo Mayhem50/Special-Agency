@@ -9,7 +9,7 @@ module.exports = mongoose.model(
         reward : Number,
         descritpion : String,
         _owner : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        status : { type : Number, min : 0, max : 2 },
+        status : { type : Number, min : 0, max : 10 },
         creationDate : { type : Date, default: Date.now },
         todoDate : { type : Date, default: Date.now },
         finishDate : Date,

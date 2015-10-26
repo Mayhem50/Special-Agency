@@ -8,7 +8,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 */
 
 (function (document) {
-    'use strict';
+    'use strict';   
     
     // Grab a reference to our auto-binding template
     // and give it some initial binding values
@@ -119,7 +119,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             window.sessionStorage['email'] = window.localStorage['email'];
             window.sessionStorage['id'] = window.localStorage['id'];
             app.isLogged = true;
-            //document.getElementById('deconnexionToggle').show();            
+            //document.getElementById('deconnexionToggle').show();  
+                        
+            app.socket.on('connect', function () {
+                console.log('authenticated');
+            }).on('disconnect', function () {
+                console.log('disconnected');
+            });
+        
         }
         else {
             app.isLogged = false;
@@ -159,6 +166,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             window.history.replaceState(currentState, 'Special-Agency', splited[0]);
         }
     });
+    
+    app.socket = io.connect('', {
+        query: 'token=' + window.sessionStorage.token
+    });
+
+    if (!Date.prototype.toISOString) {
+        (function () {
+            
+            function pad(number) {
+                if (number < 10) {
+                    return '0' + number;
+                }
+                return number;
+            }
+            
+            Date.prototype.toISOString = function () {
+                return this.getUTCFullYear() +
+        '-' + pad(this.getUTCMonth() + 1) +
+        '-' + pad(this.getUTCDate()) +
+        'T' + pad(this.getUTCHours()) +
+        ':' + pad(this.getUTCMinutes()) +
+        ':' + pad(this.getUTCSeconds()) +
+        '.' + (this.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) +
+        'Z';
+            };
+
+        }());
+    }
 
 })(document);
 

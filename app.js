@@ -10,6 +10,7 @@ var cors = require('cors');
 var app = module.exports = express();
 var server = require('./server/controllers/server.js')(app);
 var io = require('./server/controllers/socket.io.js')(server);
+
 var db = require('./server/controllers/mongoose');
 var session = require('./server/controllers/session');
 var passport = require('./server/controllers/passport');

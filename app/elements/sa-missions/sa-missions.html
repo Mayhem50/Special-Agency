@@ -25,7 +25,7 @@
     <template>
 
         <neon-animated-pages id="pages" selected="0">
-            <sa-missions-list filter="{{filter}}" missions="[[missions]]" on-item-click="_onMissionClick" on-mission-delete="_onMissionDelete" on-mission-edit="_onMissionEdit"></sa-missions-list>
+            <sa-missions-list id="list" filter="{{filter}}" missions="[[missions]]" on-item-click="_onMissionClick" on-mission-delete="_onMissionDelete" on-mission-edit="_onMissionEdit"></sa-missions-list>
             <sa-mission-infos mission="[[mission]]" hero="hero" on-close="_onCloseMission" on-accept-mission="_onAcceptMission" on-request-login="_onRequestLogin"></sa-mission-infos>
             <sa-mission-creation id="mission-creation" infos="{{mission}}" on-close="_onMissionCreationClose" is-for-edit="{{_isForEdit}}"></sa-mission-creation>
         </neon-animated-pages>
@@ -140,6 +140,30 @@
                 listeners: {
                     'neon-animation-finish': '_onNeonAnimationFinish'
                 },
+                ready: function () {
+                    Array.prototype.indexOfObject = function (property, value) {
+                        for (var i = 0, len = this.length; i < len; i++) {
+                            if (this[i][property] === value) return i;
+                        }
+                        return -1;
+                    };
+
+                    app.socket.on('add-mission', function (data) {
+                        console.log('add mission');
+                        this.$.list.push('missions', data);
+                    }.bind(this));
+                    app.socket.on('update-mission', function (data) {
+                        console.log('update mission');
+                        var index = this.$.list.missions.indexOfObject('_id', data._id);
+                        this.$.list.splice('missions', index, 1);
+                        this.$.list.push('missions', data);
+                    }.bind(this));
+                    app.socket.on('delete-mission', function (data) {                        
+                        console.log('delete mission');
+                        var index = this.$.list.missions.indexOfObject('_id', data._id);
+                        this.$.list.splice('missions', index, 1);
+                    }.bind(this));
+                },
                 _onNeonAnimationFinish: function () {
                     if (!this.opened) {
                         this.$.createButton.style.display = 'none';
@@ -181,7 +205,7 @@
                         if (this.ajax_response.method === 'POST' || 
                             this.ajax_response.method === 'PUT' ||
                             this.ajax_response.method === 'DELETE') {
-                            this.getMissions();
+                            //this.getMissions();
                         }
                         else if (this.ajax_response.method === 'GET') {
                             this.missions = this.ajax_response.missions;
@@ -189,23 +213,25 @@
                     }
                 },
                 _onCreateMissionClick: function (event) {
+                    this._isForEdit = false;
                     this.querySelector('sa-missions-list').setAnimationConfig(event.x || event.pageX, event.y || event.pageY);
                     this._opendCreationView(false);
                 },
                 _onMissionCreationClose: function (e) {
                     if (e.detail.validate) {
-                        if (this._isForEdit) {
-                            this.ajax_method = 'PUT';
-                            this.ajax_url = '/missions/update';
+                        if(!this._isForEdit){
+                            app.socket.emit('add-mission', this.mission);
+                            this.mission = {};
                         }
-                        else {
-                            this.ajax_method = 'POST';
-                            this.ajax_url = '/missions';
+                        else if (this._isForEdit) {  
+                            var date = new Date(Date.now());
+                            this.mission.creationDate = date.toISOString();
+                            app.socket.emit('update-mission', this.mission);
+                            this.mission = {};
                         }
-                        this.sendRequest();
                     }
                     this.$.pages.selected = 0;
-                    this._playButtonAnimation(true);
+                    this._playButtonAnimation(true);                    
                 },
                 _onMissionClick: function (e) {
                     this.mission = e.detail.data;
@@ -240,10 +266,11 @@
                     this._playButtonAnimation(true);
                 },
                 _onMissionDelete: function (event) {
-                    this.ajax_method = 'DELETE';
-                    this.mission = event.detail.data;
-                    this.ajax_url = '/missions/' + event.detail.data._id;
-                    this.sendRequest();
+                    app.socket.emit('delete-mission', event.detail.data);
+                    //this.ajax_method = 'DELETE';
+                    //this.mission = event.detail.data;
+                    //this.ajax_url = '/missions/' + event.detail.data._id;
+                    //this.sendRequest();
                 },
                 _onMissionEdit: function (event) {
                     this.mission = event.detail.data;
@@ -264,6 +291,6 @@
                     this._isForEdit = isForEdit;
                 }
             });
-        })();
+        })();               
     </script>
 </dom-module>

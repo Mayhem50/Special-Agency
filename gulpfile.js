@@ -212,7 +212,7 @@ gulp.task('serve', ['mongo','styles', 'elements', 'images', 'server'], function 
                 }
             }
         },
-        proxy : 'http://127.0.0.1:3000',
+        proxy : 'http://localhost:3000',
         port : 4000,
         browser : 'google chrome',
     // Run as an http by uncommenting 'http: true'

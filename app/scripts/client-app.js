@@ -87,18 +87,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         app.mission_filter = '';
         app.drawer_route = 0;
         app.missions_notify = !app.missions_notify;
-    }
+    };
     
     app.onRequestLogin = function (){
         app.route = 'login';
-    }
+    };
     
     app.getAgentMenuChoice = function (event){
         var target = event.target;
         
         app.mission_filter = target.selectedItem.id;
         app.missions_notify = !app.missions_notify;
-    }
+    };
     
     var updateMenuBar = function (event) {        
         if ($(window).width() < 640) {
@@ -149,7 +149,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         };
     };
     
-    history.pushState = _wr('pushState'), history.replaceState = _wr('replaceState');
+    history.pushState = _wr('pushState');
+    history.replaceState = _wr('replaceState');
     
     window.addEventListener('pushState', function (event) {
         var currentState = history.state;

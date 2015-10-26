@@ -5,6 +5,8 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>Special-Agency</Name>
     <RootNamespace>Special-Agency</RootNamespace>
+    <LaunchUrl>
+    </LaunchUrl>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -12,7 +14,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3c6aefdd-c062-41fc-ab59-0caf2fde32a1</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>bin\www</StartupFile>
+    <StartupFile>app.js</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -50,7 +52,7 @@
     <Compile Include="server\routes\index.js" />
     <Compile Include="server\routes\missions.js" />
     <Compile Include="server\routes\users.js" />
-    <Compile Include="bin\www" />
+    <Compile Include="server\controllers\server.js" />
     <Content Include="app\elements\elements.html" />
     <Content Include="app\elements\routing.html" />
     <Content Include="app\elements\sa-button\sa-button.html" />
@@ -86,6 +88,7 @@
     <Content Include="LICENSE.md" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Compile Include="server\controllers\socket.io.js" />
     <Content Include="wct.conf.json" />
   </ItemGroup>
   <ItemGroup>

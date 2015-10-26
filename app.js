@@ -8,16 +8,16 @@ var flash = require('connect-flash');
 var cors = require('cors');
 
 var app = module.exports = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
-
-app.set('JwtSecret', 'xbJ9Phit');
-
+var server = require('./server/controllers/server.js')(app);
+var io = require('./server/controllers/socket.io.js')(server);
 var db = require('./server/controllers/mongoose');
 var session = require('./server/controllers/session');
 var passport = require('./server/controllers/passport');
 
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use(express.static(path.join(__dirname, 'app')));
 
@@ -37,6 +37,8 @@ app.use(index);
 app.use(users);
 app.use(helpers);
 app.use(missions);
+
+
 
 //app.use(csrf());
 

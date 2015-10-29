@@ -4,7 +4,7 @@
 
 <link rel="import" href="sa-mission-creation.html">
 <link rel="import" href="sa-mission-infos.html">
-<link rel="import" href="sa-missions-list.html">
+<link rel="import" href="sa-mission-card.html">
 
 <dom-module id="sa-missions">
     <style>
@@ -20,15 +20,28 @@
             position: fixed;
             bottom: 25px;
             right: 40px;
+        }        
+
+        .container {
+            padding: 4px;
+            margin: 1px auto;
+            width: 55%;
+            display:flex;
+            flex-wrap:wrap;
         }
     </style>
     <template>
+            <iron-pages id="pages" selected="0">
+                <div class="container">
+                    <sa-mission-creation id="mission-creation"></sa-mission-creation>
+                    <template is="dom-repeat" items="[[missions]]">
+                       <sa-mission-card></sa-mission-card>
+                    </template>
+                </div>
 
-        <neon-animated-pages id="pages" selected="0">
-            <sa-missions-list id="list" filter="{{filter}}" missions="[[missions]]" on-item-click="_onMissionClick" on-mission-delete="_onMissionDelete" on-mission-edit="_onMissionEdit"></sa-missions-list>
-            <sa-mission-infos mission="[[mission]]" hero="hero" on-close="_onCloseMission" on-accept-mission="_onAcceptMission" on-request-login="_onRequestLogin"></sa-mission-infos>
-            <sa-mission-creation id="mission-creation" infos="{{mission}}" on-close="_onMissionCreationClose" is-for-edit="{{_isForEdit}}"></sa-mission-creation>
-        </neon-animated-pages>
+                
+                
+            </iron-pages>
 
         <div>
             <paper-fab id="createButton" class="createButton" icon="create" on-click="_onCreateMissionClick"></paper-fab>

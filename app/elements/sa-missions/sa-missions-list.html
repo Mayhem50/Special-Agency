@@ -1,98 +1,132 @@
 ﻿<link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="../../../bower_components/iron-grid/iron-grid.html">
+<link rel="import" href="../../../bower_components/zero-list-hero/zero-list-hero.html">
 
 <dom-module id="sa-missions-list">
     <style>
         :host {
             display: block;
-            background: #000;
         }
 
-        .missions {
-            border-radius: 2px;
-            padding: 16px;
-            width: calc(98.66% - 16px);
-            margin: 16px auto;
-            background: white;
-        }
-
-        .title {
-            font-size: 34px;
-        }
-
-        iron-image {
-            width: 25%;
-            height: 25%;
-        }
-
-        .onboard {
-            --iron-icon-height: 48px;
-            --iron-icon-width: 48px;
-        }
-
-        paper-fab {
-            background-color: #118c89;
-        }
-
-        paper-dialog {
-            background-color: white;
-        }
-
-        .red .paper-header {
-            background-color: #118c89;
-        }
-
-        .wizzard {
-            Position: Fixed;
-            Top: 0;
-            Left: 0;
-            Right: 0;
-            Bottom: 0;
-            Padding: 10px;
-            Margin: 15px;
-        }
-
-        .createButton {
-            position: fixed;
-            bottom: 25px;
-            right: 40px;
-        }
-
-        .type-wrapper {
-            display: inline-block;
-            padding: 2px;
-            margin: 6px 0;
-        }
-
-            .type-wrapper.iron-selected {
-                background-color: #00BCD4;
-                border-radius: 50%;
-            }
-
-        .iconList {
-            margin: 16px 0 8px 0;
-            overflow: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .tool{
+        .tool {
             width: 32px;
             height: 32px;
+        }
+
+        .container {
+            padding: 4px;
+            margin: 1px auto;
+            width: 55%;
+            display:flex;
+            flex-wrap:wrap;
+        }
+
+        paper-card {
+            height: 480px;
+            min-width: 320px;
+            max-width: 320px;
+            padding: 2px;
+            margin: 15px 10px;
+            align-self:center;
+        }
+
+        .header {
+            height: 336px;
+            background-color: green;
+            display:flex;
+            justify-content:flex-start;
+            flex-flow:column;
+            display:flex;
+            justify-content:space-between;
+        }
+
+        .middle {
+            height: 48px;
+            background-color: #ff0000;
+        }
+
+        .footer {
+            height: 96px;
+            background-color: #002680;
+        }
+
+        .gain {
+            height: 100px;
+            background-color: rgba(76, 255, 0, 0.00);
+            font-size: 16px;
+            font-family: 'Segoe UI Symbol';
+            color: #808080;
+        }
+
+        .reward {
+            font-size: 48px;
+            margin: 5px auto auto 15px;
+        }
+
+        .dates {
+            display: flex;
+            flex-flow:row;
+            bottom: 10px;
+            background-color: rgba(0, 255, 144, 0.00);
+            justify-content:space-around;
+            height: 10%;
+            flex-wrap:nowrap;
+            align-items:stretch;
+            padding:10px;
+        }
+
+        .date {
+            margin: 0 2px 0 2px;
+            background-color:#00ffff;
         }
     </style>
 
     <template>
-        <template is="dom-repeat" items="[[missions]]" filter="_whichfilter" sort="_sort" observer="*">
-            <paper-item class="missions" style="width:50%;" on-click="_onClick">
-                <paper-item-body>
-                    <span class="flex">[[item.title]]</span>
-                    <span class="flex">[[item.creationDate]]</span>
-                    <span hidden$="{{_hiddenElement}}" class="right-align">
-                        <paper-icon-button class="tool" id="delete" icon="delete" on-tap="_onDeleteClick"></paper-icon-button>
-                        <paper-icon-button class="tool" id="modify" icon="create" on-tap="_onEditClick"></paper-icon-button>
-                    </span>
-                </paper-item-body>
-            </paper-item>
-        </template>
+        <div class="container">
+            <template is="dom-repeat" items="[[missions]]" filter="_whichfilter" sort="_sort" observer="*">
+                <paper-card on-click="_onClick">
+
+                    <div class="header">
+
+                        <div class="gain">
+                            <div>Earned up to</div>
+                            <div class="reward">300€</div>
+                        </div>
+                        <div class="dates">
+                            <div class="date">
+                                <div>Nov</div>
+                            </div>
+                            <div class="date">
+                                <div>Nov</div>
+                            </div>
+                            <div class="date">
+                                <div>Nov</div>
+                            </div>
+                            <div class="date">
+                                <div>Nov</div>
+                            </div>
+                            <div class="date">
+                                <div>...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="middle">
+
+                    </div>
+
+                    <div class="footer ">
+
+                    </div>
+
+
+
+                </paper-card>
+
+            </template>
+        </div>
 
     </template>
 
@@ -110,29 +144,9 @@
                         type: Array,
                         notify: true
                     },
-                    filter:{
+                    filter: {
                         type: String,
                         notify: true
-                    },
-                    _isForShow:{
-                        type: Boolean,
-                        value: true
-                    },
-                    animationConfig: {
-                        type: Object,
-                        value: function () {
-                            return {
-                                'exit': [{
-                                    name: 'ripple-animation',
-                                    id: 'ripple',
-                                    fromPage: this
-                                }, {
-                                    name: 'hero-animation',
-                                    id: 'hero',
-                                    fromPage: this
-                                }]
-                            }
-                        }
                     },
                     _hiddenElement: {
                         type: Boolean,
@@ -145,7 +159,7 @@
                         type: Number
                     }
                 },
-                ready:function(){                    
+                ready: function () {
                     this.sharedElements = {
                         hero: this,
                         ripple: this,
@@ -159,25 +173,11 @@
                     };
                 },
                 _onClick: function (event) {
-                    if (!this._isForShow) {
-                        this._isForShow = !this._isForShow;
-                        return;
-                    }
-
                     var target = event.target;
                     while (target !== this && !target._templateInstance) {
                         target = target.parentNode;
                     }
-                    // configure the page animation
-                    this.sharedElements = {
-                        hero: target,
-                        ripple: target,
-                        scale: target
-                    };
-                    this.animationConfig['exit'][0].gesture = {
-                        x: event.x || event.pageX,
-                        y: event.y || event.pageY
-                    };
+
                     this.fire('item-click', {
                         data: target._templateInstance.item,
                     });
@@ -188,7 +188,6 @@
                         target = target.parentNode;
                     }
                     this.fire('mission-delete', { data: target._templateInstance.item });
-                    this._isForShow = false;
                 },
                 _onEditClick: function (event) {
                     var target = event.target;
@@ -196,23 +195,22 @@
                         target = target.parentNode;
                     }
                     this.fire('mission-edit', { data: target._templateInstance.item });
-                    this._isForShow = false;
                 },
                 _whichfilter: function (item) {
                     this._hiddenElement = true;
                     if (this.filter === 'search') {
-                        if (item._agent){
+                        if (item._agent) {
                             return (item._owner._id !== window.sessionStorage['id'] && item._agent._id !== window.sessionStorage['id']);
                         }
-                        else{
+                        else {
                             return item._owner._id !== window.sessionStorage['id'];
                         }
                     }
                     else if (this.filter === 'event') {
-                        if (item._agent){
+                        if (item._agent) {
                             return (item._owner._id !== window.sessionStorage['id'] && item._agent._id === window.sessionStorage['id']);
                         }
-                        else{
+                        else {
                             return false;
                         }
                     }

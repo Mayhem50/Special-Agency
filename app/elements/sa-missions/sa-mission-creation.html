@@ -1,131 +1,70 @@
 ﻿<link rel="import" href="../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
 <link rel="import" href="../../../bower_components/google-map/google-map.html" />
 
+<link rel="import" href="sa-mission-creation-full-view.html" />
+
 <dom-module id="sa-mission-creation">
     <style>
-        .fixed {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 100vw;
-            background-color: rgba(0, 85, 189, 0.93);
-        }
-
-        .card {
-            position: relative;
-            margin: 40px 100px 0;
-            height: 700px;
-            background-color: rgb(255, 255, 255);
-        }
-
-        .title {
-            font-size: 34px;
-        }
-
-        iron-image {
-            width: 25%;
-            height: 25%;
-        }
-
-        .onboard {
-            --iron-icon-height: 48px;
-            --iron-icon-width: 48px;
-        }
-
-        paper-fab {
-            background-color: #118c89;
-            margin: 0px;
-        }
-
-        paper-dialog {
-            background-color: white;
-        }
-
-        .mission-creation {
-            Position: Fixed;
-            Top: 0;
-            Left: 0;
-            Right: 0;
-            Bottom: 0;
-            Padding: 10px;
-            Margin: 15px;
-        }
-
-        .leftButton {
-            position: absolute;
-            left: calc(98% / 2 - 60px);
-        }
-
-        .rightButton {
-            position: absolute;
-            right: calc(98% / 2 - 60px);
-        }
-
-        .type-wrapper {
-            display: inline-block;
+        paper-card {
+            height: 480px;
+            min-width: 320px;
+            max-width: 320px;
             padding: 2px;
-            margin: 6px 0;
+            margin: 15px 10px;
+            align-self:center;
         }
 
-        .iconList {
-            margin: 16px 0 8px 0;
-            overflow: auto;
-            -webkit-overflow-scrolling: touch;
+        .header {
+            height: 336px;
+            background-color: green;
+            display:flex;
+            justify-content:flex-start;
+            flex-flow:column;
+            display:flex;
+            justify-content:flex-end;
+        }        
+
+        .header > input {
+            margin: 1px 25px 10px 25px;
+            border: solid 1px;
+            border-radius: 5px;
+            font-size: 16px;
+            height: 40px;
+            padding: 2px 15px;
+        }
+
+        .middle {
+            height: 48px;
+            background-color: #ff0000;
+        }
+
+        .footer {
+            height: 96px;
+            background-color: #002680;
         }
     </style>
     <template>
-        <div id="fixed" class="fixed"></div>
-
-        <div id="card" class="card">
-            <div>First Step</div>
-            <paper-input id="title" is="title" label="Title" name="title" value="{{infos.title::input}}"></paper-input>
-            <div class="iconList" flex>
-                <iron-selector attr-for-selected="mission-type" selected="{{infos.type}}" layout horizontal justified wrap>
-                    <div>Type</div>
-                    <div class="type-wrapper" mission-type="type-A">
-                        <iron-icon icon="add"></iron-icon>
-                    </div>
-                    <div class="type-wrapper" mission-type="type-B">
-                        <iron-icon icon="add"></iron-icon>
-                    </div>
-                    <div class="type-wrapper" mission-type="type-C">
-                        <iron-icon icon="add"></iron-icon>
-                    </div>
-                </iron-selector>
-            </div>
-            <div class="iconList" flex>
-                <div>Difficulty</div>
-                <iron-selector selected="{{infos.level}}" layo layout horizontal justified wrap>
-                    <div class="type-wrapper">
-                        <iron-icon icon="account-circle" style="color:green;"></iron-icon>
-                    </div>
-                    <div class="type-wrapper">
-                        <iron-icon icon="account-circle" style="color:blue;"></iron-icon>
-                    </div>
-                    <div class="type-wrapper">
-                        <iron-icon icon="account-circle" style="color:red;"></iron-icon>
-                    </div>
-                </iron-selector>
-            </div>
-
-            <paper-input id="reward" is="reward" type="number" min="0" label="Reward" name="reward" value="{{infos.reward::input}}"><div prefix>€</div></paper-input>
-            <paper-input id="location" is="location" label="Location" name="location" value="{{infos.location::input}}"></paper-input>
-            <paper-input id="description" is="description" label="Description" name="description" value="{{infos.description::input}}"></paper-input>
-
-            <div class="iconList">
-                <div class="type-wrapper">
-                    <iron-icon icon="camera-enhance" style="color:blue;"></iron-icon>
+        <iron-pages selected="0">
+            <paper-card>
+                <div class="header">
+                    <input id="title" is="iron-input" label="Title" name="title" value="{{_title::input}}"></input>
+                    <input id="kind" is="iron-input" label="Select a kind" name="kind" value="{{_kind::input}}"></input>
+                    <input id="reward" is="iron-input" type="number" min="0" label="Reward" name="reward" value="{{_reward::input}}"></input>
                 </div>
-                <div class="type-wrapper">
-                    <iron-icon icon="file-upload" style="color:blue;"></iron-icon>
-                </div>
-            </div>
 
-            <div id="buttons">
-                <paper-fab icon="close" id="leftButton" class="leftButton" on-tap="_cancelCreation"></paper-fab>
-                <paper-fab icon="check" id="rightButton" class="rightButton" on-tap="_addMission"></paper-fab>
-            </div>
+                <div class="middle">
+
+                </div>
+
+                <div class="footer ">
+
+                </div>
+                
+            </paper-card>
+
+            <sa-mission-creation-full-view></sa-mission-creation-full-view>
+
+        </iron-pages>
 
     </template>
 
@@ -139,58 +78,8 @@
                 ],
 
                 properties: {
-                    sharedElements: {
-                        type: Object,
-                        value: function () {
-                            return {
-                                'hero': this.$.card,
-                                'ripple': this.$.fixed,
-                                'scale': this.$.buttons
-                            }
-                        }
-                    },
                     _map: {
                         type: Object
-                    },
-                    animationConfig: {
-                        type: Object,
-                        value: function () {
-                            return {
-                                'entry': [{
-                                    name: 'ripple-animation',
-                                    id: 'ripple',
-                                    toPage: this,
-                                }, {
-                                    name: 'hero-animation',
-                                    id: 'hero',
-                                    toPage: this,
-                                    timing: {
-                                        delay: 150
-                                    }
-                                }, {
-                                    name: 'scale-up-animation',
-                                    id: 'scale',
-                                    toPage: this,
-                                    node: this.$.buttons,
-                                    timing: {
-                                        delay: 150
-                                    }
-                                }],
-                                'exit': [{
-                                    name: 'fade-out-animation',
-                                    node: this.$.fixed
-                                }, {
-                                    name: 'transform-animation',
-                                    transformFrom: 'none',
-                                    transformTo: 'translate(0px,-200vh) scale(0.9,1)',
-                                    node: this.$.card,
-                                }, {
-                                    name: 'scale-down-animation',
-                                    id: 'scale',
-                                    node: this.$.buttons
-                                }]
-                            }
-                        }
                     },
                     infos: {
                         type: Object,

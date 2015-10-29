@@ -1,0 +1,132 @@
+﻿<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<dom-module id="sa-mission-card">
+    <style>
+        :host {
+            display: block;
+        }
+
+        .tool {
+            width: 32px;
+            height: 32px;
+        }
+
+        paper-card {
+            height: 480px;
+            min-width: 320px;
+            max-width: 320px;
+            padding: 2px;
+            margin: 15px 10px;
+            align-self:center;
+        }
+
+        .header {
+            height: 336px;
+            background-color: green;
+            display:flex;
+            justify-content:flex-start;
+            flex-flow:column;
+            display:flex;
+            justify-content:space-between;
+        }
+
+        .middle {
+            height: 48px;
+            background-color: #ff0000;
+        }
+
+        .footer {
+            height: 96px;
+            background-color: #002680;
+        }
+
+        .gain {
+            height: 100px;
+            background-color: rgba(76, 255, 0, 0.00);
+            font-size: 16px;
+            font-family: 'Segoe UI Symbol';
+            color: #808080;
+        }
+
+        .reward {
+            font-size: 48px;
+            margin: 5px auto auto 15px;
+        }
+
+        .dates {
+            display: flex;
+            flex-flow:row;
+            bottom: 10px;
+            background-color: rgba(0, 255, 144, 0.00);
+            justify-content:space-around;
+            height: 10%;
+            flex-wrap:nowrap;
+            align-items:stretch;
+            padding:10px;
+        }
+
+        .date {
+            margin: 0 2px 0 2px;
+            background-color:#00ffff;
+        }
+    </style>
+
+    <template>
+
+        <paper-card>
+
+            <div class="header">
+
+                <div class="gain">
+                    <div>Earned up to</div>
+                    <div class="reward">300€</div>
+                </div>
+                <div class="dates">
+                    <div class="date">
+                        <div>Nov</div>
+                    </div>
+                    <div class="date">
+                        <div>Nov</div>
+                    </div>
+                    <div class="date">
+                        <div>Nov</div>
+                    </div>
+                    <div class="date">
+                        <div>Nov</div>
+                    </div>
+                    <div class="date">
+                        <div>...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="middle">
+
+            </div>
+
+            <div class="footer ">
+
+            </div>
+
+        </paper-card>
+
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-mission-card',
+
+                properties: {
+                    _mission: {
+                        type: Object
+                    },
+                    _hiddenElement: {
+                        type: Boolean,
+                        value: true
+                    }
+                }
+            });
+        })();
+    </script>
+</dom-module>

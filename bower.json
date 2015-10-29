@@ -9,7 +9,11 @@
     "page": "visionmedia/page.js#~1.6.3",
     "web-component-tester": "*",
     "test-fixture": "PolymerElements/test-fixture#^1.0.0",
-    "google-map": "GoogleWebComponents/google-map#~1.1.5"
+    "google-map": "GoogleWebComponents/google-map#~1.1.5",
+    "zero-list-hero": "zerodevx/zero-list-hero#~0.2.1",
+    "paper-card": "PolymerElements/paper-card#~1.0.7",
+    "grid-element": "~0.2.3",
+    "iron-grid": "*"
   },
   "version": "0.0.1",
   "homepage": "http://github.com/Mayhem50/Special-Agency",

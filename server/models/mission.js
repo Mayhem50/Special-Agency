@@ -3,17 +3,17 @@
 module.exports = mongoose.model(
     'Mission', {
         title : String,
-        type : String,
-        subType : String,
-        level : { type : Number, min : 0, max : 2 },
+        _type : { type: mongoose.Schema.Types.ObjectId, ref: 'Type' },
+        _owner : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        _agent : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        _messages : { type: mongoose.Schema.Types.ObjectId, ref: 'Message' },
+        level : Number,
         reward : Number,
         descritpion : String,
-        _owner : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         status : { type : Number, min : 0, max : 10 },
         creationDate : { type : Date, default: Date.now },
-        todoDate : { type : Date, default: Date.now },
+        whishDates : [{ type : Date, default: Date.now }],
         finishDate : Date,
-        _agent : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         where : {
             longitude : String,
             latitude : String,
@@ -26,5 +26,10 @@ module.exports = mongoose.model(
         },
         rank : Number,
         photos : [String],
+        tasks: [{
+                order: Number,
+                description: String,
+                comment: String
+            }]
     }
 );

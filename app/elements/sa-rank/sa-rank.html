@@ -1,0 +1,110 @@
+﻿
+
+<dom-module id="sa-rank">
+    <style include="paper-material">
+        :host {
+            display:flex;
+            justify-content:space-around;            
+        }
+        paper-icon-button{              
+            @apply(--sa-rank-item);
+        }
+
+    </style>
+    <template>
+        <template id="rankLevel" is="dom-repeat" items="[[_levels]]">
+            <paper-icon-button id$="[[item.name]]" icon="[[item.icon]]" on-tap="_setLevel"></paper-icon-button>
+        </template>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-rank',
+
+                properties: {
+                    count: {
+                        type: Number,
+                        value: 4,
+                        observer: "_countChange"
+                    },
+                    _levels: {
+                        type: Array,
+                        value: []
+                    },
+                    activeIcon: {
+                        type: String,
+                        value: "star",
+                        observer: '_iconChange'
+                    },
+                    unactiveIcon: {
+                        type: String,
+                        value: "star-border",
+                        observer: '_iconChange'
+                    },
+                    rank: {
+                        type: Number,
+                        observer: '_updateRank'
+                    },
+                    editable: {
+                        type: Boolean,
+                        value: false
+                    }
+                },
+                ready: function(){
+                    this._initItems();
+                },
+                _countChange: function (e) {
+                    this._initItems();
+                },
+                _initItems: function(){
+                    this._levels = [];
+                    for (var idx = 0; idx < this.count; ++idx) {
+                        if (idx === 0) {
+                            this.push('_levels', new Object({
+                                name: 'rank-' + idx,
+                                icon: this.activeIcon
+                            }));
+                        }
+                        else {
+                            this.push('_levels', new Object({
+                                name: 'rank-' + idx,
+                                icon: this.unactiveIcon
+                            }));
+                        }
+                    }
+                },
+                _iconChange: function (e) {
+                    this.$.rankLevel.render();
+                },
+                _setLevel: function (e) {
+                    if (!this.editable) { return; }
+
+                    console.log(e);
+                    var item = e.target.parentNode;
+
+                    var level = parseInt(item.id[item.id.length - 1], 10);
+                    this.rank = level + 1;
+                    this.fire('rank-change', { rank: this.rank });
+                },
+                _updateRank: function (level) {
+                    this._setIcons(level - 1);
+                },
+                _setIcons: function (level) {
+                    for (var idx = 0; idx < this.count; ++idx) {
+                        var id = '#rank-' + idx;
+                        var div = this.querySelector(id);
+
+                        if (idx <= level) {
+                            div.icon = this.activeIcon;
+                        }
+                        else {
+                            div.icon = this.unactiveIcon;
+                        }
+                    }
+                }
+            });
+        })();
+
+    </script>
+</dom-module>

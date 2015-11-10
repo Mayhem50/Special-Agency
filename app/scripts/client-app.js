@@ -132,7 +132,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             app.isLogged = false;
         //    document.getElementById('deconnexionToggle').hide();
         }
-        
+
+        var toolbar = document.querySelector('#main-toolbar-collapse');
+        toolbar.toggle();
+
         updateMenuBar();
         app.drawer_route = 0;
     });
@@ -170,30 +173,5 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app.socket = io.connect('', {
         query: 'token=' + window.sessionStorage.token
     });
-
-    if (!Date.prototype.toISOString) {
-        (function () {
-            
-            function pad(number) {
-                if (number < 10) {
-                    return '0' + number;
-                }
-                return number;
-            }
-            
-            Date.prototype.toISOString = function () {
-                return this.getUTCFullYear() +
-        '-' + pad(this.getUTCMonth() + 1) +
-        '-' + pad(this.getUTCDate()) +
-        'T' + pad(this.getUTCHours()) +
-        ':' + pad(this.getUTCMinutes()) +
-        ':' + pad(this.getUTCSeconds()) +
-        '.' + (this.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) +
-        'Z';
-            };
-
-        }());
-    }
-
 })(document);
 

@@ -29,17 +29,17 @@ app.use(cookieParser());
 
 app.use(flash());
 
-var index = require('./server/routes/index')();
-var users = require('./server/routes/users')(passport);
-var missions = require('./server/routes/missions')(passport);
-var helpers = require('./server/routes/helpers')();
+var http_index = require('./server/http_routes/index')();
+var http_users = require('./server/http_routes/users')(passport);
+var http_missions = require('./server/http_routes/missions')(passport);
+var http_helpers = require('./server/http_routes/helpers')();
+var http_kinds = require('./server/http_routes/kinds')();
 
-app.use(index);
-app.use(users);
-app.use(helpers);
-app.use(missions);
-
-
+app.use(http_index);
+app.use(http_users);
+app.use(http_missions);
+app.use(http_helpers);
+app.use(http_kinds);
 
 //app.use(csrf());
 

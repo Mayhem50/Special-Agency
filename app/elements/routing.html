@@ -56,13 +56,22 @@
                 access_token : window.sessionStorage.token
             },
             statusCode : {
-                200 : function(){
+                200: function () {
+                    console.log('200');
                     app.route = route;
                     app.isLogged = true;
                     if (successCb)
                         successCb();
                 },
-                403 : function(){
+                403: function () {
+                    console.log('403');
+                    app.route = 'login';
+                    app.isLogged = false;
+                    if (failCb)
+                        failCb();
+                },
+                404: function () {
+                    console.log('404');
                     app.route = 'login';
                     app.isLogged = false;
                     if (failCb)

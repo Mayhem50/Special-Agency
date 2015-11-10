@@ -2,6 +2,7 @@
 var jwtauth = require('../controllers/jwtauth');
 var User = require('../models/user');
 var Mission = require('../models/mission');
+var Kind = require('../models/mission-type');
 
 var router = express.Router();
 
@@ -13,6 +14,13 @@ module.exports = function () {
         var mission = new Mission(req.body.mission);
         mission._owner = req.user._id;
         
+        Kind.findOne({ '_id' : mission._type }, function (err, kind) {
+            if (err) { throw err; }
+            
+            kind.count = kind.count + 1;
+            kind.save();
+        });
+        
         mission.save(function (err) {
             if (err) {
                 console.log('Error in Saving mission: ' + err);
@@ -22,7 +30,8 @@ module.exports = function () {
 
         res.json({
             method : 'POST',
-            success: true
+            success: true,
+            route: "missions"
         });
     });
     
@@ -36,7 +45,8 @@ module.exports = function () {
             return res.json({
                 'missions': missions,
                 method: 'GET',
-                success : true
+                success : true,
+                route: "missions"
             });
         });
     });
@@ -61,7 +71,8 @@ module.exports = function () {
             return res.json({
                 'missions': missions,
                 method: 'POST',
-                success : true
+                success : true,
+                route: "missions"
             });
         });
     });
@@ -74,7 +85,8 @@ module.exports = function () {
             return res.json({
                 'missions': mission,
                 method: 'GET',
-                success : true
+                success : true,
+                route: "missions"
             });
         });
     });
@@ -93,6 +105,7 @@ module.exports = function () {
                 return res.json({
                     method: 'PUT',
                     success: true,
+                    route: "missions"
                 });
             });
         }
@@ -106,6 +119,7 @@ module.exports = function () {
                 return res.json( {
                     method: 'PUT',
                     success: true,
+                    route: "missions"
                 });
             });
         }
@@ -127,7 +141,8 @@ module.exports = function () {
             return res.json({
                 success: true,
                 method: 'DELETE',
-                mission: mission._id
+                mission: mission._id,
+                route: "missions"
             });
         })
     });

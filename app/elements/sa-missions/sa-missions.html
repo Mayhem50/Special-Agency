@@ -1,10 +1,11 @@
-﻿<link rel="import" href="../../../bower_components/neon-animation/neon-animations.html">
-<link rel="import" href="../../../bower_components/neon-animation/neon-animated-pages.html">
-<link rel="import" href="../../../bower_components/neon-animation/neon-animation-runner-behavior.html">
+﻿<link rel="import" href="../../../../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../../../../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../../../../bower_components/neon-animation/neon-animation-runner-behavior.html">
 
-<link rel="import" href="sa-mission-creation.html">
+<link rel="import" href="sa-mission-creation-card.html">
 <link rel="import" href="sa-mission-infos.html">
 <link rel="import" href="sa-mission-card.html">
+<link rel="import" href="sa-mission-kind-card.html">
 
 <dom-module id="sa-missions">
     <style>
@@ -16,37 +17,94 @@
             background-color: #118c89;
         }
 
+        .card {
+            min-width: 300px;
+            max-width: 300px;
+            margin: 15px 10px;
+            align-self:center;
+        }
+
+        .card-2 {
+            min-width: 620px;
+            max-width: 620px;
+            margin: 15px 10px;
+            align-self:center;
+        }
+
+        .card-3 {
+            min-width: 940px;
+            max-width: 940px;
+            margin: 15px 10px;
+            align-self:center;
+        }
+
         .createButton {
             position: fixed;
             bottom: 25px;
             right: 40px;
-        }        
+        }
 
         .container {
+            display:flex;
+            flex-direction:column;
+            justify-content:flex-start;
+            padding:0;
+        }
+
+        .grid {
             padding: 4px;
             margin: 1px auto;
             width: 55%;
-            display:flex;
-            flex-wrap:wrap;
+            display: flex;
+            flex-wrap: wrap;
         }
+
+        .toolbar {
+            display:flex;
+            width:100%;
+            height:50px;
+            margin:0;
+            padding: 5px;
+            background-color:#3d3d3d;
+            justify-content:flex-start;
+        }
+
+        .toolbarButton{
+        }
+
     </style>
     <template>
-            <iron-pages id="pages" selected="0">
-                <div class="container">
-                    <sa-mission-creation id="mission-creation"></sa-mission-creation>
-                    <template is="dom-repeat" items="[[missions]]">
-                       <sa-mission-card></sa-mission-card>
-                    </template>
+            <div class="container">
+                <div class="toolbar">
+                    <paper-button class="toolbarButton" on-tap="_backToKinds">[[_selectedKind.name.en]]</paper-button>
                 </div>
+                <iron-pages id="pages" selected="0">
+                    <div class="grid">
+                        <sa-mission-creation-card class="card" count="[[_missions.length]]" kinds="[[_kinds]]" on-create-mission="_onCreateMissionClick" on-kind-change="_changeKind"></sa-mission-creation-card>
+                        <template is="dom-repeat" items="{{_kinds}}" observe="count">
+                            <sa-mission-kind-card class$="[[item.class]]" kind="[[item]]" on-tap="_showMissionsOfKind"></sa-mission-kind-card>
+                        </template>
+                    </div>
 
-                
-                
-            </iron-pages>
+                    <div class="grid">
+                        <sa-mission-creation-card class="card" count="[[_count]]" kinds="[[_kinds]]" on-create-mission="_onCreateMissionClick"></sa-mission-creation-card>
+                        <template id="missionsList" is="dom-repeat" items="[[_missions]]" filter="_missionsOfKind" observer="*">
+                            <sa-mission-card class="card" on-tap="_openInfos" mission="[[item]]"></sa-mission-card>
+                        </template>
+                    </div>
+                    <div>
+                        <sa-mission-infos mission="{{mission}}" 
+                                          edit="[[_isForEdit]]" 
+                                          kind="[[_selectedKind]]"
+                                          on-close-infos="_onCloseInfos"></sa-mission-infos>
+                    </div>
+                </iron-pages>
 
-        <div>
-            <paper-fab id="createButton" class="createButton" icon="create" on-click="_onCreateMissionClick"></paper-fab>
-        </div>
-        
+                <div>
+                    <paper-fab id="createButton" class="createButton" icon="create" on-click="_onCreateMissionClick"></paper-fab>
+                </div>              
+            </div>
+
         <iron-ajax id="mission-ajax"
                    url="[[ajax_url]]"
                    content-type="application/json"
@@ -74,22 +132,6 @@
                         notify: true,
                         observer: 'handleNotification'
                     },
-                    animationConfig: {
-                        type: Object,
-                        value: function () {
-                            return {
-                                'entry': [{
-                                    name: 'scale-down-animation',
-                                    toPage: this,
-                                    node: this.$.createButton
-                                }],
-                                'exit': [{
-                                    name: 'scale-up-animation',
-                                    node: this.$.createButton
-                                }]
-                            }
-                        }
-                    },
                     ajax_params: {
                         type: Object,
                         value: function () {
@@ -100,7 +142,7 @@
                         }
                     },
                     mission: {
-                        type : Object,
+                        type: Object,
                         value: function () {
                             return {
                                 //_id: '',
@@ -112,7 +154,7 @@
                                 descritpion: '',
                                 status: 0,
                                 creationDate: Date.now(),
-                                todoDate: Date.now() + 7,
+                                wishDates: [],
                                 where: {
                                     longitude: '',
                                     latitude: '',
@@ -122,20 +164,17 @@
                                         state: '',
                                         zip: ''
                                     }
-                                }
+                                },
+                                tasks: []
                             }
                         }
                     },
-                    opened: {
-                        type: Boolean
-                    },
+                    opened: Boolean,
                     ajax_response: {
                         type: Object,
                         notify: true
                     },
-                    ajax_method: {
-                        type: String,
-                    },
+                    ajax_method: String,
                     ajax_url: {
                         type: String,
                         value: '/missions'
@@ -148,10 +187,16 @@
                     _isForEdit: {
                         type: Boolean,
                         value: false
-                    }
-                },
-                listeners: {
-                    'neon-animation-finish': '_onNeonAnimationFinish'
+                    },
+                    _missions: {
+                        type: Array,
+                        value: []
+                    },
+                    _kinds: {
+                        type: Array,
+                        value: []
+                    },
+                    _count: Number,
                 },
                 ready: function () {
                     Array.prototype.indexOfObject = function (property, value) {
@@ -163,28 +208,32 @@
 
                     app.socket.on('add-mission', function (data) {
                         console.log('add mission');
-                        this.$.list.push('missions', data);
+                        this.push('_missions', data);
+
+                        var index = this._kinds.indexOfObject('_id', data._type);
+                        this.set('_kinds.' + index + '.count', this._kinds[index].count + 1);
                     }.bind(this));
                     app.socket.on('update-mission', function (data) {
                         console.log('update mission');
                         var index = this.$.list.missions.indexOfObject('_id', data._id);
-                        this.$.list.splice('missions', index, 1);
-                        this.$.list.push('missions', data);
+                        this.splice('_missions', index, 1);
+                        this.push('_missions', data);
                     }.bind(this));
-                    app.socket.on('delete-mission', function (data) {                        
+                    app.socket.on('delete-mission', function (data) {
                         console.log('delete mission');
                         var index = this.$.list.missions.indexOfObject('_id', data._id);
-                        this.$.list.splice('missions', index, 1);
+                        this.splice('_missions', index, 1);
+
+                        var index = this._kinds.indexOfObject('_id', data._type);
+                        this.set('_kinds.' + index + '.count', this._kinds[index].count - 1);
                     }.bind(this));
                 },
-                _onNeonAnimationFinish: function () {
-                    if (!this.opened) {
-                        this.$.createButton.style.display = 'none';
-                    }
+                attached:function(){
+                    $('#validateButton').hide();
                 },
                 handleNotification: function () {
                     if (window.sessionStorage.token !== "undefined" && window.sessionStorage.token != '') {
-                        if (app.drawer_route == 0) {                            
+                        if (app.drawer_route == 0) {
                             this.filter = app.mission_filter;
                         }
                         else if (app.drawer_route == 1) {
@@ -204,9 +253,13 @@
                     this.ajax_url = '/missions'
                     this.sendRequest();
                 },
+                getKinds: function () {
+                    this.ajax_method = 'GET';
+                    this.ajax_url = '/kinds'
+                    this.sendRequest();
+                },
                 sendRequest: function () {
                     this.ajax_params.access_token = window.sessionStorage.token;
-                    this.ajax_params.mission = this.mission;
                     this.querySelector('iron-ajax').generateRequest();
                 },
                 handleResponse: function () {
@@ -215,28 +268,62 @@
                     }
 
                     if (this.ajax_response.success) {
-                        if (this.ajax_response.method === 'POST' || 
-                            this.ajax_response.method === 'PUT' ||
-                            this.ajax_response.method === 'DELETE') {
-                            //this.getMissions();
-                        }
-                        else if (this.ajax_response.method === 'GET') {
-                            this.missions = this.ajax_response.missions;
+                        if (this.ajax_response.method === 'GET') {
+                            if (this.ajax_response.route === "missions") {
+                                this._missions = this.ajax_response.missions;
+                                this._count = this._missions.length;
+                                this.getKinds();
+                            }
+                            else if (this.ajax_response.route === "kinds") {
+                                this._kinds = this.ajax_response.kinds;
+                                this._selectedKind = this._kinds[0];
+
+                                this._kinds.forEach(function (element, index, array) {
+                                    if (element.size === 1) {
+                                        element.class = 'card';
+                                    }
+                                    else if (element.size === 2) {
+                                        element.class = 'card-2';
+                                    }
+                                    else if (element.size === 3) {
+                                        element.class = 'card-3';
+                                    }
+                                    element.name.en = element.name.en.replace(/^./, element.name.en[0].toUpperCase());
+                                    element.name.fr = element.name.fr.replace(/^./, element.name.fr[0].toUpperCase());
+                                });
+                            }
                         }
                     }
                 },
-                _onCreateMissionClick: function (event) {
-                    this._isForEdit = false;
-                    this.querySelector('sa-missions-list').setAnimationConfig(event.x || event.pageX, event.y || event.pageY);
-                    this._opendCreationView(false);
+                _onCreateMissionClick: function (e) {
+                    this.mission.title = e.detail.title || "";
+                    this.mission._type = e.detail.kind._id;
+                    this.mission.reward = e.detail.reward || 0;
+                    this._isForEdit = true;
+                    var toolbar = document.querySelector('#main-toolbar-collapse');
+                    toolbar.toggle();
+                    this.$.pages.selected = 2;
+                    $('#createButton').hide();
+                    $('#validateButton').show();
+
+                },
+                _onCloseInfos: function (e) {
+                    this.$.pages.selected = 0;
+                    $('#validateButton').hide();
+                    $('#createButton').show();
+                    var toolbar = document.querySelector('#main-toolbar-collapse');
+                    toolbar.toggle();
+
+                    app.socket.emit('add-mission', this.mission);
+                    this.mission = {};
                 },
                 _onMissionCreationClose: function (e) {
                     if (e.detail.validate) {
-                        if(!this._isForEdit){
+                        if (!this._isForEdit) {
                             app.socket.emit('add-mission', this.mission);
                             this.mission = {};
                         }
-                        else if (this._isForEdit) {  
+                        else if (this._isForEdit) {
                             var date = new Date(Date.now());
                             this.mission.creationDate = date.toISOString();
                             app.socket.emit('update-mission', this.mission);
@@ -244,66 +331,47 @@
                         }
                     }
                     this.$.pages.selected = 0;
-                    this._playButtonAnimation(true);                    
                 },
-                _onMissionClick: function (e) {
+                _openInfos: function (e) {
                     this.mission = e.detail.data;
-                    this.$.pages.selected = 1;
-                    this._playButtonAnimation(false);
-                },
-                _onCloseMission: function (e) {
-                    this.$.pages.selected = 0;
-                    this._playButtonAnimation(true);
-                },
-                _playButtonAnimation: function (goVisible) {
-                    if (goVisible) {
-                        this.opened = true;
-                        this.$.createButton.style.display = '';
-                        this.playAnimation('exit');
-                    }
-                    else {
-                        this.opened = false;
-                        this.playAnimation('entry');
-                    }
-                },
-                _onAcceptMission: function () {
-                    this.ajax_method = 'PUT';                
-                    this.ajax_url = '/missions/accept';
-                    this.sendRequest();
-                    this.$.pages.selected = 0;
-                    this._playButtonAnimation(true);
+                    var toolbar = document.querySelector('#main-toolbar-collapse');
+                    toolbar.toggle();
+                    this.$.pages.selected = 2;
                 },
                 _onRequestLogin: function (event) {
                     this.fire('request-login', {});
                     this.$.pages.selected = 0;
-                    this._playButtonAnimation(true);
                 },
-                _onMissionDelete: function (event) {
-                    app.socket.emit('delete-mission', event.detail.data);
-                    //this.ajax_method = 'DELETE';
-                    //this.mission = event.detail.data;
-                    //this.ajax_url = '/missions/' + event.detail.data._id;
-                    //this.sendRequest();
-                },
-                _onMissionEdit: function (event) {
-                    this.mission = event.detail.data;
-                    this._opendCreationView(true);
-                },
-                _opendCreationView: function (isForEdit) {
-                    if (!app.isLogged) {
-                        this._onRequestLogin();
-                        return;
-                    }
-                    this.animationConfig['exit'][0].gesture = {
-                        x: event.x || event.pageX,
-                        y: event.y || event.pageY
-                    };
+                _showMissionsOfKind: function (e) {
+                    this._selectedKind = e.model.item;
+                    this.$.pages.selected = 1;
+                    this.$.missionsList.render();
 
-                    this.$.pages.selected = 2;
-                    this._playButtonAnimation(false);
-                    this._isForEdit = isForEdit;
+                    var div = this.querySelector('.toolbarButton');
+                    if (div == null) { return; }
+                    div.style.background = this._selectedKind.color;
+                    div.style.display = "inherit";
+                },
+                _missionsOfKind: function (item) {
+                    if (typeof (this._selectedKind) !== "undefined") {
+                        if (item._type === this._selectedKind._id) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                },
+                _backToKinds: function (e) {
+                    this.$.pages.selected = 0;
+
+                    var div = this.querySelector('.toolbarButton');
+                    if (div == null) { return; }
+                    div.style.display = "none";
+                },
+                _changeKind: function (e) {
+                    this._selectedKind = e.detail.kind;
                 }
             });
-        })();               
+        })();
     </script>
 </dom-module>

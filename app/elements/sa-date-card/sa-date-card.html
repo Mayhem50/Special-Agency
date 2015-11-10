@@ -1,0 +1,133 @@
+﻿<link rel="import" href="../../../../bower_components/paper-card/paper-card.html">
+
+<dom-module id="sa-date-card">
+    <style>
+        :host {
+            color: #feffff;
+        }
+
+        .date {
+            flex-direction: column;
+            justify-content: center;
+            align-items: stretch;
+            width: 15%;
+            margin: 0 5px;
+        }
+
+        .month {
+            background-color: #3d3d3d;
+            flex: 1 0 auto;
+            text-align: center;
+            color: #ffffff;
+            padding: 2px;
+            border-radius: 3px 3px 0 0;
+            font-weight: 100;
+            font-stretch: ultra-condensed;
+            width:45px;
+        }
+
+        .day {
+            background-color: #ffffff;
+            flex: 3 0 auto;
+            text-align: center;
+            color: #3d3d3d;
+            font-size: 20px;
+            padding: 3px 4px;
+            border-radius: 0 0 3px 3px;
+            font-weight: 100;
+            font-stretch: ultra-condensed;
+            width: 41px;
+        }
+    </style>
+
+    <template>
+        <div class="date">
+            <div class="month"><span>[[month]]</span></div>
+            <div class="day"><span>[[day]]</span></div>
+        </div>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-date-card',
+
+                properties: {
+                    date: {
+                        type: String,
+                        observer: "handle"
+                    },
+                    day: String,
+                    month: String
+                },
+                handle: function () {
+                    var date = new Date(this.date);
+                    this.day = date.getDate();
+                    
+                    switch (date.getMonth()) {
+                        case 0: this.month = "Jan.";
+                            break;
+                        case 1: this.month = "Feb.";
+                            break;
+                        case 2: this.month = "Mar.";
+                            break;
+                        case 3: this.month = "Apr.";
+                            break;
+                        case 4: this.month = "May";
+                            break;
+                        case 5: this.month = "Jun.";
+                            break;
+                        case 6: this.month = "Jui.";
+                            break;
+                        case 7: this.month = "Aug.";
+                            break;
+                        case 8: this.month = "Sep.";
+                            break;
+                        case 9: this.month = "Oct.";
+                            break;
+                        case 10: this.month = "Nov.";
+                            break;
+                        case 11: this.month = "Dec.";
+                            break;
+                    }
+                }
+            });
+        })();
+    </script>
+</dom-module>
+
+<dom-module id="sa-empty-date">
+    <style>
+        :host {
+            color: #feffff;
+        }
+
+        .date {
+            flex-direction: column;
+            justify-content: center;
+            align-items: stretch;
+            width: 15%;
+            background-color: #3d3d3d;
+            color: #ffffff;
+        }
+    </style>
+
+    <template>
+        <div class="date">
+
+        </div>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-empty-date',
+
+                properties: {
+                }
+            });
+        })();
+    </script>
+</dom-module>
+
+

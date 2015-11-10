@@ -1,111 +1,135 @@
-﻿<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+﻿<link rel="import" href="../../../../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="../sa-dates/sa-dates.html" />
+<link rel="import" href="../sa-rank/sa-rank.html" />
 
 <dom-module id="sa-mission-card">
     <style>
         :host {
-            display: block;
-        }
-
-        .tool {
-            width: 32px;
-            height: 32px;
+            color: #feffff;
         }
 
         paper-card {
-            height: 480px;
-            min-width: 320px;
-            max-width: 320px;
-            padding: 2px;
-            margin: 15px 10px;
-            align-self:center;
+            align-self: center;
+            width:100%;
+            background-image: url(../../images/missions/02.jpg);
+            background-position: 100% 0%;
+            background-repeat: no-repeat;
         }
 
         .header {
-            height: 336px;
-            background-color: green;
-            display:flex;
-            justify-content:flex-start;
-            flex-flow:column;
-            display:flex;
-            justify-content:space-between;
+            height: 300px;
+            display: flex;
+            justify-content: flex-start;
+            flex-flow: column;
+            display: flex;
+            background-color: rgba(4, 4, 4, 0.23);
         }
 
         .middle {
             height: 48px;
-            background-color: #ff0000;
+            background-color: #cccccc;
+            flex-direction: row;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
+            .middle > #level {
+                margin-left: 10px;
+                font-size: 18px;
+            }
+
+            .middle > #stars {
+                margin-right: 15px;                
+            }
+
+            sa-rank{
+                --sa-rank-item:{
+                    width: 32px;
+                    padding:0;
+                };
+            }
+
         .footer {
-            height: 96px;
-            background-color: #002680;
+            height: 85px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .footer:before {
+                content: '';
+                position: absolute;
+                right: 0;
+                bottom: 55px;
+                border-top: 30px solid #ce6535;
+                border-left: 30px solid white;
+                width: 0;
+            }
+
+            .footer > div {
+                color: #383838;
+                font-size: 22px;
+            }
+
+        paper-button {
+            background-color: #cc6733;
+            text-transform: none;
+            font-family: 'Segoe UI';
+            font-size: 22px;
+            font-weight: 100;
+            width: 90%;
         }
 
         .gain {
             height: 100px;
             background-color: rgba(76, 255, 0, 0.00);
-            font-size: 16px;
+            font-size: 20px;
             font-family: 'Segoe UI Symbol';
-            color: #808080;
+            color: rgba(255, 255, 255, 0.85);
+            margin: 5px auto auto 5px;
         }
 
         .reward {
-            font-size: 48px;
-            margin: 5px auto auto 15px;
+            font-size: 70px;
+            margin: 5px auto auto 25px;
+            font-family: 'Segoe WP SemiLight';
+            font-weight: 100;
+            color: #ffffff;
         }
 
         .dates {
-            display: flex;
-            flex-flow:row;
             bottom: 10px;
             background-color: rgba(0, 255, 144, 0.00);
-            justify-content:space-around;
-            height: 10%;
-            flex-wrap:nowrap;
-            align-items:stretch;
-            padding:10px;
+            padding: 10px 15px;
         }
 
-        .date {
-            margin: 0 2px 0 2px;
-            background-color:#00ffff;
-        }
     </style>
 
     <template>
 
-        <paper-card>
-
+        <paper-card>            
             <div class="header">
-
                 <div class="gain">
                     <div>Earned up to</div>
                     <div class="reward">300€</div>
                 </div>
                 <div class="dates">
-                    <div class="date">
-                        <div>Nov</div>
-                    </div>
-                    <div class="date">
-                        <div>Nov</div>
-                    </div>
-                    <div class="date">
-                        <div>Nov</div>
-                    </div>
-                    <div class="date">
-                        <div>Nov</div>
-                    </div>
-                    <div class="date">
-                        <div>...</div>
-                    </div>
+                    <sa-dates dates="[[mission.whishDates]]"></sa-dates>
                 </div>
             </div>
 
             <div class="middle">
-
+                <div id="level">Level difficulty :</div>
+                <div id="stars">
+                    <sa-rank rank="[[mission.level]]"></sa-rank>
+                </div>
             </div>
 
             <div class="footer ">
-
+                <div>Painting Mission</div>
             </div>
 
         </paper-card>
@@ -118,13 +142,13 @@
                 is: 'sa-mission-card',
 
                 properties: {
-                    _mission: {
+                    mission: {
                         type: Object
                     },
                     _hiddenElement: {
                         type: Boolean,
                         value: true
-                    }
+                    },
                 }
             });
         })();

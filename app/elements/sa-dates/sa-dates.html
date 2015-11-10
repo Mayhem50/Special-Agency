@@ -1,0 +1,55 @@
+﻿<link rel="import" href="../sa-date-card/sa-date-card.html" />
+
+<dom-module id="sa-dates">
+    <style>
+        :host {
+            color: #feffff;
+            display: flex;
+            flex-flow: row;
+            bottom: 10px;
+            background-color: rgba(0, 255, 144, 0.00);
+            justify-content: space-around;
+            flex-wrap: nowrap;
+            align-items: stretch;
+            padding: 10px 15px;
+        }
+    </style>
+    <template>
+        <template is="dom-repeat" items="[[dates]]" filter="filter">
+            <sa-date-card date="[[item]]"></sa-date-card>
+        </template>
+        <sa-empty-date></sa-empty-date>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-dates',
+
+                properties: {
+                    _showDates: {
+                        type: Array,
+                        value: [],
+                        notify: true
+                    },
+                    dates: {
+                        type: Array,
+                        value: [],
+                        notify: true,
+                    },
+                    limit: {
+                        type: Number,
+                        value: 4
+                    }
+                },
+                filter: function (item) {
+                    if (this.dates.indexOf(item) < this.limit) {
+                        return true;
+                    }
+                    
+                    return false;
+                },
+            });
+        })();
+    </script>
+</dom-module>

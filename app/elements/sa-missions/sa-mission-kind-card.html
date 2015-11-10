@@ -80,12 +80,9 @@
                 is: 'sa-mission-kind-card',
 
                 properties: {
-                    kind: {
-                        type: Object,
-                        observer: "kindChange"
-                    }
+                    kind: Object
                 },
-                kindChange: function () {
+                ready: function () {
                     this.cardName = 'card' + this.kind.css;
                     var divs = this.querySelectorAll('#' + this.kind.css);
                     if (divs == null) return;

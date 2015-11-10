@@ -12,6 +12,9 @@ module.exports = function () {
         
         var kind = new Kind(req.body.kind);
         
+        kind.name.en = kind.name.en.replace(/^./, kind.name.en[0].toUpperCase());
+        kind.name.fr = kind.name.fr.replace(/^./, kind.name.fr[0].toUpperCase());
+        
         kind.save(function (err) {
             if (err) {
                 console.log('Error in Saving mission: ' + err);

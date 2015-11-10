@@ -2,6 +2,8 @@
 <link rel="import" href="../../../../bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="../../../../bower_components/neon-animation/neon-animation-runner-behavior.html">
 
+<link rel="import" href="../../../../bower_components/iron-media-query/iron-media-query.html">
+
 <link rel="import" href="sa-mission-creation-card.html">
 <link rel="import" href="sa-mission-infos.html">
 <link rel="import" href="sa-mission-card.html">
@@ -21,21 +23,21 @@
             min-width: 300px;
             max-width: 300px;
             margin: 15px 10px;
-            align-self:center;
+            align-self: center;
         }
 
         .card-2 {
             min-width: 620px;
             max-width: 620px;
             margin: 15px 10px;
-            align-self:center;
+            align-self: center;
         }
 
         .card-3 {
             min-width: 940px;
             max-width: 940px;
             margin: 15px 10px;
-            align-self:center;
+            align-self: center;
         }
 
         .createButton {
@@ -45,10 +47,10 @@
         }
 
         .container {
-            display:flex;
-            flex-direction:column;
-            justify-content:flex-start;
-            padding:0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 0;
         }
 
         .grid {
@@ -60,50 +62,70 @@
         }
 
         .toolbar {
-            display:flex;
-            width:100%;
-            height:50px;
-            margin:0;
-            padding: 5px;
-            background-color:#3d3d3d;
-            justify-content:flex-start;
+            display: flex;
+            width: 100%;
+            height: 50px;
+            margin: 0;
+            background-color: #3d3d3d;
         }
 
-        .toolbarButton{
+        #toolbar-image {
+            flex-grow: 7;
+            order: 1;
         }
 
+        #toolbar-text {
+            display: flex;
+            color: #d9d9d9;
+            background-color: #3d3d3d;
+            flex-grow: 22;
+            order: 2;
+            padding-left: 25px;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        #toolbar-button {
+            flex-grow: 1;
+            order: 3;
+            height: 100%;
+        }
     </style>
     <template>
-            <div class="container">
+        <div class="container">
+            <iron-collapse id="toolbar">
                 <div class="toolbar">
-                    <paper-button class="toolbarButton" on-tap="_backToKinds">[[_selectedKind.name.en]]</paper-button>
+                    <div id="toolbar-image">&nbsp;</div>
+                    <div id="toolbar-text">[[_selectedKind.name.en]]</div>
+                    <div id="toolbar-button" on-tap="_backToKinds"></div>
                 </div>
-                <iron-pages id="pages" selected="0">
-                    <div class="grid">
-                        <sa-mission-creation-card class="card" count="[[_missions.length]]" kinds="[[_kinds]]" on-create-mission="_onCreateMissionClick" on-kind-change="_changeKind"></sa-mission-creation-card>
-                        <template is="dom-repeat" items="{{_kinds}}" observe="count">
-                            <sa-mission-kind-card class$="[[item.class]]" kind="[[item]]" on-tap="_showMissionsOfKind"></sa-mission-kind-card>
-                        </template>
-                    </div>
+            </iron-collapse>
+            <iron-pages id="pages" selected="0">
+                <div class="grid">
+                    <sa-mission-creation-card class="card" count="[[_missions.length]]" kinds="[[_kinds]]" on-create-mission="_onCreateMissionClick" on-kind-change="_changeKind"></sa-mission-creation-card>
+                    <template is="dom-repeat" items="[[_kinds]]" observe="count">
+                        <sa-mission-kind-card class$="[[item.class]]" kind="[[item]]" on-tap="_showMissionsOfKind"></sa-mission-kind-card>
+                    </template>
+                </div>
 
-                    <div class="grid">
-                        <sa-mission-creation-card class="card" count="[[_count]]" kinds="[[_kinds]]" on-create-mission="_onCreateMissionClick"></sa-mission-creation-card>
-                        <template id="missionsList" is="dom-repeat" items="[[_missions]]" filter="_missionsOfKind" observer="*">
-                            <sa-mission-card class="card" on-tap="_openInfos" mission="[[item]]"></sa-mission-card>
-                        </template>
-                    </div>
-                    <div>
-                        <sa-mission-infos mission="{{mission}}" 
-                                          edit="[[_isForEdit]]" 
-                                          kind="[[_selectedKind]]"
-                                          on-close-infos="_onCloseInfos"></sa-mission-infos>
-                    </div>
-                </iron-pages>
-
+                <div class="grid">
+                    <sa-mission-creation-card class="card" count="[[_count]]" kinds="[[_kinds]]" kind="{{_selectedKind}}" on-create-mission="_onCreateMissionClick"></sa-mission-creation-card>
+                    <template id="missionsList" is="dom-repeat" items="[[_missions]]" filter="_missionsOfKind" sort="_sortMissions">
+                        <sa-mission-card class="card" on-tap="_openInfos" mission="[[item]]" kind="[[_selectedKind]]" index="[[index]]"></sa-mission-card>
+                    </template>
+                </div>
                 <div>
-                    <paper-fab id="createButton" class="createButton" icon="create" on-click="_onCreateMissionClick"></paper-fab>
-                </div>              
+                    <sa-mission-infos mission="{{mission}}"
+                                      edit="[[_isForEdit]]"
+                                      kind="[[_selectedKind]]"
+                                      on-close-infos="_onCloseInfos"></sa-mission-infos>
+                </div>
+            </iron-pages>
+
+            <div>
+                <paper-fab id="createButton" class="createButton" icon="create" on-click="_onCreateMissionClick"></paper-fab>
             </div>
+        </div>
 
         <iron-ajax id="mission-ajax"
                    url="[[ajax_url]]"
@@ -141,34 +163,7 @@
                             }
                         }
                     },
-                    mission: {
-                        type: Object,
-                        value: function () {
-                            return {
-                                //_id: '',
-                                title: '',
-                                type: '',
-                                subType: '',
-                                level: 0,
-                                reward: 0,
-                                descritpion: '',
-                                status: 0,
-                                creationDate: Date.now(),
-                                wishDates: [],
-                                where: {
-                                    longitude: '',
-                                    latitude: '',
-                                    address: {
-                                        number: '',
-                                        street: '',
-                                        state: '',
-                                        zip: ''
-                                    }
-                                },
-                                tasks: []
-                            }
-                        }
-                    },
+                    mission: Object,
                     opened: Boolean,
                     ajax_response: {
                         type: Object,
@@ -206,6 +201,9 @@
                         return -1;
                     };
 
+                    this.$.toolbar.hide();
+                    this._createEmptyMission();
+
                     app.socket.on('add-mission', function (data) {
                         console.log('add mission');
                         this.push('_missions', data);
@@ -228,7 +226,7 @@
                         this.set('_kinds.' + index + '.count', this._kinds[index].count - 1);
                     }.bind(this));
                 },
-                attached:function(){
+                attached: function () {
                     $('#validateButton').hide();
                 },
                 handleNotification: function () {
@@ -288,21 +286,25 @@
                                     else if (element.size === 3) {
                                         element.class = 'card-3';
                                     }
-                                    element.name.en = element.name.en.replace(/^./, element.name.en[0].toUpperCase());
-                                    element.name.fr = element.name.fr.replace(/^./, element.name.fr[0].toUpperCase());
                                 });
                             }
                         }
                     }
                 },
                 _onCreateMissionClick: function (e) {
+                    this._createEmptyMission();
+
                     this.mission.title = e.detail.title || "";
                     this.mission._type = e.detail.kind._id;
                     this.mission.reward = e.detail.reward || 0;
+
                     this._isForEdit = true;
+
                     var toolbar = document.querySelector('#main-toolbar-collapse');
                     toolbar.toggle();
+
                     this.$.pages.selected = 2;
+
                     $('#createButton').hide();
                     $('#validateButton').show();
 
@@ -315,7 +317,6 @@
                     toolbar.toggle();
 
                     app.socket.emit('add-mission', this.mission);
-                    this.mission = {};
                 },
                 _onMissionCreationClose: function (e) {
                     if (e.detail.validate) {
@@ -333,7 +334,12 @@
                     this.$.pages.selected = 0;
                 },
                 _openInfos: function (e) {
-                    this.mission = e.detail.data;
+                    var target = event.target;
+                    while (target !== this && !target._templateInstance) {
+                        target = target.parentNode;
+                    }
+
+                    this.mission = target._templateInstance.item;
                     var toolbar = document.querySelector('#main-toolbar-collapse');
                     toolbar.toggle();
                     this.$.pages.selected = 2;
@@ -345,12 +351,19 @@
                 _showMissionsOfKind: function (e) {
                     this._selectedKind = e.model.item;
                     this.$.pages.selected = 1;
-                    this.$.missionsList.render();
 
-                    var div = this.querySelector('.toolbarButton');
+                    var div = this.querySelector('#toolbar-button');
                     if (div == null) { return; }
                     div.style.background = this._selectedKind.color;
-                    div.style.display = "inherit";
+
+                    var div = this.querySelector('#toolbar-image');
+                    if (div == null) { return; }
+                    div.style.backgroundImage = 'url(../../images/kinds/' + this._selectedKind.image.path + ')';
+                    div.style.backgroundPosition = this._selectedKind.image.toolBarXOffset + ' ' + this._selectedKind.image.toolBarYOffset;
+                    div.style.backgroundSize = this._selectedKind.image.toolBarScale;
+                    this.$.toolbar.show();                
+
+                    this.$.missionsList.render();
                 },
                 _missionsOfKind: function (item) {
                     if (typeof (this._selectedKind) !== "undefined") {
@@ -361,15 +374,42 @@
 
                     return false;
                 },
+                _sortMissions: function(a, b){
+                    var A = new Date(a.creationDate);
+                    var B = new Date(b.creationDate);
+
+                    return A <= B;
+                },
                 _backToKinds: function (e) {
                     this.$.pages.selected = 0;
-
-                    var div = this.querySelector('.toolbarButton');
-                    if (div == null) { return; }
-                    div.style.display = "none";
+                    this.$.toolbar.hide();
                 },
                 _changeKind: function (e) {
                     this._selectedKind = e.detail.kind;
+                },
+                _createEmptyMission: function () {
+                    this.set('mission', new Object({
+                        title: '',
+                        type: '',
+                        subType: '',
+                        level: 1,
+                        reward: 0,
+                        descritpion: '',
+                        status: 0,
+                        creationDate: Date.now(),
+                        wishDates: [],
+                        where: {
+                            longitude: '',
+                            latitude: '',
+                            address: {
+                                number: '',
+                                street: '',
+                                state: '',
+                                zip: ''
+                            }
+                        },
+                        tasks: []
+                    }));
                 }
             });
         })();

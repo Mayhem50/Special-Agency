@@ -55,39 +55,45 @@
                 properties: {
                     date: {
                         type: String,
-                        observer: "handle"
+                        observer: '_dateChanged'
                     },
                     day: String,
                     month: String
                 },
-                handle: function () {
+                ready: function () {
+                    this._getString();
+                },
+                _dateChanged:function(e) {
+                    this._getString();
+                },
+                _getString: function () {
                     var date = new Date(this.date);
                     this.day = date.getDate();
-                    
+
                     switch (date.getMonth()) {
-                        case 0: this.month = "Jan.";
+                        case 1: this.month = "Jan.";
                             break;
-                        case 1: this.month = "Feb.";
+                        case 2: this.month = "Feb.";
                             break;
-                        case 2: this.month = "Mar.";
+                        case 3: this.month = "Mar.";
                             break;
-                        case 3: this.month = "Apr.";
+                        case 4: this.month = "Apr.";
                             break;
-                        case 4: this.month = "May";
+                        case 5: this.month = "May";
                             break;
-                        case 5: this.month = "Jun.";
+                        case 6: this.month = "Jun.";
                             break;
-                        case 6: this.month = "Jui.";
+                        case 7: this.month = "Jui.";
                             break;
-                        case 7: this.month = "Aug.";
+                        case 8: this.month = "Aug.";
                             break;
-                        case 8: this.month = "Sep.";
+                        case 9: this.month = "Sep.";
                             break;
-                        case 9: this.month = "Oct.";
+                        case 10: this.month = "Oct.";
                             break;
-                        case 10: this.month = "Nov.";
+                        case 11: this.month = "Nov.";
                             break;
-                        case 11: this.month = "Dec.";
+                        case 12: this.month = "Dec.";
                             break;
                     }
                 }

@@ -93,16 +93,12 @@
         }
 
         paper-button {
-            background-color: #cc6733;
+            background-color: #0593d3;
             text-transform: none;
             font-family: 'Segoe UI';
             font-size: 22px;
             font-weight: 100;
             width: 90%;
-        }
-
-        paper-dialog {
-            margin: 0px;
         }
     </style>
     <template>
@@ -110,7 +106,7 @@
             <div class="header">
                 <paper-input always-float-label="false" no-label-float="true" id="title" is="iron-input" label="Title" name="title" value="{{_title::input}}"></paper-input>
                 
-                <paper-dropdown-menu always-float-label="false" no-label-float="true" label="{{_kindLabel}}">
+                <paper-dropdown-menu always-float-label="false" no-label-float="true" label="[[kind.name.en]]">
                     <div class="dropdown-content">
                         <template is="dom-repeat" items="[[kinds]]">
                             <paper-item on-click="_selectKind">[[item.name.en]]</paper-item>
@@ -139,7 +135,7 @@
                     count: Number,
                     kinds: {
                         type: Array,
-                        observer: "_kindsChange"
+                        observer: "kindsChange"
                     },
                     ajax_params: {
                         type: Object,
@@ -149,10 +145,11 @@
                             }
                         }
                     },
-                    _kindLabel: {
+                    kindLabel: {
                         type: String,
                         value: "Kind"
-                    }
+                    },
+                    kind: Object
                 },
                 _selectKind: function (e) {
                     this._updateSelectedKind(e.target._templateInstance.item);
@@ -164,22 +161,21 @@
                 _openCreateMissionDialog: function (e) {
                     this.fire('create-mission', {
                         "title": this._title,
-                        "kind": this._kind,
+                        "kind": this.kind,
                         "reward": this._reward
                     })
                 },
-                _kindsChange: function(e){
+                kindsChange: function(e){
                     if (this.kinds.length > 0) {
                         this._updateSelectedKind(this.kinds[0]);
                     }
                 },
                 _updateSelectedKind: function (kind) {
-                    this._kind = kind;
-                    this._kind.name.en = this._kind.name.en.replace(/^./, this._kind.name.en[0].toUpperCase());
-                    this._kind.name.fr = this._kind.name.fr.replace(/^./, this._kind.name.fr[0].toUpperCase());
-                    this._kindLabel = this._kind.name.en;
+                    this.set('kind', kind);
+                    this.kind.name.en = this.kind.name.en.replace(/^./, this.kind.name.en[0].toUpperCase());
+                    this.kind.name.fr = this.kind.name.fr.replace(/^./, this.kind.name.fr[0].toUpperCase());
 
-                    this.fire('kind-change', { kind: this._kind });
+                    this.fire('kind-change', { kind: this.kind });
                 }
             });
         })();

@@ -34,7 +34,7 @@
         .taskList::-webkit-scrollbar-thumb {
             border-radius: 7px;
             background-color: #cccccc;
-        }
+        }        
         
         .container {
             margin: 1px auto;
@@ -56,6 +56,7 @@
             flex-flow: column;
             display: flex;
             justify-content: space-between;
+            background-color:rgba(0, 0, 0, 0.20);
         }
 
         .middle {
@@ -113,19 +114,22 @@
         }
 
         .reward {
-            margin: 0px auto auto 5px;
+            margin: 70px auto auto 15px;
         }
 
         .gain > paper-input{
             width: 40%;
             --paper-input-container-input-color:black;
             --paper-input-container-input:{
-                font-size:24px;
+                font-size:28px;
+                text-align: right;
             }
+
             --paper-input-suffix:{
-                font-size:24px;
+                font-size:30px;
+                font-weight:400;
             }
-        }
+        }  
 
         .dates {
             display: flex;
@@ -144,8 +148,6 @@
 
         .title{
             margin: 5px 25px;
-            width: 50%;
-            align-self: flex-end;
         }
 
         .title > paper-input{
@@ -235,8 +237,7 @@
                         <paper-input value="{{mission.title::input}}" always-float-label="false" no-label-float="true"></paper-input>
                     </div>
                     <div class="gain">
-                        <div>Reward</div>
-                        <paper-input class="reward" value="{{mission.reward::input}}" always-float-label="false" no-label-float="true"><div suffix>€</div></paper-input>
+                        <paper-input class="reward" type="number" value="{{mission.reward::input}}" always-float-label="false" no-label-float="true"><div suffix>€</div></paper-input>
                     </div>
                     <div class="dates">
                            <sa-dates id="datesList" dates="{{mission.wishDates}}" limit="8"></sa-dates>
@@ -246,7 +247,7 @@
                 <div class="middle" id="middle" style$="background-color:[[kind.color]]">
                     <div id="level">Level difficulty :</div>
                     <div id="stars">
-                        <sa-rank count="4" editable="true"></sa-rank>
+                        <sa-rank count="4" editable="true" rank="{{mission.level}}"></sa-rank>
                     </div>
                 </div>
 
@@ -259,7 +260,7 @@
                     </paper-tabs>
                     <iron-pages selected="{{tabs}}">
                         <div>
-                            <paper-textarea type="text" label="Description" class="description" value="{{description::input}}"></paper-textarea>
+                            <paper-textarea type="text" label="Description" class="description" value="{{mission.description::input}}"></paper-textarea>
                         </div>
                         <div class="tasks">
                             <div class="task">
@@ -279,7 +280,7 @@
                             </div>
                         </div>
                         <div>
-                            <pk-datepicker style="height:100%;" on-date-selected="_updateDates">
+                            <pk-datepicker style="height:100%;" on-date-selected="_updateDates" isoDates="[[mission.wishDates]]">
                                 <iron-icon prev-month icon="chevron-left"></iron-icon>
                                 <iron-icon next-month icon="chevron-right"></iron-icon>
                                 <iron-icon prev-year icon="chevron-left"></iron-icon>
@@ -297,17 +298,22 @@
         <template is="dom-if" if="[[!edit]]">
             <div class="container">
                 <div class="header">
+                    <div class="title">
+                        <div>[[mission.title]]</div>
+                    </div>
                     <div class="gain">
-                        <div>Earned up to</div>
-                        <div class="reward">300€</div>
+                        <div class="reward">[[mission.reward]]<div>€</div></div>
                     </div>
                     <div class="dates">
-                        <sa-dates dates="[[mission.whishDates]]"></sa-dates>
+                        <sa-dates id="datesList" dates="[[mission.wishDates]]" limit="8"></sa-dates>
                     </div>
                 </div>
 
-                <div class="middle">
-
+                <div class="middle" id="middle" style$="background-color:[[kind.color]]">
+                    <div id="level">Level difficulty :</div>
+                    <div id="stars">
+                        <sa-rank count="4" rank="[[mission.level]]"></sa-rank>
+                    </div>
                 </div>
 
                 <div class="footer">
@@ -318,8 +324,31 @@
                         <paper-tab>Messages</paper-tab>
                     </paper-tabs>
                     <iron-pages selected="{{tabs}}">
+                        <div class="description">
+                            <div>[[mission.description]]</div>
+                        </div>
+                        <div class="tasks">
+                            <div class="task">&nbsp;</div>
+                            <div class="taskList">
+                                <template id="taskListTemplate" is="dom-repeat" items="[[mission.tasks]]">
+                                    <paper-item>
+                                        <div class="round">[[item.order]]</div>
+                                        <div class="taskDesc">[[item.description]]</div>
+                                        <div class="taskComment">[[item.comment]]</div>                                        
+                                    </paper-item>
+                                </template>
+                            </div>
+                        </div>
                         <div>
-                            <div class="description">[[mission.description]]</div>
+                            <pk-datepicker style="height:100%;" dates="[[mission.wishDates]]">
+                                <iron-icon prev-month icon="chevron-left"></iron-icon>
+                                <iron-icon next-month icon="chevron-right"></iron-icon>
+                                <iron-icon prev-year icon="chevron-left"></iron-icon>
+                                <iron-icon next-year icon="chevron-right"></iron-icon>
+                            </pk-datepicker>
+                        </div>
+                        <div>
+                            <div class="description"></div>
                         </div>
                     </iron-pages>
                 </div>
@@ -339,7 +368,8 @@
 
                 properties: {
                     mission: {
-                        type: Object
+                        type: Object,
+                        notify: true
                     },
                     kind: {
                         type: Object
@@ -383,7 +413,6 @@
                     if (typeof (e.detail) === "undefined") { return;}
                     var date = e.detail;
 
-
                     if (date.index > -1) {
                         this.splice("mission.wishDates", date.index, 1);
                     }
@@ -391,7 +420,10 @@
                         var _date = new Date(date.year, date.month, date.day);
                         this.push("mission.wishDates", _date.toISOString());
                     }
-                },                
+                },
+                _setLevel: function(e){
+                    this.mission.level = e.target.rank;
+                },
                 _addTask: function (e) {
                     this.push('mission.tasks', this.task);
                     this.task = new Object({
@@ -429,10 +461,7 @@
                     list.render();
                 },
                 _onValidate: function (e) {
-                    this.mission.wishDates = this.dates;
                     this.mission._type = this.kind._id;
-                    this.mission.level = this.level;
-                    this.mission.description = this.description;
                     this.fire('close-infos', { mission: this.mission });
                 }
             });

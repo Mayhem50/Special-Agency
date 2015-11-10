@@ -12,7 +12,7 @@ module.exports = mongoose.model(
         descritpion : String,
         status : { type : Number, min : 0, max : 10 },
         creationDate : { type : Date, default: Date.now },
-        whishDates : [{ type : Date, default: Date.now }],
+        wishDates : [{ type : String }],
         finishDate : Date,
         where : {
             longitude : String,

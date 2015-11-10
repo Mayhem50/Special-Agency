@@ -8,7 +8,11 @@ var Type = mongoose.Schema({
     image: {
         path : String,
         xOffset: String,
-        yOffset: String
+        yOffset: String,
+        toolBarXOffset: String,
+        toolBarYOffset: String,
+        scale: String,
+        toolBarScale: String
     },
     color: String,
     css: String,

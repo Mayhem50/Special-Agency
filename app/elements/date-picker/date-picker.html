@@ -120,6 +120,22 @@
                 color: #ffffff;
                 @apply(--pk-datepicker-selected);
             }
+            
+            td > div.agent-selected {
+                border-radius: 50%;
+                cursor: pointer;
+                background-color: #ff0000;
+                color: #ffffff;
+                @apply(--pk-datepicker-second-selected);
+            }
+            
+            td > div.both-selected {
+                border-radius: 50%;
+                cursor: pointer;
+                color: #ffffff;
+                background-color:green;
+                @apply(--pk-datepicker-both-selected);
+            }
 
         #yearList {
             @apply(--layout-horizontal);
@@ -274,6 +290,12 @@
                 notify: true
             },
 
+            otherDates: {
+                type: Array,
+                value: [],
+                notify: true
+            },
+
             /**
              * How many future years the selection list should show.
              */
@@ -347,7 +369,10 @@
         * Fires the `date-selected` event if some date was selected.
         */
         _selectionHandler: function (e) {
-            if (!this.edit) { return; }
+            if (!this.edit) {
+                this._secondUserSelected(e);
+                return;
+            }
 
             if (e.target && e.target.nodeName == 'DIV' && e.target.classList.contains('day')) {
                 var found = -1;
@@ -368,7 +393,6 @@
                 }
                 else {
                     e.target.classList.add('selected');
-                    e.target.id = '' + this.showDate.year + this.showDate.month + day;
                     var date = new Date(this.showDate.year, this.showDate.month, day);
                     this.push('dates', date.toISOString());
                 }
@@ -380,6 +404,39 @@
                 };
 
                 this.fire('date-selected', { index: found, year: this.date.year, month: this.date.month, day: this.date.day });
+            }
+        },
+
+        _secondUserSelected:function(e){
+            if (e.target && e.target.nodeName == 'DIV' && e.target.classList.contains('day')) {
+                var found = -1;
+
+                var day = parseInt(e.target.textContent || e.target.innerText);
+
+                for (var idx = 0; idx < this.otherDates.length; ++idx) {
+                    var date = new Date(this.otherDates[idx]);
+                    if(date.getUTCDate() === day - 1 && 
+                        date.getUTCMonth() === this.showDate.month &&
+                        date.getUTCFullYear() === this.showDate.year) {
+                        found = idx;
+                    }
+                }
+
+                if (found !== -1) {
+                    this.splice('otherDates', found, 1);
+                }
+                else {
+                    e.target.classList.add('agent-selected');
+                    e.target.id = '' + this.showDate.year + this.showDate.month + day;
+                    var date = new Date(this.showDate.year, this.showDate.month, day);
+                    this.push('otherDates', date.toISOString());
+                }
+
+                this.date = {
+                    year: this.showDate.year,
+                    month: this.showDate.month + 1,
+                    day: parseInt(e.target.textContent || e.target.innerText)
+                };                
             }
         },
 
@@ -649,13 +706,43 @@
                                     classes.push('selected');
                                 }
                             }
-                        }                        
+                        }
+
+                        if (typeof (this.otherDates) !== 'undefined') {
+                            for (var idx = 0; idx < this.otherDates.length; ++idx) {
+                                var date = new Date(this.otherDates[idx]);
+                                if (day == date.getUTCDate() + 1 &&
+                                    month == date.getUTCMonth() &&
+                                    year == date.getUTCFullYear()) {
+                                    classes.push('agent-selected');
+                                }
+                            }
+                        }
+
+                        if (typeof (this.otherDates) !== 'undefined' && typeof (this.dates) !== 'undefined') {
+                            for (var idx = 0; idx < this.otherDates.length; ++idx) {
+                                var otherDate = new Date(this.otherDates[idx]);
+
+                                for (var jdx = 0; jdx < this.dates.length; ++jdx) {
+                                    var date = new Date(this.dates[jdx]);
+
+                                    if ((day == date.getUTCDate() + 1 &&
+                                        month == date.getUTCMonth() &&
+                                        year == date.getUTCFullYear()) && 
+                                        (day == otherDate.getUTCDate() + 1 &&
+                                        month == otherDate.getUTCMonth() &&
+                                        year == otherDate.getUTCFullYear())) {
+                                        classes.push('both-selected');
+                                    }
+                                }
+                            }
+                        }
 
                         if (day == thisDay && thisMonth == month && thisYear == year) {
                             classes.push('today');
                         }
 
-                        html += '<td><div class="day ' + classes.join(' ') + '">' + day + '</div>';
+                        html += '<td><div id="' + this.showDate.year + this.showDate.month + day + '" class="day ' + classes.join(' ') + '">' + day + '</div>';
                         day++;
                     } else {
                         html += '<td class="disabled">';

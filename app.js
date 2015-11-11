@@ -34,6 +34,7 @@ var http_users = require('./server/http_routes/users')(passport);
 var http_missions = require('./server/http_routes/missions')(passport);
 var http_helpers = require('./server/http_routes/helpers')();
 var http_kinds = require('./server/http_routes/kinds')();
+var http_chats = require('./server/http_routes/chats')();
 
 app.use(http_index);
 app.use(http_users);

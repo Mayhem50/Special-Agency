@@ -47,11 +47,13 @@
     <Compile Include="server\controllers\passport\passport-login.js" />
     <Compile Include="server\controllers\passport\passport-signup.js" />
     <Compile Include="server\controllers\session.js" />
+    <Compile Include="server\http_routes\chats.js" />
     <Compile Include="server\http_routes\types.js" />
+    <Compile Include="server\io_routes\chats.js" />
     <Compile Include="server\io_routes\missions.js" />
     <Compile Include="server\models\google-id.js" />
     <Compile Include="server\http_routes\kinds.js" />
-    <Compile Include="server\models\message.js" />
+    <Compile Include="server\models\chat.js" />
     <Compile Include="server\models\mission-type.js" />
     <Compile Include="server\models\mission.js" />
     <Compile Include="server\models\user.js" />

@@ -132,7 +132,7 @@
                     <div>Earned up to</div>
                     <div class="reward"><span>[[mission.reward]]</span><span>€</span></div>
                 </div>
-                <div class="command">
+                <div id="command" class="command">
                     <paper-icon-button icon="delete" on-tap="_deleteMission"></paper-icon-button>
                     <paper-icon-button icon="create" on-tap="_editMission"></paper-icon-button>
                 </div>
@@ -171,7 +171,11 @@
                         type: Boolean,
                         value: true
                     },
-                    index: Number
+                    index: Number,
+                    hide: {
+                        type: Boolean,
+                        value:true
+                    }
                 },
                 ready: function () {
                     this._init();
@@ -194,6 +198,13 @@
                     this.$$(id).style.backgroundImage = 'url(../../images/kinds/' + this.kind.image.path + ')';
                     this.$$(id).style.backgroundPosition = this.kind.image.xOffset + ' ' + this.kind.image.yOffset;
                     this.$$(id).style.backgroundSize = this.kind.image.size;
+
+                    if (this.hide) {
+                        this.$.command.style.display = 'none';
+                    }
+                    else {
+                        this.$.command.style.display = 'flex';
+                    }
                 },
                 _deleteMission: function (e) {
                     this.fire('delete-mission', { mission: this.mission });

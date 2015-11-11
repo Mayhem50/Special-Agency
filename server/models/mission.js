@@ -6,7 +6,6 @@ module.exports = mongoose.model(
         _type : { type: mongoose.Schema.Types.ObjectId, ref: 'Type' },
         _owner : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         _agent : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        _messages : { type: mongoose.Schema.Types.ObjectId, ref: 'Message' },
         level : Number,
         reward : Number,
         descritpion : String,

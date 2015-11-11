@@ -36,8 +36,8 @@ module.exports = function () {
     });
     
     router.get('/missions', function (req, res) {
-        console.log('Get all missions');
-        Mission.find({}).populate('_owner').populate('_agent').exec(function (err, missions) {
+        console.log('Get all missions not finished');
+        Mission.find({}, function (err, missions) {
             if (err) {
                 return res.sendStatus(500);
             }
@@ -61,34 +61,74 @@ module.exports = function () {
         res.end();
     });
     
-    router.post('/missions/:id', jwtauth, function (req, res) {
+    router.post('/missions/:mode', jwtauth, function (req, res) {
         console.log('Get all missions from owner');
-        Mission.find({ '_owner' : req.params.id }, function (err, missions) {
-            if (err) {
-                return res.sendStatus(500);
-            }
-            
-            return res.json({
-                'missions': missions,
-                method: 'POST',
-                success : true,
-                route: "missions"
+        
+        if (req.params.mode == 'agent') {
+            Mission.find( {'_owner' :{"$ne" : req.user._id } }, function (err, missions) {
+                if (err) {
+                    return res.sendStatus(500);
+                }
+                
+                return res.json({
+                    'missions': missions,
+                    method: 'POST',
+                    success : true,
+                    route: "missions"
+                });
             });
-        });
+        }
+        if (req.params.mode == 'sponsor') {
+            Mission.find({ '_owner' : req.user._id }, function (err, missions) {
+                if (err) {
+                    return res.sendStatus(500);
+                }
+                
+                return res.json({
+                    'missions': missions,
+                    method: 'POST',
+                    success : true,
+                    route: "missions"
+                });
+            });
+        }
+        
+        res.end();                
     });
     
-    router.get('/missions/:id', jwtauth, function (req, res) {
-        console.log('Get mission from id');
-        Mission.findOne({ _id : req.params.id }, function (err, mission) {
-            if (err) { return res.sendStatus(500); }
-            
-            return res.json({
-                'missions': mission,
-                method: 'GET',
-                success : true,
-                route: "missions"
+    router.get('/missions/:mode', jwtauth, function (req, res) {
+        console.log('Get all missions from owner');
+        
+        if (req.params.mode == 'agent') {
+            Mission.find({ '_owner' : { "$ne" : req.user._id } }, function (err, missions) {
+                if (err) {
+                    return res.sendStatus(500);
+                }
+                
+                return res.json({
+                    'missions': missions,
+                    method: 'GET',
+                    success : true,
+                    route: "missions"
+                });
             });
-        });
+        }
+        else if (req.params.mode == 'sponsor') {
+            Mission.find({ '_owner' : req.user._id }, function (err, missions) {
+                if (err) {
+                    return res.sendStatus(500);
+                }
+                
+                return res.json({
+                    'missions': missions,
+                    method: 'GET',
+                    success : true,
+                    route: "missions"
+                });
+            });
+        }
+        else
+            res.end(); 
     });
     
     

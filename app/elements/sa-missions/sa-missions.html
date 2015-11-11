@@ -83,22 +83,22 @@
             padding-left: 25px;
             align-items: center;
             font-size: 24px;
-            flex-shrink:0;
+            flex-shrink: 0;
         }
 
         #toolbar-button {
-            display:flex;
+            display: flex;
             flex: 0 0 50px;
             order: 1;
             height: 100%;
-            justify-content:flex-start;
-            align-items:center;
-            color:#686868;
-            background-color:#2b2b2b;
+            justify-content: flex-start;
+            align-items: center;
+            color: #686868;
+            background-color: #2b2b2b;
         }
 
-            #toolbar-button > paper-icon-button{
-                padding:0;
+            #toolbar-button > paper-icon-button {
+                padding: 0;
             }
 
         #toolbar-deco {
@@ -140,14 +140,15 @@
                                               kind="{{_selectedKind}}"
                                               on-create-mission="_onBeginCreation">
                     </sa-mission-creation-card>
-                    <template id="missionsList" is="dom-repeat" items="[[_missions]]" filter="_missionsOfKind" sort="_sortMissions">
+                    <template id="missionsList" is="dom-repeat" items="[[_missions]]" filter="_filterMissions" sort="_sortMissions">
                         <sa-mission-card class="card"
                                          on-tap="_onOpenInfos"
                                          mission="[[item]]"
                                          kind="[[_selectedKind]]"
                                          index="[[index]]"
                                          on-delete-mission="_onDeleteMission"
-                                         on-edit-mission="_onEditMission">
+                                         on-edit-mission="_onEditMission"
+                                         hide="[[hide]]">
                         </sa-mission-card>
                     </template>
                 </div>
@@ -172,7 +173,7 @@
         <iron-ajax id="mission-ajax"
                    url="[[ajax_url]]"
                    content-type="application/json"
-                   body="[[ajax_params]]"
+                   params="[[ajax_params]]"
                    handle-as="json"
                    method="[[ajax_method]]"
                    on-response="handleResponse"
@@ -253,37 +254,41 @@
                     app.socket.on('add-mission', function (data) {
                         console.log('add mission');
                         this.push('_missions', data);
-
                         var index = this._kinds.indexOfObject('_id', data._type);
                         this.set('_kinds.' + index + '.count', this._kinds[index].count + 1);
                     }.bind(this));
+
                     app.socket.on('update-mission', function (data) {
                         console.log('update mission');
                         var index = this._missions.indexOfObject('_id', data._id);
                         this.splice('_missions', index, 1);
                         this.push('_missions', data);
                     }.bind(this));
+
                     app.socket.on('delete-mission', function (data) {
                         console.log('delete mission');
                         var index = this._missions.indexOfObject('_id', data._id);
                         this.splice('_missions', index, 1);
-
                         var index = this._kinds.indexOfObject('_id', data._type);
                         this.set('_kinds.' + index + '.count', this._kinds[index].count - 1);
                     }.bind(this));
 
                     this._showPage(0);
+
+                    this.getMissions();
                 },
                 attached: function () {
 
                 },
                 handleNotification: function () {
+                    this.hide = true;
                     if (window.sessionStorage.token !== "undefined" && window.sessionStorage.token != '') {
                         if (app.drawer_route == 0) {
                             this.filter = app.mission_filter;
                         }
                         else if (app.drawer_route == 1) {
                             this.filter = 'sponsor';
+                            this.hide = false;
                         }
                         else {
                             this.filter = 'none';
@@ -292,7 +297,8 @@
                     else {
                         this.filter = 'none';
                     }
-                    this.getMissions();
+
+                    this.$.missionsList.render();
                 },
                 getMissions: function () {
                     this.ajax_method = 'GET';
@@ -360,7 +366,7 @@
                     this.mission = e.detail.mission;
                     app.socket.emit('delete-mission', this.mission);
                     this._createEmptyMission();
-                    this.allowOpenInfos = false;
+                    this._allowInfosOpen = false;
                 },
                 _onUpdateMission: function (e) {
                     app.socket.emit('update-mission', this.mission);
@@ -400,12 +406,24 @@
                 },
                 _showKindMissions: function (e) {
                     this._selectedKind = e.model.item;
-
-                    
-
                     this._showPage(1);
-
                     this.$.missionsList.render();
+                },
+                _filterMissions: function (item) {
+                    if (!window.sessionStorage.token) {
+                        return this._missionsOfKind(item);
+                    }
+                    else if (this.filter === 'search') {
+                         return (this._missionsOfKind(item) && item._owner !== window.sessionStorage['id'] && item._agent !== window.sessionStorage['id']);
+                    }
+                    else if (this.filter === 'event') {
+                        return (this._missionsOfKind(item) && item._owner !== window.sessionStorage['id'] && item._agent === window.sessionStorage['id']);
+                    }
+                    else if (this.filter === 'sponsor') {
+                        return this._missionsOfKind(item) && item._owner == window.sessionStorage['id'];
+                    }
+
+                    return true;
                 },
                 _missionsOfKind: function (item) {
                     if (typeof (this._selectedKind) !== "undefined") {
@@ -420,7 +438,7 @@
                     var A = new Date(a.creationDate);
                     var B = new Date(b.creationDate);
 
-                    return A <= B;
+                    return A < B;
                 },
                 _backToKinds: function (e) {
                     this._showPage(0);
@@ -484,6 +502,12 @@
                     div.style.backgroundImage = 'url(../../images/kinds/' + this._selectedKind.image.path + ')';
                     div.style.backgroundPosition = this._selectedKind.image.toolBarXOffset + ' ' + this._selectedKind.image.toolBarYOffset;
                     div.style.backgroundSize = this._selectedKind.image.toolBarScale;
+                },
+                _handleNeedUpdate: function (e) {
+                    if (this._needUpdate) {
+                        this.$.missionsList.render();
+                        this._needUpdate = false;
+                    }
                 }
             });
         })();

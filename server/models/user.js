@@ -18,6 +18,7 @@ module.exports = mongoose.model(
         rank: Number,
         birthDate : Date,
         missionsDone : Number,
-        googleID: { type: mongoose.Schema.Types.ObjectId, ref: 'Google-ID' }
+        googleID: { type: mongoose.Schema.Types.ObjectId, ref: 'Google-ID' },
+        socket: String
     }
 );

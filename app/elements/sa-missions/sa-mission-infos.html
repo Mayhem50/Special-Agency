@@ -37,7 +37,7 @@
         }        
         
         .container {
-            margin: 1px auto;
+            margin: 5px auto;
             width: 34.896%;
             display: flex;
             flex-direction: column;
@@ -50,7 +50,7 @@
         }
 
         .header {
-            height: 300px;
+            height: 275px;
             display: flex;
             justify-content: flex-start;
             flex-flow: column;
@@ -81,7 +81,7 @@
             }
 
         .footer {
-            height: 545px;
+            height: 485px;
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -114,7 +114,7 @@
         }
 
         .reward {
-            margin: 70px auto auto 15px;
+            margin: 45px auto auto 15px;
         }
 
         .gain > paper-input{
@@ -215,10 +215,17 @@
             margin:15px 25px 0px 10px;
         }
         
-        .validateButton {
+        .rightButton {
             position: fixed;
             bottom: 25px;
             right: calc(50% - 17%);
+            z-index:12;
+        }
+        
+        .leftButton {
+            position: fixed;
+            bottom: 25px;
+            left: calc(50% - 17%);
             z-index:12;
         }
 
@@ -356,7 +363,8 @@
         </template>
 
         <div>
-            <paper-fab id="validateButton" class="validateButton" icon="check" on-click="_onValidate"></paper-fab>
+            <paper-fab id="validateButton" class="rightButton" icon="check" on-click="_onValidate"></paper-fab>
+            <paper-fab id="cancelButton" class="leftButton" icon="clear" on-click="_onCancel"></paper-fab>
         </div>
 
     </template>
@@ -401,13 +409,14 @@
                         type: Number,
                         value: 1
                     },
-                    description: String
+                    description: String,
+                    create: {
+                        type: Boolean,
+                        value: false
+                    }
                 },
                 ready: function () {
                     this.tabs = 0;
-                },
-                _openDatePicker: function (e) {
-                    this.querySelector('paper-dialog').open();
                 },
                 _updateDates: function (e) {
                     if (typeof (e.detail) === "undefined") { return;}
@@ -462,7 +471,18 @@
                 },
                 _onValidate: function (e) {
                     this.mission._type = this.kind._id;
-                    this.fire('close-infos', { mission: this.mission });
+                    if (this.create) {
+                        this.fire('create-mission', { mission: this.mission });
+                    }
+                    else if (this.edit) {
+                        this.fire('update-mission', { mission: this.mission });
+                    }
+                    else {
+                        this.fire('close-infos');
+                    }
+                },
+                _onCancel: function (e) {
+                    this.fire('cancel');
                 }
             });
         })();

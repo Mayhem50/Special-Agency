@@ -129,8 +129,8 @@
         <paper-card id="[[cardName]]">            
             <div class="header">
                 <div class="command">
-                    <paper-icon-button icon="delete"></paper-icon-button>
-                    <paper-icon-button icon="create"></paper-icon-button>
+                    <paper-icon-button icon="delete" on-tap="_deleteMission"></paper-icon-button>
+                    <paper-icon-button icon="create" on-tap="_editMission"></paper-icon-button>
                 </div>
                 <div class="title">[[mission.title]]</div>
                 <div class="gain">
@@ -195,6 +195,12 @@
                     this.$$(id).style.backgroundImage = 'url(../../images/kinds/' + this.kind.image.path + ')';
                     this.$$(id).style.backgroundPosition = this.kind.image.xOffset + ' ' + this.kind.image.yOffset;
                     this.$$(id).style.backgroundSize = this.kind.image.size;
+                },
+                _deleteMission: function (e) {
+                    this.fire('delete-mission', { mission: this.mission });
+                },
+                _editMission: function (e) {
+                    this.fire('edit-mission', { mission: this.mission });
                 }
             });
         })();

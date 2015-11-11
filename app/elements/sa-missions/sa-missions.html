@@ -70,24 +70,40 @@
         }
 
         #toolbar-image {
-            flex-grow: 7;
-            order: 1;
+            flex: 0 0 357px;
+            order: 2;
         }
 
         #toolbar-text {
             display: flex;
             color: #d9d9d9;
             background-color: #3d3d3d;
-            flex-grow: 22;
-            order: 2;
+            flex: 1 0 210px;
+            order: 3;
             padding-left: 25px;
             align-items: center;
             font-size: 24px;
+            flex-shrink:0;
         }
 
         #toolbar-button {
-            flex-grow: 1;
-            order: 3;
+            display:flex;
+            flex: 0 0 50px;
+            order: 1;
+            height: 100%;
+            justify-content:flex-start;
+            align-items:center;
+            color:#686868;
+            background-color:#2b2b2b;
+        }
+
+            #toolbar-button > paper-icon-button{
+                padding:0;
+            }
+
+        #toolbar-deco {
+            flex: 0 0 40px;
+            order: 4;
             height: 100%;
         }
     </style>
@@ -95,30 +111,56 @@
         <div class="container">
             <iron-collapse id="toolbar">
                 <div class="toolbar">
+                    <div id="toolbar-button"><paper-icon-button icon="chevron-left" on-tap="_backToKinds"></paper-icon-button></div>
                     <div id="toolbar-image">&nbsp;</div>
-                    <div id="toolbar-text">[[_selectedKind.name.en]]</div>
-                    <div id="toolbar-button" on-tap="_backToKinds"></div>
+                    <div id="toolbar-text"><span>&nbsp;</span><span>[[_selectedKind.name.en]]</span></div>
+                    <div id="toolbar-deco">&nbsp;</div>
                 </div>
             </iron-collapse>
             <iron-pages id="pages" selected="0">
                 <div class="grid">
-                    <sa-mission-creation-card class="card" count="[[_missions.length]]" kinds="[[_kinds]]" on-create-mission="_onCreateMissionClick" on-kind-change="_changeKind"></sa-mission-creation-card>
+                    <sa-mission-creation-card class="card"
+                                              count="[[_missions.length]]"
+                                              kinds="[[_kinds]]"
+                                              on-create-mission="_onBeginCreation"
+                                              on-kind-change="_changeKind">
+                    </sa-mission-creation-card>
                     <template is="dom-repeat" items="[[_kinds]]" observe="count">
-                        <sa-mission-kind-card class$="[[item.class]]" kind="[[item]]" on-tap="_showMissionsOfKind"></sa-mission-kind-card>
+                        <sa-mission-kind-card class$="[[item.class]]"
+                                              kind="[[item]]"
+                                              on-tap="_showKindMissions">
+                        </sa-mission-kind-card>
                     </template>
                 </div>
 
                 <div class="grid">
-                    <sa-mission-creation-card class="card" count="[[_count]]" kinds="[[_kinds]]" kind="{{_selectedKind}}" on-create-mission="_onCreateMissionClick"></sa-mission-creation-card>
+                    <sa-mission-creation-card class="card"
+                                              count="[[_count]]"
+                                              kinds="[[_kinds]]"
+                                              kind="{{_selectedKind}}"
+                                              on-create-mission="_onBeginCreation">
+                    </sa-mission-creation-card>
                     <template id="missionsList" is="dom-repeat" items="[[_missions]]" filter="_missionsOfKind" sort="_sortMissions">
-                        <sa-mission-card class="card" on-tap="_openInfos" mission="[[item]]" kind="[[_selectedKind]]" index="[[index]]"></sa-mission-card>
+                        <sa-mission-card class="card"
+                                         on-tap="_onOpenInfos"
+                                         mission="[[item]]"
+                                         kind="[[_selectedKind]]"
+                                         index="[[index]]"
+                                         on-delete-mission="_onDeleteMission"
+                                         on-edit-mission="_onEditMission">
+                        </sa-mission-card>
                     </template>
                 </div>
                 <div>
                     <sa-mission-infos mission="{{mission}}"
                                       edit="[[_isForEdit]]"
+                                      create="[[_isForCreate]]"
                                       kind="[[_selectedKind]]"
-                                      on-close-infos="_onCloseInfos"></sa-mission-infos>
+                                      on-create-mission="_onCreateMission"
+                                      on-update-mission="_onUpdateMission"
+                                      on-close-infos="_onCloseInfos"
+                                      on-cancel="_onCancel">
+                    </sa-mission-infos>
                 </div>
             </iron-pages>
 
@@ -192,6 +234,10 @@
                         value: []
                     },
                     _count: Number,
+                    _allowInfosOpen: {
+                        type: Boolean,
+                        value: true
+                    }
                 },
                 ready: function () {
                     Array.prototype.indexOfObject = function (property, value) {
@@ -213,21 +259,23 @@
                     }.bind(this));
                     app.socket.on('update-mission', function (data) {
                         console.log('update mission');
-                        var index = this.$.list.missions.indexOfObject('_id', data._id);
+                        var index = this._missions.indexOfObject('_id', data._id);
                         this.splice('_missions', index, 1);
                         this.push('_missions', data);
                     }.bind(this));
                     app.socket.on('delete-mission', function (data) {
                         console.log('delete mission');
-                        var index = this.$.list.missions.indexOfObject('_id', data._id);
+                        var index = this._missions.indexOfObject('_id', data._id);
                         this.splice('_missions', index, 1);
 
                         var index = this._kinds.indexOfObject('_id', data._type);
                         this.set('_kinds.' + index + '.count', this._kinds[index].count - 1);
                     }.bind(this));
+
+                    this._showPage(0);
                 },
                 attached: function () {
-                    $('#validateButton').hide();
+
                 },
                 handleNotification: function () {
                     if (window.sessionStorage.token !== "undefined" && window.sessionStorage.token != '') {
@@ -291,7 +339,7 @@
                         }
                     }
                 },
-                _onCreateMissionClick: function (e) {
+                _onBeginCreation: function (e) {
                     this._createEmptyMission();
 
                     this.mission.title = e.detail.title || "";
@@ -299,69 +347,63 @@
                     this.mission.reward = e.detail.reward || 0;
 
                     this._isForEdit = true;
+                    this._isForCreation = true;
 
-                    var toolbar = document.querySelector('#main-toolbar-collapse');
-                    toolbar.toggle();
-
-                    this.$.pages.selected = 2;
-
-                    $('#createButton').hide();
-                    $('#validateButton').show();
-
+                    this._showPage(2);
                 },
-                _onCloseInfos: function (e) {
-                    this.$.pages.selected = 0;
-                    $('#validateButton').hide();
-                    $('#createButton').show();
-                    var toolbar = document.querySelector('#main-toolbar-collapse');
-                    toolbar.toggle();
-
+                _onCreateMission: function (e) {
                     app.socket.emit('add-mission', this.mission);
+                    this._createEmptyMission();
+                    this._showPage(this._fromPage);
                 },
-                _onMissionCreationClose: function (e) {
-                    if (e.detail.validate) {
-                        if (!this._isForEdit) {
-                            app.socket.emit('add-mission', this.mission);
-                            this.mission = {};
-                        }
-                        else if (this._isForEdit) {
-                            var date = new Date(Date.now());
-                            this.mission.creationDate = date.toISOString();
-                            app.socket.emit('update-mission', this.mission);
-                            this.mission = {};
-                        }
+                _onDeleteMission: function (e) {
+                    this.mission = e.detail.mission;
+                    app.socket.emit('delete-mission', this.mission);
+                    this._createEmptyMission();
+                    this.allowOpenInfos = false;
+                },
+                _onUpdateMission: function (e) {
+                    app.socket.emit('update-mission', this.mission);
+                    this._createEmptyMission();
+                    this._showPage(this._fromPage);
+                    this._isForEdit = false;
+                },
+                _onEditMission: function (e) {
+                    this.mission = e.detail.mission;
+                    this._isForEdit = true;
+                    this._isForCreate = false;
+                },
+                _onOpenInfos: function (e) {
+                    if (!this._allowInfosOpen) {
+                        this._allowInfosOpen = true;
+                        return;
                     }
-                    this.$.pages.selected = 0;
-                },
-                _openInfos: function (e) {
+
                     var target = event.target;
                     while (target !== this && !target._templateInstance) {
                         target = target.parentNode;
                     }
 
                     this.mission = target._templateInstance.item;
-                    var toolbar = document.querySelector('#main-toolbar-collapse');
-                    toolbar.toggle();
-                    this.$.pages.selected = 2;
+                    this._showPage(2);
+                },
+                _onCloseInfos: function (e) {
+                    this._showPage(0);
+                },
+                _onCancel: function (e) {
+                    this._createEmptyMission();
+                    this._showPage(this._fromPage);
                 },
                 _onRequestLogin: function (event) {
                     this.fire('request-login', {});
                     this.$.pages.selected = 0;
                 },
-                _showMissionsOfKind: function (e) {
+                _showKindMissions: function (e) {
                     this._selectedKind = e.model.item;
-                    this.$.pages.selected = 1;
 
-                    var div = this.querySelector('#toolbar-button');
-                    if (div == null) { return; }
-                    div.style.background = this._selectedKind.color;
+                    
 
-                    var div = this.querySelector('#toolbar-image');
-                    if (div == null) { return; }
-                    div.style.backgroundImage = 'url(../../images/kinds/' + this._selectedKind.image.path + ')';
-                    div.style.backgroundPosition = this._selectedKind.image.toolBarXOffset + ' ' + this._selectedKind.image.toolBarYOffset;
-                    div.style.backgroundSize = this._selectedKind.image.toolBarScale;
-                    this.$.toolbar.show();                
+                    this._showPage(1);
 
                     this.$.missionsList.render();
                 },
@@ -374,15 +416,14 @@
 
                     return false;
                 },
-                _sortMissions: function(a, b){
+                _sortMissions: function (a, b) {
                     var A = new Date(a.creationDate);
                     var B = new Date(b.creationDate);
 
                     return A <= B;
                 },
                 _backToKinds: function (e) {
-                    this.$.pages.selected = 0;
-                    this.$.toolbar.hide();
+                    this._showPage(0);
                 },
                 _changeKind: function (e) {
                     this._selectedKind = e.detail.kind;
@@ -410,6 +451,39 @@
                         },
                         tasks: []
                     }));
+                },
+                _showPage: function (page) {
+                    this._fromPage = this.$.pages.selected;
+
+                    switch (page) {
+                        case 0:
+                            $('#createButton').show();
+                            this.$.toolbar.hide();
+                            break;
+                        case 1:
+                            $('#createButton').show();
+                            this._updateToolbar();
+                            this.$.toolbar.show();
+                            break;
+                        case 2:
+                            $('#createButton').hide();
+                            this._updateToolbar();
+                            this.$.toolbar.show();
+                            break;
+                    }
+
+                    this.$.pages.selected = page;
+                },
+                _updateToolbar: function () {
+                    var div = this.querySelector('#toolbar-deco');
+                    if (div == null) { return; }
+                    div.style.background = this._selectedKind.color;
+
+                    div = this.querySelector('#toolbar-image');
+                    if (div == null) { return; }
+                    div.style.backgroundImage = 'url(../../images/kinds/' + this._selectedKind.image.path + ')';
+                    div.style.backgroundPosition = this._selectedKind.image.toolBarXOffset + ' ' + this._selectedKind.image.toolBarYOffset;
+                    div.style.backgroundSize = this._selectedKind.image.toolBarScale;
                 }
             });
         })();

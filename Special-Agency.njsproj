@@ -34,6 +34,7 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="app\scripts\client-app.js" />
+    <Compile Include="app\scripts\date.js" />
     <Compile Include="app\scripts\jquery-1.11.3.js" />
     <Compile Include="app\sw-import.js" />
     <Compile Include="gulpfile.js" />
@@ -59,6 +60,7 @@
     <Compile Include="server\http_routes\missions.js" />
     <Compile Include="server\http_routes\users.js" />
     <Compile Include="server\controllers\server.js" />
+    <Content Include="app\elements\date-picker\date-picker.html" />
     <Content Include="app\elements\elements.html" />
     <Content Include="app\elements\routing.html" />
     <Content Include="app\elements\sa-button\sa-button.html" />
@@ -126,6 +128,7 @@
   <ItemGroup>
     <Folder Include="app\" />
     <Folder Include="app\elements\" />
+    <Folder Include="app\elements\date-picker\" />
     <Folder Include="app\elements\sa-rank\" />
     <Folder Include="app\elements\sa-dates\" />
     <Folder Include="app\elements\sa-date-card\" />

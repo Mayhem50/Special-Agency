@@ -15,7 +15,7 @@
         }
     </style>
     <template>
-        <template is="dom-repeat" items="[[dates]]" filter="filter" sort="_sortDates">
+        <template id="dates" is="dom-repeat" items="[[dates]]" filter="filter" sort="_sortDates">
             <sa-date-card date="[[item]]"></sa-date-card>
         </template>
         <sa-empty-date></sa-empty-date>
@@ -54,6 +54,9 @@
                     var B = new Date(b);
 
                     return A > B;
+                },
+                refresh: function () {
+                    this.$.dates.render();
                 }
             });
         })();

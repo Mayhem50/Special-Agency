@@ -21,8 +21,7 @@
             height: 300px;
             display: flex;
             justify-content: flex-start;
-            flex-flow: column;
-            display: flex;
+            flex-wrap:wrap;
             background-color: rgba(4, 4, 4, 0.23);
         }
 
@@ -104,6 +103,7 @@
             bottom: 10px;
             background-color: rgba(0, 255, 144, 0.00);
             padding: 10px 15px;
+            align-self:flex-end;
         }
 
         .title{
@@ -128,14 +128,13 @@
 
         <paper-card id="[[cardName]]">            
             <div class="header">
-                <div class="command">
-                    <paper-icon-button icon="delete" on-tap="_deleteMission"></paper-icon-button>
-                    <paper-icon-button icon="create" on-tap="_editMission"></paper-icon-button>
-                </div>
-                <div class="title">[[mission.title]]</div>
                 <div class="gain">
                     <div>Earned up to</div>
                     <div class="reward"><span>[[mission.reward]]</span><span>€</span></div>
+                </div>
+                <div class="command">
+                    <paper-icon-button icon="delete" on-tap="_deleteMission"></paper-icon-button>
+                    <paper-icon-button icon="create" on-tap="_editMission"></paper-icon-button>
                 </div>
                 <div class="dates">
                     <sa-dates dates="[[mission.wishDates]]" limit="4"></sa-dates>
@@ -150,7 +149,7 @@
             </div>
 
             <div id="[[footer]]" class="footer ">
-                <div>Painting Mission</div>
+                <div class="title">[[mission.title]]</div>
             </div>
 
         </paper-card>

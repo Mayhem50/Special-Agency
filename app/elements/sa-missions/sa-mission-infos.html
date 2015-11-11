@@ -3,6 +3,7 @@
 
 <link rel="import" href="../sa-dates/sa-dates.html" />
 <link rel="import" href="../sa-rank/sa-rank.html" />
+<link rel="import" href="../date-picker/date-picker.html" />
 
 <dom-module id="sa-mission-infos">
     <style>
@@ -247,7 +248,7 @@
                         <paper-input class="reward" type="number" value="{{mission.reward::input}}" always-float-label="false" no-label-float="true"><div suffix>€</div></paper-input>
                     </div>
                     <div class="dates">
-                           <sa-dates id="datesList" dates="{{mission.wishDates}}" limit="8"></sa-dates>
+                           <sa-dates id="datesList" dates="[[mission.wishDates]]" limit="8"></sa-dates>
                     </div>
                 </div>
 
@@ -287,12 +288,12 @@
                             </div>
                         </div>
                         <div>
-                            <pk-datepicker style="height:100%;" on-date-selected="_updateDates" isoDates="[[mission.wishDates]]">
+                            <date-picker id="datePicker" style="height:100%;" dates="{{mission.wishDates}}" edit on-date-selected="_updateDates">
                                 <iron-icon prev-month icon="chevron-left"></iron-icon>
                                 <iron-icon next-month icon="chevron-right"></iron-icon>
                                 <iron-icon prev-year icon="chevron-left"></iron-icon>
                                 <iron-icon next-year icon="chevron-right"></iron-icon>
-                            </pk-datepicker>
+                            </date-picker>
                         </div>
                         <div>
                             <paper-input type="text" class="description"></paper-input>
@@ -347,12 +348,12 @@
                             </div>
                         </div>
                         <div>
-                            <pk-datepicker style="height:100%;" dates="[[mission.wishDates]]">
+                            <date-picker id="datePicker" style="height:100%;" dates="[[mission.wishDates]]">
                                 <iron-icon prev-month icon="chevron-left"></iron-icon>
                                 <iron-icon next-month icon="chevron-right"></iron-icon>
                                 <iron-icon prev-year icon="chevron-left"></iron-icon>
                                 <iron-icon next-year icon="chevron-right"></iron-icon>
-                            </pk-datepicker>
+                            </date-picker>
                         </div>
                         <div>
                             <div class="description"></div>
@@ -377,7 +378,8 @@
                 properties: {
                     mission: {
                         type: Object,
-                        notify: true
+                        notify: true,
+                        observer: '_missionChanged'
                     },
                     kind: {
                         type: Object
@@ -419,15 +421,9 @@
                     this.tabs = 0;
                 },
                 _updateDates: function (e) {
-                    if (typeof (e.detail) === "undefined") { return;}
-                    var date = e.detail;
-
-                    if (date.index > -1) {
-                        this.splice("mission.wishDates", date.index, 1);
-                    }
-                    else {
-                        var _date = new Date(date.year, date.month, date.day);
-                        this.push("mission.wishDates", _date.toISOString());
+                    var dates = this.querySelector('sa-dates');
+                    if (dates) {
+                        dates.refresh();
                     }
                 },
                 _setLevel: function(e){
@@ -483,6 +479,9 @@
                 },
                 _onCancel: function (e) {
                     this.fire('cancel');
+                },
+                _missionChanged: function (e) {
+                    this.tabs = 0;
                 }
             });
         })();

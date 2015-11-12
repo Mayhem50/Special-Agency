@@ -5,7 +5,7 @@
 <link rel="import" href="../sa-rank/sa-rank.html" />
 <link rel="import" href="../date-picker/date-picker.html" />
 
-<dom-module id="sa-mission-infos">
+<dom-module id="sa-mission-create">
     <style>
         .description::-webkit-scrollbar-track {
             
@@ -116,6 +116,7 @@
 
         .reward {
             margin: 45px auto auto 15px;
+            display:flex;
         }
 
         .gain > paper-input{
@@ -130,14 +131,19 @@
                 font-size:30px;
                 font-weight:400;
             }
-        }  
+        }
+
+        .gain > div{
+            font-size:60px;
+            color:#ffffff;
+        }
 
         .dates {
             display: flex;
             flex-flow:row;
             background-color: rgba(0, 255, 144, 0.00);
             justify-content:space-around;
-            height: 25%;
+            height: 30%;
             flex-wrap:nowrap;
             align-items:flex-start;
         }
@@ -241,20 +247,20 @@
             <div class="container">
                 <div class="header">
                     <div class="title">
-                        <div>[[mission.title]]</div>
+                        <paper-input value="{{mission.title::input}}" always-float-label="false" no-label-float="true"></paper-input>
                     </div>
                     <div class="gain">
-                        <div class="reward">[[mission.reward]]<div>€</div></div>
+                        <paper-input class="reward" type="number" value="{{mission.reward::input}}" always-float-label="false" no-label-float="true"><div suffix>€</div></paper-input>
                     </div>
                     <div class="dates">
-                        <sa-dates id="datesList" dates="[[mission.wishDates]]" limit="8"></sa-dates>
+                           <sa-dates id="datesList" dates="[[mission.wishDates]]" limit="8"></sa-dates>
                     </div>
                 </div>
 
                 <div class="middle" id="middle" style$="background-color:[[kind.color]]">
                     <div id="level">Level difficulty :</div>
                     <div id="stars">
-                        <sa-rank count="4" rank="[[mission.level]]"></sa-rank>
+                        <sa-rank count="4" editable="true" rank="{{mission.level}}"></sa-rank>
                     </div>
                 </div>
 
@@ -262,27 +268,32 @@
                     <paper-tabs selected="{{tabs}}">
                         <paper-tab>Description</paper-tab>
                         <paper-tab>Tasks</paper-tab>
-                        <paper-tab>Calendar</paper-tab>
-                        <paper-tab>Messages</paper-tab>
+                        <paper-tab>When</paper-tab>
+                        <paper-tab>Where</paper-tab>
                     </paper-tabs>
                     <iron-pages selected="{{tabs}}">
-                        <div class="description">
-                            <div>[[mission.description]]</div>
+                        <div>
+                            <paper-textarea type="text" label="Description" class="description" value="{{mission.description::input}}"></paper-textarea>
                         </div>
                         <div class="tasks">
-                            <div class="task">&nbsp;</div>
+                            <div class="task">
+                                <paper-input type="text" class="taskDesc" label="Description" value="{{task.description::input}}"></paper-input>
+                                <paper-input type="text" class="taskComment" label="Comment" value="{{task.comment::input}}"></paper-input>
+                                <paper-icon-button id="addTask" icon="add" on-tap="_addTask"></paper-icon-button>
+                            </div>
                             <div class="taskList">
                                 <template id="taskListTemplate" is="dom-repeat" items="[[mission.tasks]]">
                                     <paper-item>
                                         <div class="round">[[item.order]]</div>
                                         <div class="taskDesc">[[item.description]]</div>
-                                        <div class="taskComment">[[item.comment]]</div>                                        
+                                        <div class="taskComment">[[item.comment]]</div>
+                                        <paper-icon-button icon="delete" on-tap="_removeTask" id$="[[item.order]]"></paper-icon-button>
                                     </paper-item>
                                 </template>
                             </div>
                         </div>
                         <div>
-                            <date-picker id="datePicker" style="height:100%;" dates="[[mission.wishDates]]">
+                            <date-picker id="datePicker" style="height:100%;" dates="{{mission.wishDates}}" edit on-date-selected="_updateDates">
                                 <iron-icon prev-month icon="chevron-left"></iron-icon>
                                 <iron-icon next-month icon="chevron-right"></iron-icon>
                                 <iron-icon prev-year icon="chevron-left"></iron-icon>
@@ -290,12 +301,12 @@
                             </date-picker>
                         </div>
                         <div>
-                            <div class="description"></div>
+                            <paper-input type="text" class="description"></paper-input>
                         </div>
                     </iron-pages>
                 </div>
             </div>
-
+       
         <div>
             <paper-fab id="validateButton" class="rightButton" icon="check" on-click="_onValidate"></paper-fab>
             <paper-fab id="cancelButton" class="leftButton" icon="clear" on-click="_onCancel"></paper-fab>
@@ -306,7 +317,7 @@
     <script>
         (function () {
             Polymer({
-                is: 'sa-mission-infos',
+                is: 'sa-mission-create',
 
                 properties: {
                     mission: {
@@ -400,7 +411,7 @@
                 },
                 _onValidate: function (e) {
                     this.mission._type = this.kind._id;
-                    this.fire('on-offer-service');
+                    this.fire('create-mission', { mission: this.mission });
                 },
                 _onCancel: function (e) {
                     this.fire('cancel');

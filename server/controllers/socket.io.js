@@ -16,8 +16,7 @@ module.exports = function (server) {
     io.use(jwauthSocket);
 
     io.sockets.on('connection', function (socket) {
-        console.log('Granted user: ' + socket.id);
-        
+        console.log('Granted user: ' + socket.id);        
 
         User.findOneAndUpdate({ '_id' : socket.user }, { 'socket' : socket.id }, { upsert: true }, function (err, user) {
             if (err) { throw err; }

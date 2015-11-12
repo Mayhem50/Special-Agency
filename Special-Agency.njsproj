@@ -74,7 +74,9 @@
     <Content Include="app\elements\sa-login\sa-login-signup.html" />
     <Content Include="app\elements\sa-login\sa-login.html" />
     <Content Include="app\elements\sa-missions\sa-mission-card.html" />
+    <Content Include="app\elements\sa-missions\sa-mission-edit.html" />
     <Content Include="app\elements\sa-missions\sa-mission-creation-card.html" />
+    <Content Include="app\elements\sa-missions\sa-mission-create.html" />
     <Content Include="app\elements\sa-missions\sa-mission-infos.html" />
     <Content Include="app\elements\sa-missions\sa-mission-kind-card.html" />
     <Content Include="app\elements\sa-missions\sa-missions-list.html" />

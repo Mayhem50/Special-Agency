@@ -5,7 +5,7 @@
 <link rel="import" href="../../../../bower_components/iron-media-query/iron-media-query.html">
 
 <link rel="import" href="sa-mission-creation-card.html">
-<link rel="import" href="sa-mission-infos.html">
+<link rel="import" href="sa-mission-consult.html">
 <link rel="import" href="sa-mission-create.html">
 <link rel="import" href="sa-mission-edit.html">
 <link rel="import" href="sa-mission-card.html">
@@ -13,8 +13,23 @@
 
 <dom-module id="sa-missions">
     <style>
-        neon-animated-pages {
+        :host {
             height: 100%;
+            --paper-input-container-label : {                    
+                    color: #cccccc;
+            }
+            --paper-input-container-input-color: #cccccc;
+            --paper-input-container-underline-focus: {
+                background: rgba(20, 20, 20, 0.97);
+            }
+            --paper-menu-button-dropdown-background:rgba(0, 0, 0, 0.67);
+            --paper-dropdown-menu-input:{
+                rgba(0, 0, 0, 0.67);
+            }
+        }
+
+        .dropdown-content{
+            width:73.18vw;
         }
 
         paper-fab {
@@ -108,6 +123,113 @@
             order: 4;
             height: 100%;
         }
+
+        /* mobile-small */
+    @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) {
+        .dropdown-content{
+            width:73.18vw;
+        }
+
+        paper-fab {
+            background-color: #118c89;
+        }
+        
+        .grid {
+            padding: 0px;
+            margin: 1px auto;
+            width: 98%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            min-width: 172px;
+            max-width: 172px;
+            margin: 2px 2px;
+            align-self: center;
+        }
+
+        .card-2 {
+            min-width: 348px;
+            max-width: 348px;
+            margin: 2px 2px;
+            align-self: center;
+        }
+
+        .card-3 {
+            min-width: 527px;
+            max-width: 527px;
+            margin: 2px 2px;
+            align-self: center;
+        }
+
+        .toolbar {
+            display: flex;
+            width: 100%;
+            height: 50px;
+            margin: 0;
+            background-color: #3d3d3d;
+        }
+
+        #toolbar-image {
+            flex: 0 0 357px;
+            order: 2;
+        }
+
+        #toolbar-text {
+            display: flex;
+            color: #d9d9d9;
+            background-color: #3d3d3d;
+            flex: 1 0 210px;
+            order: 3;
+            padding-left: 25px;
+            align-items: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        #toolbar-button {
+            display: flex;
+            flex: 0 0 50px;
+            order: 1;
+            height: 100%;
+            justify-content: flex-start;
+            align-items: center;
+            color: #686868;
+            background-color: #2b2b2b;
+        }
+
+            #toolbar-button > paper-icon-button {
+                padding: 0;
+            }
+
+        #toolbar-deco {
+            flex: 0 0 40px;
+            order: 4;
+            height: 100%;
+        }
+    }
+    /* mobile-large */
+    @media all and (min-width: 361px) and (orientation: portrait) {
+    }
+    /* mobile-small-landscape */
+    @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) {
+    }
+    /* mobile-large-landscape */
+    @media all and (min-width: 481px) and (orientation: landscape) {
+    }
+    /* tablet-small-landscape */
+    @media all and (min-width: 600px) and (max-width: 960px) and (orientation: landscape) {
+    }
+    /* tablet-large-landscape */
+    @media all and (min-width: 961px) and (orientation: landscape) {
+    }
+    /* tablet-small */
+    @media all and (min-width: 600px) and (orientation: portrait) {
+    }
+    /* tablet-large */
+    @media all and (min-width: 601px) and (max-width: 840px) and (orientation : portrait) {
+    }
     </style>
     <template>
         <div class="container">
@@ -117,9 +239,10 @@
                     <div id="toolbar-image">&nbsp;</div>
                     <div id="toolbar-text">
                         <span>&nbsp;</span>
-                        <paper-dropdown-menu style="width:97%;" always-float-label="false" no-label-float="true" label="[[_selectedKind.name.en]]">
+                        <paper-dropdown-menu style="width:97%;" always-float-label="false" no-label-float="true" label="[[_paperDropDownMenuLabel]]">
                             <div class="dropdown-content">
-                                <template is="dom-repeat" items="[[kinds]]">
+                                <paper-item on-click="_selectKind">All</paper-item>
+                                <template is="dom-repeat" items="[[_kinds]]">
                                     <paper-item on-click="_selectKind">[[item.name.en]]</paper-item>
                                 </template>
                             </div>
@@ -134,7 +257,7 @@
                                               count="[[_missions.length]]"
                                               kinds="[[_kinds]]"
                                               on-create-mission="_onBeginCreation"
-                                              on-kind-change="_changeKind">
+                                              on-kind-change="_changeKind" >
                     </sa-mission-creation-card>
                     <template is="dom-repeat" items="[[_kinds]]" observe="count">
                         <sa-mission-kind-card class$="[[item.class]]"
@@ -153,13 +276,14 @@
                                               count="[[_count]]"
                                               kinds="[[_kinds]]"
                                               kind="[[_selectedKind]]"
-                                              on-create-mission="_onBeginCreation">
+                                              on-create-mission="_onBeginCreation"
+                                              on-kind-change="_changeKind" >
                     </sa-mission-creation-card>
                     <template id="missionsList" is="dom-repeat" items="[[_missions]]" filter="_filterMissions" sort="_sortMissions">
                         <sa-mission-card class="card"
                                          on-tap="_onBeginConsultation"
                                          mission="[[item]]"
-                                         kind="[[_selectedKind]]"
+                                         kind="[[_findKindOfMission(toggle, item)]]"
                                          index="[[index]]"
                                          on-delete-mission="_onDeleteMission"
                                          on-edit-mission="_onBeginEdition"
@@ -172,17 +296,17 @@
                     </div>
                 </div>
                 <div page="consultation">
-                    <sa-mission-infos mission="[[mission]]"
+                    <sa-mission-consult mission="[[mission]]"
                                       kind="[[_selectedKind]]"
                                       on-offer-service="_onOfferService"
                                       on-close-infos="_onCloseInfos"
                                       on-cancel="_onCancel">
-                    </sa-mission-infos>
+                    </sa-mission-consult>
                 </div>
                 <div page="creation">
                     <sa-mission-create mission="{{mission}}"
                                        kind="[[_selectedKind]]"
-                                       on-create-mission="_onCreateMssion"
+                                       on-create-mission="_onCreateMission"
                                        on-cancel="_onCancel">
                     </sa-mission-create>
                 </div>
@@ -260,6 +384,10 @@
                     _allowInfosOpen: {
                         type: Boolean,
                         value: true
+                    },
+                    _showAllKinds: {
+                        type: Boolean,
+                        value: false
                     }
                 },
                 ready: function () {
@@ -269,6 +397,9 @@
                         }
                         return -1;
                     };
+
+                    this.toggle = false;
+                    this._paperDropDownMenuLabel = "All";
 
                     this.$.toolbar.hide();
                     this._createEmptyMission();
@@ -442,10 +573,12 @@
                     return true;
                 },
                 _missionsOfKind: function (item) {
-                    if (typeof (this._selectedKind) !== "undefined") {
+                    if (typeof (this._selectedKind) !== "undefined" && !this._showAllKinds) {
                         if (item._type === this._selectedKind._id) {
                             return true;
                         }
+                    } else if (this._showAllKinds) {
+                        return true;
                     }
 
                     return false;
@@ -461,6 +594,11 @@
                 },
                 _changeKind: function (e) {
                     this._selectedKind = e.detail.kind;
+                    this._paperDropDownMenuLabel = this._selectedKind.name.en;
+                    if (this.$.pages.selected === 'missions') {
+                        this.$.missionsList.render();
+                        this._updateToolbar();
+                    }
                 },
                 _createEmptyMission: function () {
                     this.set('mission', new Object({
@@ -531,8 +669,26 @@
                     }
                 },
                 _selectKind: function (e) {
-                    this._selectedKind = e.target._templateInstance.item;
+                    if (e.target._templateInstance) {
+                        this._selectedKind = e.target._templateInstance.item;
+                        this._showAllKinds = false;
+                        this._paperDropDownMenuLabel = this._selectedKind.name.en;
+                    } else {
+                        this._showAllKinds = true;
+                        this._paperDropDownMenuLabel = e.target.innerText;
+                    }
                     this.querySelector('paper-dropdown-menu').close();
+                    this.$.missionsList.render();
+                    this.toggle = !this.toggle;
+                    this._updateToolbar();
+                },
+                _findKindOfMission: function (toggle, item) {
+                    var index = this._kinds.indexOfObject('_id', item._type);
+
+                    if (index !== -1) {
+                        return this._kinds[index];
+                    }
+                    return null;
                 }
             });
         })();

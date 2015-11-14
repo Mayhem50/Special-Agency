@@ -99,12 +99,6 @@
             visibility: visible;
         }
 
-        #mask {
-            align-self: flex-end;
-            height: 50px;
-            background-color: rebeccapurple;
-        }
-
         .gain {
             background-color: rgba(76, 255, 0, 0.00);
             font-size: 30px;
@@ -148,11 +142,6 @@
             align-items:flex-start;
         }
 
-        .date {
-            margin: 0 2px 0 2px;
-            background-color:#00ffff;
-        }
-
         .title{
             margin: 5px 25px;
         }
@@ -163,12 +152,6 @@
                                                 font-size:48px;
                                                 text-align:right;
                                           }
-        }
-
-        .icon{
-            position:relative;
-            bottom: -50px;
-            left: 10px;
         }
 
         .taskDesc{
@@ -242,6 +225,150 @@
                 padding:0;
             }
         }
+
+    @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait){
+        :host{
+            --paper-tabs:{
+                height:30px;
+                font-size:8px;
+            }
+        }
+
+        .container {
+            margin: 1px auto;
+            width: 342px;
+        }
+
+        .header {
+            height: 165px;
+        }
+
+        .middle {
+            height: 30px;
+        }
+
+            .middle > div {
+                margin-left: 6px;
+            }
+
+            .middle > #level {
+                margin-left: 6px;
+                font-size: 11px;
+            }
+
+            .middle > #stars {
+                margin-right: 9px;
+            }
+
+        .footer {
+            height: 305px;
+        }
+
+        .description {
+            margin-left: 15px;
+            padding-right: 15px;
+            margin-top: 3px;
+            max-height: 300px;
+        }
+
+        .reward {
+            margin: 28px auto auto 9px;
+        }
+
+        .gain {
+            font-size: 18px;
+            margin: 1px auto auto 1px;
+        }
+
+            .gain > paper-input {
+                width: 40%;
+                text-align: right;
+                --paper-input-container-input:{
+                    font-size: 17px;
+                }
+
+                --paper-input-suffix: {
+                    font-size: 18px;
+                }
+            }
+
+        .gain > div {
+            font-size: 36px;
+        }
+
+        .dates {            
+            height: 30%;
+        }
+
+        .title {
+            margin: 1px 15px;
+        }
+
+            .title > paper-input {
+                --paper-input-container-input:{
+                    font-size: 24px;
+                }
+            }
+
+        .taskDesc {
+            flex-grow: 3;
+            margin: 3px 3px 3px 15px;
+        }
+
+        .taskComment {
+            flex-grow: 1;
+            margin: 3px 3px;
+        }
+
+        .tasks {
+            width: 100%;
+        }
+
+        .taskList {
+            max-height: 255px;
+            margin-top: 12px;
+        }
+
+            .taskList > paper-item {
+                border-radius: 3px;
+                width: 85%;
+                margin: 3px auto;
+                height:20px;
+            }
+
+        .task {
+            width: 100%;
+        }        
+
+        .round {
+            width: 15px;
+            height: 15px;
+            border-radius: 7px;
+            font-size:10px;
+        }
+
+        #addTask {
+            margin: 9px 15px 0px 6px;
+        }
+
+        .rightButton {
+            bottom: 15px;
+            right: calc(50% - 17%);
+        }
+
+        .leftButton {
+            bottom: 25px;
+            left: calc(50% - 17%);
+        }
+
+        sa-rank {
+            --sa-rank-item:{
+                margin-left: 37px;
+                padding: 0;
+                width: 20px;
+            }
+        }
+    }
     </style>
     <template>
             <div class="container">

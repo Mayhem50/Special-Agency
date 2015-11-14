@@ -53,6 +53,53 @@
                 background-color:rgba(0, 0, 0, 0.13);
                 width: 100%;
             }
+
+        @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) {
+        paper-card {
+            align-self: center;
+            width: 100%;
+        }
+
+        .header {
+            height: 185px;
+            display: flex;
+            justify-content: flex-start;
+            flex-flow: column;
+            display: flex;
+            background-color: rgba(4, 4, 4, 0.23);
+        }
+
+        .middle {            
+            height: 30px;
+            background-color: #333333;
+            flex-direction: row;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+            
+            .middle > div {
+                margin-left: 6px;
+            }
+
+        .footer {
+            height: 53px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .footer::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                height: 53px;
+                background-color:rgba(0, 0, 0, 0.13);
+                width: 100%;
+            }        
+        }
     </style>
 
     <template>

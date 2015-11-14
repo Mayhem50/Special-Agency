@@ -49,6 +49,7 @@ module.exports = function (passport) {
     
     router.post('/users/:action', function (req, res, next) {
         console.log('Get user : Login');
+        console.log(req.query);
         
         if (req.params.action == 'login') {
             passport.authenticate('signin', function (err, user, info) {

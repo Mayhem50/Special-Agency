@@ -77,7 +77,7 @@
     <Content Include="app\elements\sa-missions\sa-mission-edit.html" />
     <Content Include="app\elements\sa-missions\sa-mission-creation-card.html" />
     <Content Include="app\elements\sa-missions\sa-mission-create.html" />
-    <Content Include="app\elements\sa-missions\sa-mission-infos.html" />
+    <Content Include="app\elements\sa-missions\sa-mission-consult.html" />
     <Content Include="app\elements\sa-missions\sa-mission-kind-card.html" />
     <Content Include="app\elements\sa-missions\sa-missions-list.html" />
     <Content Include="app\elements\sa-missions\sa-missions.html" />

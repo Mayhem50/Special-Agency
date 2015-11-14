@@ -13,6 +13,18 @@
             align-items: stretch;
             padding: 10px 15px;
         }
+
+        @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) {
+            :host {
+                bottom: 6px;
+                background-color: rgba(0, 255, 144, 0.00);
+                justify-content: space-around;
+                flex-wrap: nowrap;
+                align-items: stretch;
+                padding: 6px 9px;
+            }
+        }
+
     </style>
     <template>
         <template id="dates" is="dom-repeat" items="[[dates]]" filter="filter" sort="_sortDates">

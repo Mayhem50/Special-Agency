@@ -100,6 +100,84 @@
             font-weight: 100;
             width: 90%;
         }
+
+        /* mobile-small */
+    @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) {
+        :host {
+            --paper-input-container:{
+                padding:0;
+            }
+            --paper-input-container-underline:{
+                height:0;
+            }
+            --paper-input-container-underline-focus:{
+                height:0;
+            }
+            --paper-input-container-underline-disabled:{
+                height:0;
+            }
+        }
+
+        .header {
+            height: 185px;
+        }          
+
+            .header > paper-input {
+                margin: 2px 10px 5px 10px;
+                border: solid 0.5px;
+                border-radius: 3px;
+                font-size: 3px;
+                height: 25px;
+                padding: 1px 9px;
+            }
+            
+            .header > paper-dropdown-menu{
+                margin: 2px 10px 5px 10px;
+                border: solid 0.5px;
+                border-radius: 3px;
+                font-size: 3px;
+                height: 25px;
+                padding: 1px 9px;
+            }
+
+        .middle {
+            height: 30px;
+        }
+
+            .middle > div {
+                margin-left: 6px;
+            }
+
+        .footer {
+            height: 53px;
+        }
+
+        paper-button {
+            font-size: 13px;
+            width: 90%;
+        }
+    }
+    /* mobile-large */
+    @media all and (min-width: 361px) and (orientation: portrait) {
+    }
+    /* mobile-small-landscape */
+    @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) {
+    }
+    /* mobile-large-landscape */
+    @media all and (min-width: 481px) and (orientation: landscape) {
+    }
+    /* tablet-small-landscape */
+    @media all and (min-width: 600px) and (max-width: 960px) and (orientation: landscape) {
+    }
+    /* tablet-large-landscape */
+    @media all and (min-width: 961px) and (orientation: landscape) {
+    }
+    /* tablet-small */
+    @media all and (min-width: 600px) and (orientation: portrait) {
+    }
+    /* tablet-large */
+    @media all and (min-width: 601px) and (max-width: 840px) and (orientation : portrait) {
+    }
     </style>
     <template>
         <paper-card>

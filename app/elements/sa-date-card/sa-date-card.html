@@ -38,6 +38,41 @@
             font-stretch: ultra-condensed;
             width: 41px;
         }
+
+        @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) {
+            .date {
+                flex-direction: column;
+                justify-content: center;
+                align-items: stretch;
+                width: 20%;
+                margin: 0 3px;
+            }
+
+            .month {
+                background-color: #3d3d3d;
+                flex: 1 0 auto;
+                text-align: center;
+                color: #ffffff;
+                padding: 0px;
+                border-radius: 1px 1px 0 0;
+                font-weight: 100;
+                font-stretch: ultra-condensed;
+                width:32px;
+            }
+
+            .day {
+                background-color: #ffffff;
+                flex: 3 0 auto;
+                text-align: center;
+                color: #3d3d3d;
+                font-size: 12px;
+                padding: 0px 1px;
+                border-radius: 0 0 1px 1px;
+                font-weight: 100;
+                font-stretch: ultra-condensed;
+                width: 30px;
+            }
+        }
     </style>
 
     <template>

@@ -12,7 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <head>
     <meta charset="utf-8">
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="generator" content="Special Agency" />
     <title>Special Agency</title>
     <!-- Place favicon.ico in the `app/` directory -->
@@ -49,7 +49,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <span id="browser-sync-binding"></span>
     <template is="dom-bind" id="app">
         <iron-container>
-            <paper-drawer-panel responsive-width="40000px" id="paper-drawer-panel" selected="main">
+            <paper-drawer-panel responsive-width="0px" id="paper-drawer-panel" selected="main">
                 <paper-scroll-header-panel drawer>
                     <paper-toolbar>
                         <a data-route="missions" href="/missions">
@@ -108,7 +108,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 <paper-scroll-header-panel  main fixed>
                     <!--<iron-collapse id="main-toolbar-collapse">-->
-                        <paper-toolbar id="main-toolbar">
+                        <paper-toolbar id="main-toolbar" justify="start" middle-justify="start">
                             <a>
                                 <paper-icon-button class="main-toolbar-button" id="menu-button" paper-drawer-toggle icon="menu"></paper-icon-button>
                             </a>

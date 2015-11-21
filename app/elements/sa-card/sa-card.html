@@ -17,111 +17,16 @@
             margin: 15px 10px;
         }
 
-        .header {
+        .card-header {
             height: 336px;
-            background-color:green;
         }
 
-        .toolbar {
+        .card-middle {
             height: 48px;
-            background-color:#ff0000;
         }
 
-        .footer {
+        .card-footer {
             height: 96px;
-            background-color:#002680;
-        }
-
-        @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) {
-            paper-card {
-                height: 225px;
-                max-width: 166px;
-                min-width: 166px;
-                padding: 2px;
-                margin: 10px 5px;
-            }
-
-            .header {
-                height: 157px;
-                background-color: green;
-            }
-
-            .toolbar {
-                height: 23px;
-                background-color: #ff0000;
-            }
-
-            .footer {
-                height: 45px;
-                background-color: #002680;
-            }
-        }
-        /* mobile-large */
-        @media all and (min-width: 361px) and (orientation: portrait) {
-            paper-card {
-                height: 225px;
-                max-width: 152px;
-                min-width: 152px;
-                padding: 2px;
-                margin: 4px 2px;
-            }
-
-            .header {
-                height: 157px;
-                background-color: green;
-            }
-
-            .toolbar {
-                height: 23px;
-                background-color: #ff0000;
-            }
-
-            .footer {
-                height: 45px;
-                background-color: #002680;
-            }
-        }
-        /* mobile-small-landscape */
-        @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) {
-        }
-        /* mobile-large-landscape */
-        @media all and (min-width: 481px) and (orientation: landscape) {
-        }
-        /* tablet-small-landscape */
-        @media all and (min-width: 600px) and (max-width: 960px) and (orientation: landscape) {
-        }
-        /* tablet-large-landscape */
-        @media all and (min-width: 961px) and (orientation: landscape) {
-        }
-        /* tablet-small */
-        @media all and (min-width: 600px) and (orientation: portrait) {
-        }
-        /* tablet-large */
-        @media all and (min-width: 601px) and (max-width: 840px) and (orientation : portrait) {
-        }
-        /* desktop-x-small-landscape */
-        @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) {
-        }
-        /* desktop-x-small */
-        @media all and (min-width: 0) and (max-width: 480px) and (max-aspect-ratio: 4/3) {
-        }
-        /* desktop-small-landscape */
-        @media all and (min-width: 481px) and (max-width: 840px) and (orientation: landscape) {
-        }
-        /* desktop-small */
-        @media all and (min-width: 481px) and (max-width: 840px) and (max-aspect-ratio: 4/3) {
-        }
-        /* desktop-medium-landscape */
-        @media all and (min-width: 841px) and (max-width: 1280px) and (orientation: landscape) {
-        }
-        /* desktop-medium */
-        @media all and (min-width: 841px) and (max-width: 1280px) and (max-aspect-ratio: 4/3) {
-        }
-        /* desktop-large */
-        @media all and (min-width: 1281px) and (max-width: 1600px) {
-        }
-        /* desktop-xlarge */
-        @media all and (min-width: 1601px) and (max-width: 1920px) {
         }
     </style>
 
@@ -129,16 +34,16 @@
         
         <paper-card>
 
-            <div class="header">
-
+            <div class="card-header">
+                <content id="headerContent" select="header"></content>
             </div>
 
-            <div class="toolbar">
-
+            <div class="card-middle">
+                <content id="headerContent" select="middle"></content>
             </div>
 
-            <div class="footer">
-
+            <div class="card-footer">
+                <content id="headerContent" select="footer"></content>
             </div>
             
         </paper-card>

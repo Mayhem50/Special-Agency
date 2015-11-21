@@ -40,21 +40,18 @@
             min-width: 300px;
             max-width: 300px;
             margin: 15px 10px;
-            align-self: center;
         }
 
         .card-2 {
             min-width: 620px;
             max-width: 620px;
             margin: 15px 10px;
-            align-self: center;
         }
 
         .card-3 {
             min-width: 940px;
             max-width: 940px;
             margin: 15px 10px;
-            align-self: center;
         }
 
         .createButton {
@@ -73,7 +70,7 @@
         .grid {
             padding: 4px;
             margin: 1px auto;
-            width: 55%;
+            width: 55vw;
             display: flex;
             flex-wrap: wrap;
         }
@@ -126,8 +123,24 @@
 
         /* mobile-small */
     @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) {
+        :host {
+            --paper-input-container-label : {                    
+                    color: #cccccc;
+            }
+            --paper-input-container-input-color: #cccccc;
+            --paper-input-container-underline-focus: {
+                background: rgba(20, 20, 20, 0.0);
+            }
+            --paper-input-container-underline: {
+                background: rgba(20, 20, 20, 0.0);
+            }
+            --paper-menu-button-dropdown-background:rgba(0, 0, 0, 0.67);
+            --paper-dropdown-menu-input:{
+                rgba(0, 0, 0, 0.67);
+            }
+        }
         .dropdown-content{
-            width:73.18vw;
+            width:47.18vw;
         }
 
         paper-fab {
@@ -166,37 +179,27 @@
         .toolbar {
             display: flex;
             width: 100%;
-            height: 50px;
+            height: 30px;
             margin: 0;
             background-color: #3d3d3d;
+            position:fixed;
+            z-index:12;
         }
 
         #toolbar-image {
-            flex: 0 0 357px;
+            flex: 0 0 150px;
             order: 2;
         }
 
         #toolbar-text {
-            display: flex;
-            color: #d9d9d9;
-            background-color: #3d3d3d;
-            flex: 1 0 210px;
-            order: 3;
-            padding-left: 25px;
-            align-items: center;
-            font-size: 24px;
-            flex-shrink: 0;
+            flex: 1 0 169px;
+            padding-left: 1px;
+            font-size: 18px;
         }
 
         #toolbar-button {
-            display: flex;
-            flex: 0 0 50px;
-            order: 1;
+            flex: 0 0 30px;
             height: 100%;
-            justify-content: flex-start;
-            align-items: center;
-            color: #686868;
-            background-color: #2b2b2b;
         }
 
             #toolbar-button > paper-icon-button {
@@ -205,7 +208,6 @@
 
         #toolbar-deco {
             flex: 0 0 40px;
-            order: 4;
             height: 100%;
         }
     }

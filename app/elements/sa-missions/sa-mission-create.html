@@ -7,8 +7,13 @@
 
 <dom-module id="sa-mission-create">
     <style>
-        .description::-webkit-scrollbar-track {
-            
+        :host{            
+            --paper-input-container-input:{
+                color:black;
+            }
+        }
+
+        .description::-webkit-scrollbar-track {            
             background-color: #ffffff;
         }
 
@@ -39,7 +44,7 @@
         
         .container {
             margin: 5px auto;
-            width: 34.896%;
+            width: 670px;
             display: flex;
             flex-direction: column;
             align-items: stretch;
@@ -149,9 +154,9 @@
         .title > paper-input{
             --paper-input-container-input-color:white;
             --paper-input-container-input:{
-                                                font-size:48px;
-                                                text-align:right;
-                                          }
+                font-size:48px;
+                text-align:right;
+            }
         }
 
         .taskDesc{
@@ -204,18 +209,15 @@
         #addTask{
             margin:15px 25px 0px 10px;
         }
-        
-        .rightButton {
-            position: fixed;
-            bottom: 25px;
-            right: calc(50% - 17%);
-            z-index:12;
+
+        .buttons{
+            display:flex;
+            width:30vw;
+            margin:-65px auto;
+            justify-content:space-between;
         }
         
-        .leftButton {
-            position: fixed;
-            bottom: 25px;
-            left: calc(50% - 17%);
+        .button {
             z-index:12;
         }
 
@@ -226,16 +228,32 @@
             }
         }
 
-    @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait){
-        :host{
-            --paper-tabs:{
-                height:30px;
-                font-size:8px;
+        @media all and (min-width: 0) and (max-width: 600px) {
+        :host{            
+            --paper-input-container-input:{
+                color:black;
+                font-size:11px;
+            }
+            --paper-input-container-label:{
+                font-size:11px;
+            }
+            --pk-datepicker-header:{
+                font-size:11px;
+                height:25px;
+            }
+            --pk-datepicker-content:{
+                font-size:11px;
+            }
+            --paper-input-container-underline-focus: {
+                background: rgba(20, 20, 20, 0.8);
+            }
+            --paper-input-container-underline: {
+                background: rgba(20, 20, 20, 0.8);
             }
         }
 
-        .container {
-            margin: 1px auto;
+        .container{
+            margin: 31px auto;
             width: 342px;
         }
 
@@ -261,7 +279,12 @@
             }
 
         .footer {
-            height: 305px;
+            height: 375px;            
+        }
+
+        .footer > paper-tabs{
+            height:30px;
+            font-size:8px;
         }
 
         .description {
@@ -269,6 +292,12 @@
             padding-right: 15px;
             margin-top: 3px;
             max-height: 300px;
+            --paper-input-container-input:{
+                font-size:11px;
+            }
+            --paper-input-container-label:{
+                font-size:11px;
+            }
         }
 
         .reward {
@@ -368,6 +397,16 @@
                 width: 20px;
             }
         }
+
+        .buttons{
+            display:flex;
+            width:80vw;
+            margin:-95px auto;
+        }
+        
+        .button {
+            z-index:12;
+        }
     }
     </style>
     <template>
@@ -434,9 +473,9 @@
                 </div>
             </div>
        
-        <div>
-            <paper-fab id="validateButton" class="rightButton" icon="check" on-click="_onValidate"></paper-fab>
-            <paper-fab id="cancelButton" class="leftButton" icon="clear" on-click="_onCancel"></paper-fab>
+        <div class="buttons">
+            <paper-fab id="cancelButton" class="button" icon="clear" on-click="_onCancel"></paper-fab>
+            <paper-fab id="validateButton" class="button" icon="check" on-click="_onValidate"></paper-fab>
         </div>
 
     </template>

@@ -1,0 +1,213 @@
+﻿
+<dom-module id="sa-secondary-toolbar-missions-filter">
+    <style>
+        :host {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            height: 50px;
+            margin: 0;
+            background-color: #383838;
+
+            --paper-tab:{
+            }
+
+            --paper-tabs: {
+                height: 25px;
+            }
+
+            --paper-tabs-selection-bar: {
+                height: 0px;
+            }
+
+            --paper-tab-content-unselected: {
+                background-color: #272727;
+            }
+
+            --paper-tab-content: {
+                background-color: #b6ff00;
+                border-radius: 15px;
+                padding:0 12px;
+            }
+        }        
+
+        #toolbar-image {
+            flex: 0 0 60px;
+            order: 2;
+            height:100%
+        }
+
+        #toolbar-text {
+            display: flex;
+            color: #d9d9d9;
+            background-color: #383838;
+            order: 3;
+            padding:0 25px;
+            align-items: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            height:100%;
+        }
+
+        #toolbar-button {
+            display: flex;
+            flex: 0 0 150px;
+            order: 1;
+            height: 100%;
+            justify-content: flex-start;
+            align-items: center;
+            color: #686868;
+            background-color: #383838;
+            cursor:pointer;
+        }
+
+            #toolbar-button > iron-icon {
+                padding: 0;
+                width:40px;
+                height:100%;
+            }
+
+        #toolbar-deco {
+            flex: 0 0 40px;
+            order: 6;
+            height: 100%;
+        }
+
+        #filters{
+            flex: 1 0 140px;
+            order: 5;
+            height: 100%;
+            display:flex;
+            align-items:center;
+            margin-left:100px;
+            color:#fff;
+        }
+
+        #sorts{
+            flex: 1 0 140px;
+            order: 5;
+            height: 100%;
+            display:flex;
+            align-items:center;
+            margin-left:100px;
+            color:#fff;
+        }
+
+        .button{
+            border-radius:15px;
+            padding:2px 12px;
+            text-transform:uppercase;
+            background-color:#494949;
+            margin:0 5px;
+            font-size:12px;
+            cursor:pointer;
+            margin-top:3px;
+        }
+
+        .button-selected{
+
+        }
+
+        .button-unselected{
+            background-color:#494949;
+        }
+    </style>
+
+    <template>
+            <div id="toolbar-button" on-tap="_backToKinds"><iron-icon icon="chevron-left"></iron-icon>CATEGORIES</div>
+            <div id="toolbar-image">&nbsp;</div>
+            <div id="toolbar-text">
+                <span>[[kind.name.en]]</span>
+            </div>
+            <div id="sorts">
+                <span>Sort by : </span>
+                    <div id="last-add" class="sort button" on-click="_sortChanged">Last add</div>
+                    <div id="reward" class="sort button" on-click="_sortChanged">Reward</div>
+                    <div id="difficulty" class="sort button" on-click="_sortChanged">Difficulty</div>
+            </div>
+            <div id="filters">
+                <span>Filter by : </span>
+                    <div id="ending-soon" class="button" on-click="_filterChanged">Ending soon</div>
+                    <div id="arround-me" class="button" on-click="_filterChanged">Arround me</div>
+                    <div id="pro-only" class="button" on-click="_filterChanged">Pro only</div>
+            </div>
+            <div id="toolbar-deco">&nbsp;</div>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-secondary-toolbar-missions-filter',
+
+                properties: {
+                    kind: {
+                        type: Object,
+                        observer: '_updateContent'
+                    }
+                },
+                _updateContent: function () {
+                    var div = this.querySelector('#toolbar-deco');
+                    if (div == null) { return; }
+                    div.style.background = this.kind.color;
+
+                    div = this.querySelector('#toolbar-text');
+                    if (div == null) { return; }
+                    div.style.background = this.kind.color;
+
+                    this.$$('#last-add').className = this.$$('#last-add').className.replace(/(?:^|\s)button-selected(?!\S)/g, '');
+                    this._sortChanged(e = { target: this.$$('#last-add') });
+
+                    div = this.querySelector('#toolbar-image');
+                    if (div == null) { return; }
+                    div.style.backgroundImage = 'url(../../images/kinds/' + this.kind.image.path + ')';
+                    div.style.backgroundPosition = this.kind.image.toolBarXOffset + ' ' + this.kind.image.toolBarYOffset;
+                    div.style.backgroundSize = this.kind.image.toolbarScale;
+                },
+                _backToKinds: function (e) {
+                    this.fire('back-to-kind');
+                },
+                _sortChanged: function (e) {
+                    this._switchColorButtons(e);
+                    this.fire('sort-changed', { type: e.target.id });
+                },
+                _filterChanged: function (e) {                    
+                    if (this._toggleButtonsColor(e))
+                        this.fire('filter-add', { type: e.target.id });
+                    else
+                        this.fire('filter-remove', { type: e.target.id });
+                },
+                _toggleButtonsColor: function (e) {
+                    if (e.target.className.includes('button-unselected') || !e.target.className.includes('button-selected')) {
+                        e.target.className = e.target.className.replace(/(?:^|\s)button-unselected(?!\S)/g, '');
+                        e.target.className += ' button-selected ';
+                        e.target.style.background = this.kind.color;
+                        return true;
+                    }
+                    else {
+                        e.target.className = e.target.className.replace(/(?:^|\s)button-selected(?!\S)/g, '');
+                        e.target.style.background = '';
+                        e.target.className += ' button-unselected ';
+                        return false;
+                    }
+                },
+                _switchColorButtons: function (e) {
+                    var divs = this.querySelectorAll('.sort');
+                    if (!divs) { return; }
+
+                    for (var idx = 0; idx < divs.length; ++idx) {
+                        divs[idx].className = divs[idx].className.replace(/(?:^|\s)button-unselected(?!\S)/g, '');
+                        divs[idx].className = divs[idx].className.replace(/(?:^|\s)button-selected(?!\S)/g, '');
+                        if (e.target == divs[idx] && !divs[idx].className.includes('button-selected')) {
+                            divs[idx].className += ' button-selected ';
+                            divs[idx].style.background = this.kind.color;
+                        }
+                        else {
+                            divs[idx].style.background = '';
+                            divs[idx].className += ' button-unselected ';
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+</dom-module>

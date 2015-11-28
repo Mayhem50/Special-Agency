@@ -65,12 +65,12 @@ module.exports = function () {
     });
     
     router.get('/types/:id', jwtauth, function (req, res) {
-        console.log('Get type from id');
-        type.findOne({ _id : req.params.id }, function (err, type) {
+        console.log('Get subtypes from id');
+        type.find({ _parentType : req.params.id }, function (err, types) {
             if (err) { return res.sendStatus(500); }
             
             return res.json({
-                'types': type,
+                'types': types,
                 method: 'GET',
                 success : true
             });

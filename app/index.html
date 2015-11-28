@@ -49,123 +49,48 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <span id="browser-sync-binding"></span>
     <template is="dom-bind" id="app">
         <iron-container>
-            <paper-drawer-panel responsive-width="0px" id="paper-drawer-panel" selected="main">
+            <paper-drawer-panel drawer-width="220px" responsive-width="0px" id="paper-drawer-panel" selected="main">
                 <paper-scroll-header-panel drawer>
-                    <paper-toolbar>
-                        <a data-route="missions" href="/missions">
-                            <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="explore" on-tap="onMenuSelect"></paper-icon-button>
-                        </a>
-                        <a>
-                            <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="info" on-tap="onMenuSelect"></paper-icon-button>
-                        </a>
-                        <span class="flex"></span>
-
-                        <div hidden$="{{!isLogged}}">
-                            <span>{{agent_ID}}</span>
-                            <a data-route="profile" href="/profile">
-                                <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="account-circle" on-tap="onMenuSelect"></paper-icon-button>
-                            </a>
-                        </div>
-                        <div hidden$="{{isLogged}}">
-                            <span>{{agent_ID}}</span>
-                            <a data-route="login" href="/login">
-                                <paper-icon-button class="drawer-toolbar-button drawer-collapse-button" icon="account-box" on-tap="onMenuSelect"></paper-icon-button>
-                            </a>
-                        </div>
-
-                    </paper-toolbar>
-
-                    <paper-tabs hidden$="{{!isLogged}}" class="drawer-tabs" selected="{{drawer_route}}" noink on-iron-select="onRoleChange">
-                        <paper-tab class="drawer-tab">Agent</paper-tab>
-                        <paper-tab class="drawer-tab">Sponsor</paper-tab>
-                    </paper-tabs>
-
-                    <div hidden$="{{!isLogged}}" class="drawer-content">
-
-                        <iron-pages id="main-content" selected="{{drawer_route}}">
-                            <div>
-                                <paper-menu id="agent-menu" on-iron-select="getAgentMenuChoice">
-                                    <div id="search">
-                                        <iron-icon icon="search"></iron-icon>
-                                        <span>Find Missions</span>
-                                    </div>
-                                    <div id="event">
-                                        <iron-icon icon="event"></iron-icon>
-                                        <span>My Missions</span>
-                                    </div>
-                                </paper-menu>
-                            </div>
-
-
-                            <div>
-                                Sponsor
-                            </div>
-                        </iron-pages>
-
-                    </div>
-
+                    <sa-drawer is-logged="[[isLogged]]"></sa-drawer>
                 </paper-scroll-header-panel>
 
-                <paper-scroll-header-panel  main fixed>
+                <paper-scroll-header-panel main fixed>
                     <!--<iron-collapse id="main-toolbar-collapse">-->
-                        <paper-toolbar id="main-toolbar" justify="start" middle-justify="start">
-                            <a>
-                                <paper-icon-button class="main-toolbar-button" id="menu-button" paper-drawer-toggle icon="menu"></paper-icon-button>
-                            </a>
-                            <a data-route="missions" href="/missions">
-                                <paper-icon-button class="main-toolbar-button main-collapse-button" icon="explore"></paper-icon-button>
-                            </a>
-                            <a>
-                                <paper-icon-button class="main-toolbar-button main-collapse-button" icon="info"></paper-icon-button>
-                            </a>
-                            <span class="flex"></span>
-                            <div hidden$="{{!isLogged}}">
-                                <a data-route="profile" href="/profile">
-                                    <paper-icon-button class="main-toolbar-button main-collapse-button" icon="account-circle"></paper-icon-button>
-                                </a>
-                                <a data-route="home" href="/logout">
-                                    <paper-icon-button class="main-toolbar-button main-collapse-button" icon="close"></paper-icon-button>
-                                </a>
-                            </div>
-                            <div hidden$="{{isLogged}}">
-                                <a data-route="login" href="/login">
-                                    <paper-icon-button class="main-toolbar-button main-collapse-button" icon="account-box"></paper-icon-button>
-                                </a>
-                            </div>
-
-                        </paper-toolbar>
+                    <paper-toolbar id="main-toolbar" justify="justified " middle-justify="start">
+                        <iron-pages class="toolbar-pages" selected="[[isLogged]]">
+                            <sa-toolbar-not-logged route="{{route}}"></sa-toolbar-not-logged>
+                            <sa-toolbar-logged route="{{route}}"></sa-toolbar-logged>
+                        </iron-pages>
+                    </paper-toolbar>
                     <!--</iron-collapse>-->
 
                     <div id="main-scroll" class="content">
+                        <iron-pages id="page-logged-selector" selected="[[isLogged]]">
+                            <iron-pages id="page-content-selector" attr-for-selected="data-route" selected="{{route}}">
+                                <section data-route="home"></section>
 
-                        <iron-pages id="page-content-selector" attr-for-selected="data-route" selected="{{route}}">
+                                <section data-route="missions">
+                                    <sa-missions notification="{{missions_notify}}" on-request-login="onRequestLogin"></sa-missions>
+                                </section>
 
-                            <section data-route="login">
-                                <sa-login></sa-login>
-                            </section>
+                                <section data-route="agents"></section>
+                                <section data-route="sponsors"></section>
+                                <section data-route="news"></section>
+                                <section data-route="support"></section>
 
-                            <section data-route="home">
-                                <div class="container">
-                                    <sa-card></sa-card>
-                                    <sa-card></sa-card>
-                                    <sa-card></sa-card>
-                                    <sa-card></sa-card>
-                                    <sa-card></sa-card>
-                                    <sa-card></sa-card>
-                                    <sa-card></sa-card>
-                                    <sa-card></sa-card>
-                                    <sa-card></sa-card>
-                                </div>
-                            </section>
+                            </iron-pages>
+                            <iron-pages id="page-content-selector" attr-for-selected="data-route" selected="{{route}}">
+                                
+                                <section data-route="missions">
+                                    <sa-missions></sa-missions>
+                                </section>
 
-                            <section data-route="profile">
-                                <sa-profile notification="{{route}}"></sa-profile>
-                            </section>
+                                <section data-route="messages"></section>
+                                <section data-route="calendar"></section>
+                                <section data-route="rdv"></section>
+                                <section data-route="support"></section>
 
-                            <section data-route="missions">
-                                <sa-missions notification="{{missions_notify}}" on-request-login="onRequestLogin"></sa-missions>
-                            </section>
-
+                            </iron-pages>
                         </iron-pages>
 
                     </div>

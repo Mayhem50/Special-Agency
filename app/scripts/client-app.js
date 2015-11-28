@@ -84,9 +84,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app.onLogOut = function (){
         app.route = 'home';
         app.isLogged = false;
-        app.mission_filter = '';
-        app.drawer_route = 0;
-        app.missions_notify = !app.missions_notify;
     };
     
     app.onRequestLogin = function (){
@@ -118,8 +115,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             window.sessionStorage.token = window.localStorage.token;
             window.sessionStorage['email'] = window.localStorage['email'];
             window.sessionStorage['id'] = window.localStorage['id'];
+            window.sessionStorage['user'] = window.localStorage['user'];
             app.isLogged = true;
-            //document.getElementById('deconnexionToggle').show();  
+            //document.getElementById('deconnexionToggle').show(); 
+            
+            app.user = JSON.parse(window.sessionStorage['user']) 
                         
             app.socket.on('connect', function () {
                 console.log('authenticated');

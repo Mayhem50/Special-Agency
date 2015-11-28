@@ -1,8 +1,4 @@
-﻿<link rel="import" href="../../../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
-<link rel="import" href="../../../../bower_components/paper-card/paper-card.html">
-
-<link rel="import" href="../../../../bower_components/iron-grid/iron-grid.html">
-<link rel="import" href="../../../../bower_components/zero-list-hero/zero-list-hero.html">
+﻿<link rel="import" href="sa-mission-card.html" />
 
 <dom-module id="sa-missions-list">
     <style>
@@ -10,124 +6,44 @@
             display: block;
         }
 
-        .tool {
-            width: 32px;
-            height: 32px;
-        }
-
-        .container {
+        .grid {
             padding: 4px;
             margin: 1px auto;
-            width: 55%;
-            display:flex;
-            flex-wrap:wrap;
-        }
-
-        paper-card {
-            height: 480px;
-            min-width: 320px;
-            max-width: 320px;
-            padding: 2px;
-            margin: 15px 10px;
-            align-self:center;
-        }
-
-        .header {
-            height: 336px;
-            background-color: green;
-            display:flex;
-            justify-content:flex-start;
-            flex-flow:column;
-            display:flex;
-            justify-content:space-between;
-        }
-
-        .middle {
-            height: 48px;
-            background-color: #ff0000;
-        }
-
-        .footer {
-            height: 96px;
-            background-color: #002680;
-        }
-
-        .gain {
-            height: 100px;
-            background-color: rgba(76, 255, 0, 0.00);
-            font-size: 16px;
-            font-family: 'Segoe UI Symbol';
-            color: #808080;
-        }
-
-        .reward {
-            font-size: 48px;
-            margin: 5px auto auto 15px;
-        }
-
-        .dates {
+            width: 95.8%;
             display: flex;
-            flex-flow:row;
-            bottom: 10px;
-            background-color: rgba(0, 255, 144, 0.00);
-            justify-content:space-around;
-            height: 10%;
-            flex-wrap:nowrap;
-            align-items:stretch;
-            padding:10px;
+            flex-wrap: wrap;
         }
 
-        .date {
-            margin: 0 2px 0 2px;
-            background-color:#00ffff;
+        .card {
+            min-width: 300px;
+            max-width: 300px;
+            margin: 10px 10px;
         }
+        
     </style>
 
     <template>
-        <div class="container">
-            <template is="dom-repeat" items="[[missions]]" filter="_whichfilter" sort="_sort" observer="*">
-                <paper-card on-click="_onClick">
-
-                    <div class="header">
-
-                        <div class="gain">
-                            <div>Earned up to</div>
-                            <div class="reward">300€</div>
-                        </div>
-                        <div class="dates">
-                            <div class="date">
-                                <div>Nov</div>
-                            </div>
-                            <div class="date">
-                                <div>Nov</div>
-                            </div>
-                            <div class="date">
-                                <div>Nov</div>
-                            </div>
-                            <div class="date">
-                                <div>Nov</div>
-                            </div>
-                            <div class="date">
-                                <div>...</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="middle">
-
-                    </div>
-
-                    <div class="footer ">
-
-                    </div>
-
-
-
-                </paper-card>
-
+        <div class="grid">
+            <template id="missionsList" is="dom-repeat" items="[[_missions]]" filter="_filterMissions" sort="_sortMissions">
+                <sa-mission-card class="card"
+                                 on-tap="_onBeginConsultation"
+                                 mission="[[item]]"
+                                 index="[[index]]"
+                                 on-delete-mission="_onDeleteMission"
+                                 on-edit-mission="_onBeginEdition"
+                                 hide="[[hide]]">
+                </sa-mission-card>
             </template>
         </div>
 
+        <iron-ajax id="missions-ajax"
+                   url="/missions"
+                   content-type="application/json"
+                   handle-as="json"
+                   method="GET"
+                   on-response="_handleResponse"
+                   last-response="{{_xhrResponse}}">
+        </iron-ajax>
     </template>
 
     <script>
@@ -135,102 +51,124 @@
             Polymer({
                 is: 'sa-missions-list',
 
-                behaviors: [
-                    Polymer.NeonSharedElementAnimatableBehavior
-                ],
-
                 properties: {
-                    missions: {
-                        type: Array,
-                        notify: true
+                    _missions: Object,
+                    update: {
+                        type: Boolean,
+                        observer: '_updateChanged'
                     },
                     filter: {
-                        type: String,
-                        notify: true
+                        type: Object,
+                        observer: '_needRender'
                     },
-                    _hiddenElement: {
-                        type: Boolean,
-                        value: true
-                    },
-                    xPos: {
-                        type: Number
-                    },
-                    yPos: {
-                        type: Number
+                    sort: {
+                        type: Object,
+                        observer: '_needRender'
                     }
                 },
                 ready: function () {
-                    this.sharedElements = {
-                        hero: this,
-                        ripple: this,
-                        scale: this
-                    };
-                },
-                setAnimationConfig: function (X, Y) {
-                    this.animationConfig['exit'][0].gesture = {
-                        x: X,
-                        y: Y
-                    };
-                },
-                _onClick: function (event) {
-                    var target = event.target;
-                    while (target !== this && !target._templateInstance) {
-                        target = target.parentNode;
-                    }
-
-                    this.fire('item-click', {
-                        data: target._templateInstance.item,
-                    });
-                },
-                _onDeleteClick: function (event) {
-                    var target = event.target;
-                    while (target !== this && !target._templateInstance) {
-                        target = target.parentNode;
-                    }
-                    this.fire('mission-delete', { data: target._templateInstance.item });
-                },
-                _onEditClick: function (event) {
-                    var target = event.target;
-                    while (target !== this && !target._templateInstance) {
-                        target = target.parentNode;
-                    }
-                    this.fire('mission-edit', { data: target._templateInstance.item });
-                },
-                _whichfilter: function (item) {
-                    this._hiddenElement = true;
-                    if (this.filter === 'search') {
-                        if (item._agent) {
-                            return (item._owner._id !== window.sessionStorage['id'] && item._agent._id !== window.sessionStorage['id']);
+                    Array.prototype.indexOfObject = function (property, value) {
+                        for (var i = 0, len = this.length; i < len; i++) {
+                            if (this[i][property] === value) return i;
                         }
-                        else {
-                            return item._owner._id !== window.sessionStorage['id'];
-                        }
-                    }
-                    else if (this.filter === 'event') {
-                        if (item._agent) {
-                            return (item._owner._id !== window.sessionStorage['id'] && item._agent._id === window.sessionStorage['id']);
-                        }
-                        else {
-                            return false;
-                        }
-                    }
-                    else if (this.filter === 'sponsor') {
-                        this._hiddenElement = false;
-                        return item._owner._id === window.sessionStorage['id'];
-                    }
-                    else {
-                        return true;
-                    }
-                },
-                _sort: function (a, b) {
-                    if (a.creationDate > b.creationDate) {
                         return -1;
+                    };
+
+                    app.socket.on('add-mission', function (data) {
+                        console.log('add mission');
+                        this.push('_missions', data);
+                    }.bind(this));
+
+                    app.socket.on('update-mission', function (data) {
+                        console.log('update mission');
+                        var index = this._missions.indexOfObject('_id', data._id);
+                        this.splice('_missions', index, 1);
+                        this.push('_missions', data);
+                    }.bind(this));
+
+                    app.socket.on('delete-mission', function (data) {
+                        console.log('delete mission');
+                        var index = this._missions.indexOfObject('_id', data._id);
+                        this.splice('_missions', index, 1);
+                    }.bind(this));
+                },
+                _updateChanged: function (e) {
+                    if (this.update) {
+                        this.$$('#missions-ajax').generateRequest();
                     }
-                    if (a.creationDate < b.creationDate) {
-                        return 1;
+                },
+                _handleResponse: function () {
+                    if (!this._xhrResponse) { return; }
+
+                    if (this._xhrResponse.success) {
+                        this._missions = this._xhrResponse.missions;
+                        this.$.missionsList.render();
+                    }
+                },
+                _filterMissions: function (item) {
+                    if (!this.filter) { return true; }
+
+                    var ret = true;
+                    for (var idx = 0; idx < this.filter.types.length; ++idx) {
+                        switch (this.filter.types[idx]) {
+                            case 'kind':
+                                ret &= item._type._id === this.filter.kind._id;
+                                break;
+                            case 'ending-soon':
+                                var now = new Date(Date.now());
+                                var date = item.wishDates[0];
+
+                                for (var idx = 1; idx < item.wishDates.length; ++idx) {
+                                    if (item.wishDates[idx] > date) {
+                                        date = item.wishDates[idx];
+                                    }
+                                }
+                                date = new Date(date);
+                                var timeDiff = Math.abs(now.getTime() - date.getTime());
+                                var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                                ret &= diffDays > 7;
+                                break;
+                            case 'arround-me':
+                                ret &= true;
+                                break;
+                            case 'pro-only':
+                                ret &= item.proOnly && item._type._id === this.filter.kind._id;
+                                break;
+                            default:
+                                ret &= true;
+                                break;
+                        }
+
+                        if(!ret){ return ret;}
                     }
 
-                    return 0;
+                    return ret;
+                },
+                _sortMissions: function (a, b) {
+                    if (!this.sort) {
+                        var A = new Date(a.creationDate);
+                        var B = new Date(b.creationDate);
+
+                        return A < B;
+                    }
+
+                    switch (this.sort.type) {
+                        case 'last-add':
+                            var A = new Date(a.creationDate);
+                            var B = new Date(b.creationDate);
+
+                            return A < B;
+                        case 'reward':
+                            return a.reward < b.reward;
+                        case 'difficulty':
+                            return a.level < b.level;
+                    }
+                },
+                _needRender: function (e) {
+                    if (!e) { return; }
+
+                    this.$.missionsList.render();
                 }
             });
         })();

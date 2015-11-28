@@ -1,6 +1,6 @@
 ﻿<link rel="import" href="../../../../bower_components/paper-card/paper-card.html">
 
-<dom-module id="sa-mission-kind-card">
+<dom-module id="sa-kind-card">
     <style>
         :host {
             color: #feffff;
@@ -12,6 +12,7 @@
             background-image: url(../../images/missions/02.jpg);
             background-position: 100% 0%;
             background-repeat: no-repeat;
+            border-radius:5px;
         }
 
         .header {
@@ -21,6 +22,8 @@
             flex-flow: column;
             display: flex;
             background-color: rgba(4, 4, 4, 0.23);
+            border-bottom-left-radius:5px;
+            border-bottom-right-radius:5px;
         }
 
         .middle {            
@@ -42,9 +45,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            border-bottom-left-radius:5px;
+            border-bottom-right-radius:5px;
         }
 
-        .footer::after {
+        /*.footer::after {
                 content: '';
                 position: absolute;
                 right: 0;
@@ -52,7 +57,7 @@
                 height: 85px;
                 background-color:rgba(0, 0, 0, 0.13);
                 width: 100%;
-            }
+            }*/
 
         @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) {
         paper-card {
@@ -100,18 +105,58 @@
                 width: 100%;
             }        
         }
+
+        .header-content{
+            display:none;
+            flex-direction:column;
+            align-items:flex-start;
+            height:100%;
+            background-color:rgba(0, 0, 0, 0.36);
+            padding:0 15px;
+        }
+
+        .header-content > iron-icon{
+            width: 100px;
+            height:50%;
+            align-self:center;
+        }
+
+        .infos{
+            align-self:center;
+            text-transform:uppercase;
+        }
+
+        .infos-colored{            
+            font-weight:bolder;
+        }
+
+        .header-title{
+            font-size:28px;
+        }
+
+        .count{
+            font-size:50px;
+        }
     </style>
 
     <template>
 
-        <paper-card id$="[[cardName]]">
+        <paper-card id$="[[cardName]]" on-mouseover="_mouseOver" on-mouseout="_mouseOut">
             <div class="header">
-                
+                <div class="header-content">
+                    <div class="header-title">Available Missions</div>
+                    <div class="count">[[kind.count]]</div>
+                    <iron-icon icon="search"></iron-icon>
+                    <div class="infos">
+                        <div>Find Missions into</div>
+                        <div class="infos-colored">This category</div>
+                    </div>
+                </div>
             </div>
 
-            <div id$="[[kind.css]]" class="middle">
+            <!--<div id$="[[kind.css]]" class="middle">
                 <div style="color:rgba(38, 38, 38, 0.91);">Available Missions: </div><div style="color:rgba(255, 255, 255, 0.87)">[[kind.count]]</div>
-            </div>
+            </div>-->
 
             <div id$="[[kind.css]]" class="footer">
                 <div>{{kind.name.en}}</div>
@@ -124,12 +169,13 @@
     <script>
         (function () {
             Polymer({
-                is: 'sa-mission-kind-card',
+                is: 'sa-kind-card',
 
                 properties: {
-                    kind: Object
+                    kind: Object,
+                    observer: '_kindChanged'
                 },
-                ready: function () {
+                ready:function(){
                     this.cardName = 'card' + this.kind.css;
                     var divs = this.querySelectorAll('#' + this.kind.css);
                     if (divs == null) return;
@@ -138,12 +184,38 @@
                         divs[idx].style.background = this.kind.color;
                     }
 
+                    var div = this.querySelector('.infos-colored');
+                    if (!div) { return; }
+                    div.style.color = this.kind.color;
+
                     var card = this.querySelector('#' + this.cardName);
 
                     if (card == null) return;
                     card.style.backgroundImage = 'url(../../images/kinds/' + this.kind.image.path + ')';
                     card.style.backgroundPosition = this.kind.image.xOffset + ' ' + this.kind.image.yOffset;
                     card.style.backgroundSize = this.kind.image.size;
+                },
+                _mouseOver: function (e) {
+                    var div = this.querySelector('paper-card');
+                    if (!div) { return; }
+
+                    div.elevation = 5;
+
+                    div = this.querySelector('.header-content');
+                    if (!div) { return; }
+
+                    div.style.display = 'flex';
+                },
+                _mouseOut: function (e) {
+                    var div = this.querySelector('paper-card');
+                    if (!div) { return; }
+
+                    div.elevation = 1;
+
+                    div = this.querySelector('.header-content');
+                    if (!div) { return; }
+
+                    div.style.display = 'none';
                 }
             });
         })();

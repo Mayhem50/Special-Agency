@@ -1,0 +1,72 @@
+﻿
+<dom-module id="sa-toolbar-logged">
+    <style>
+        :host {
+            display:flex;
+            width:100%;
+            justify-content:space-between;
+            align-items:center;
+            
+            --paper-tab:{
+                width:120px;
+                padding:0;
+                text-transform:uppercase;
+            }
+            --paper-tabs:{
+                height:60px;
+                align-self:flex-end;
+            }
+            --paper-tabs-selection-bar:{
+                height:0px;
+            }
+            --paper-tab-content-unselected:{
+                background-color:#272727;
+            }
+            --paper-tab-content:{
+                background-color:#383838;
+                border-top-left-radius:5px;
+                border-top-right-radius:5px;
+            }
+        }
+
+        
+    img{
+        height:64px;
+    }
+    </style>
+
+    <template>
+        
+        <div>
+            <img src="../../images/logo/Img-03.png" />
+        </div>
+        <paper-tabs noink attr-for-selected="data-route" selected="{{route}}">
+            <paper-tab data-route="missions">Missions</paper-tab>
+            <paper-tab data-route="messages">Messages</paper-tab>
+            <paper-tab data-route="calendar">Calendar</paper-tab>
+            <paper-tab data-route="rdv">Upcomming RDV</paper-tab>
+        </paper-tabs>
+        <div>Support</div>
+        <paper-icon-button icon="search"></paper-icon-button>
+
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-toolbar-logged',
+
+                properties: {
+                    route: {
+                        type: String,
+                        value: 'missions',
+                        notify:true
+                    },
+                    ready: function () {
+                        this.route = 'missions';
+                    }
+                }
+            });
+        })();
+    </script>
+</dom-module>

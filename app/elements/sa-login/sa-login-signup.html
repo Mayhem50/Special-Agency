@@ -1,27 +1,104 @@
 ﻿
 <dom-module id="sa-login-signup">
     <style>
+        :host {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
 
+            --paper-input-container-underline:{
+                height: 0;
+            }
 
+            --paper-input-container-underline-focus:{
+                height: 0;
+            }
 
+            --paper-input-container-underline-disabled:{
+                height: 0;
+            }
+
+            --paper-input-container-input:{
+                color: #909090;
+            }
+            --paper-checkbox-unchecked-background-color:#606060;
+            --paper-checkbox-unchecked-color:rgba(0, 0, 0, 0);
+            --paper-checkbox-box-unchecked:{
+                border-radius:5px;
+            }
+            --paper-checkbox-label-color:#909090;
+            --paper-checkbox-checked-color:rgba(0,0,0,0);
+        }
+
+        .inputs {
+        }
+
+            .inputs paper-input {
+                margin: 5px 12px;
+                border: solid 1px;
+                border-radius: 5px;
+                font-size: 16px;
+                height: 40px;
+                padding: 2px 15px;
+                background-color: #363636;
+                color: #909090;
+                border: none;
+            }
+
+         .button {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+            .button paper-button {
+                text-transform: none;
+                background-color: #0593d3;
+                width: 83%;
+                margin: 5px auto;
+            }
+
+        .passport-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding: 0 5px;
+        }
+
+            .passport-buttons paper-fab {
+                background-color: #0593d3;
+                margin: 5px;
+            }
+            
+        .checkbox{
+            margin:2px auto;
+        }
     </style>
     <template>
-
-        <div>
-            <paper-input id="firstName" is="firstName" label="First Name" name="firstName" value="{{_firstName::input}}"></paper-input>
-            <paper-input id="lastName" is="lastName" label="Last Name" name="lastName" value="{{_lastName::input}}"></paper-input>
-
-            <paper-input id="email" is="email" label="Email" name="email" value="{{_email::input}}" error-message="{{_emailErrorMessage}}" on-keyup="_checkEmail"></paper-input>
-
-            <paper-input id="password" is="password" label="Password" type="password" name="password" value="{{_password::input}}"></paper-input>
-            <paper-input id="passwordConfirm" is="passwordConfirm" type="password" label="Confirm Password" value="{{_passwordConfirm}}" error-message="Not same password"></paper-input>
-
-            </br>
-            </br>
+        <div class="passport-buttons">
+            <paper-fab></paper-fab>
+            <paper-fab></paper-fab>
+            <paper-fab></paper-fab>
         </div>
 
-        <div>
-            <paper-button id="SendButton" on-click="_signup" raised>SIGNUP</paper-button>
+        <div class="inputs">
+            <paper-input always-float-label="false" no-label-float="true" id="firstName" is="firstName" label="First Name" name="firstName" value="{{_firstName::input}}"></paper-input>
+            <paper-input always-float-label="false" no-label-float="true" id="lastName" is="lastName" label="Last Name" name="lastName" value="{{_lastName::input}}"></paper-input>
+
+            <paper-input always-float-label="false" no-label-float="true" id="email" is="email" label="Email" name="email" value="{{_email::input}}" error-message="{{_emailErrorMessage}}" on-keyup="_checkEmail"></paper-input>
+
+            <paper-input always-float-label="false" no-label-float="true" id="password" is="password" label="Password" type="password" name="password" value="{{_password::input}}"></paper-input>
+            <paper-input always-float-label="false" no-label-float="true"id="passwordConfirm" is="passwordConfirm" type="password" label="Confirm Password" value="{{_passwordConfirm}}" error-message="Not same password"></paper-input>
+
+        </div>
+        <div class="checkbox">
+            <paper-checkbox noink is="remember" label="Remember Me" checked="{{_remember}}">Remember Me</paper-checkbox>
+        </div>
+
+        <div class="button">
+            <paper-button on-click="_signup" raised>Sign Up</paper-button>
         </div>
 
         <iron-ajax id="check-availability-ajax"

@@ -1,15 +1,10 @@
-﻿<link rel="import" href="../../../../bower_components/neon-animation/neon-animations.html">
-<link rel="import" href="../../../../bower_components/neon-animation/neon-animated-pages.html">
-<link rel="import" href="../../../../bower_components/neon-animation/neon-animation-runner-behavior.html">
-
-<link rel="import" href="../../../../bower_components/iron-media-query/iron-media-query.html">
-
-<link rel="import" href="sa-mission-creation-card.html">
-<link rel="import" href="sa-mission-consult.html">
-<link rel="import" href="sa-mission-create.html">
-<link rel="import" href="sa-mission-edit.html">
-<link rel="import" href="sa-mission-card.html">
-<link rel="import" href="sa-mission-kind-card.html">
+﻿<link rel="import" href="sa-mission-consult.html" />
+<link rel="import" href="sa-mission-create.html" />
+<link rel="import" href="sa-mission-edit.html" />
+<link rel="import" href="sa-missions-list.html" />
+<link rel="import" href="../sa-kinds/sa-kinds-list.html" />
+<link rel="import" href="../sa-toolbar/sa-secondary-toolbar-main.html" />
+<link rel="import" href="../sa-toolbar/sa-secondary-toolbar-missions-filter.html" />
 
 <dom-module id="sa-missions">
     <style>
@@ -28,309 +23,58 @@
             }
         }
 
-        .dropdown-content{
-            width:73.18vw;
-        }
-
-        paper-fab {
-            background-color: #118c89;
-        }
-
-        .card {
-            min-width: 300px;
-            max-width: 300px;
-            margin: 15px 10px;
-        }
-
-        .card-2 {
-            min-width: 620px;
-            max-width: 620px;
-            margin: 15px 10px;
-        }
-
-        .card-3 {
-            min-width: 940px;
-            max-width: 940px;
-            margin: 15px 10px;
-        }
-
-        .createButton {
-            position: fixed;
-            bottom: 25px;
-            right: 40px;
-        }
-
         .container {
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             padding: 0;
+            background-color:#555452;
         }
-
-        .grid {
-            padding: 4px;
-            margin: 1px auto;
-            width: 55vw;
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .toolbar {
-            display: flex;
-            width: 100%;
-            height: 50px;
-            margin: 0;
-            background-color: #3d3d3d;
-        }
-
-        #toolbar-image {
-            flex: 0 0 357px;
-            order: 2;
-        }
-
-        #toolbar-text {
-            display: flex;
-            color: #d9d9d9;
-            background-color: #3d3d3d;
-            flex: 1 0 210px;
-            order: 3;
-            padding-left: 25px;
-            align-items: center;
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-
-        #toolbar-button {
-            display: flex;
-            flex: 0 0 50px;
-            order: 1;
-            height: 100%;
-            justify-content: flex-start;
-            align-items: center;
-            color: #686868;
-            background-color: #2b2b2b;
-        }
-
-            #toolbar-button > paper-icon-button {
-                padding: 0;
-            }
-
-        #toolbar-deco {
-            flex: 0 0 40px;
-            order: 4;
-            height: 100%;
-        }
-
-        /* mobile-small */
-    @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) {
-        :host {
-            --paper-input-container-label : {                    
-                    color: #cccccc;
-            }
-            --paper-input-container-input-color: #cccccc;
-            --paper-input-container-underline-focus: {
-                background: rgba(20, 20, 20, 0.0);
-            }
-            --paper-input-container-underline: {
-                background: rgba(20, 20, 20, 0.0);
-            }
-            --paper-menu-button-dropdown-background:rgba(0, 0, 0, 0.67);
-            --paper-dropdown-menu-input:{
-                rgba(0, 0, 0, 0.67);
-            }
-        }
-        .dropdown-content{
-            width:47.18vw;
-        }
-
-        paper-fab {
-            background-color: #118c89;
-        }
-        
-        .grid {
-            padding: 0px;
-            margin: 1px auto;
-            width: 98%;
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .card {
-            min-width: 172px;
-            max-width: 172px;
-            margin: 2px 2px;
-            align-self: center;
-        }
-
-        .card-2 {
-            min-width: 348px;
-            max-width: 348px;
-            margin: 2px 2px;
-            align-self: center;
-        }
-
-        .card-3 {
-            min-width: 527px;
-            max-width: 527px;
-            margin: 2px 2px;
-            align-self: center;
-        }
-
-        .toolbar {
-            display: flex;
-            width: 100%;
-            height: 30px;
-            margin: 0;
-            background-color: #3d3d3d;
-            position:fixed;
-            z-index:12;
-        }
-
-        #toolbar-image {
-            flex: 0 0 150px;
-            order: 2;
-        }
-
-        #toolbar-text {
-            flex: 1 0 169px;
-            padding-left: 1px;
-            font-size: 18px;
-        }
-
-        #toolbar-button {
-            flex: 0 0 30px;
-            height: 100%;
-        }
-
-            #toolbar-button > paper-icon-button {
-                padding: 0;
-            }
-
-        #toolbar-deco {
-            flex: 0 0 40px;
-            height: 100%;
-        }
-    }
-    /* mobile-large */
-    @media all and (min-width: 361px) and (orientation: portrait) {
-    }
-    /* mobile-small-landscape */
-    @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) {
-    }
-    /* mobile-large-landscape */
-    @media all and (min-width: 481px) and (orientation: landscape) {
-    }
-    /* tablet-small-landscape */
-    @media all and (min-width: 600px) and (max-width: 960px) and (orientation: landscape) {
-    }
-    /* tablet-large-landscape */
-    @media all and (min-width: 961px) and (orientation: landscape) {
-    }
-    /* tablet-small */
-    @media all and (min-width: 600px) and (orientation: portrait) {
-    }
-    /* tablet-large */
-    @media all and (min-width: 601px) and (max-width: 840px) and (orientation : portrait) {
-    }
     </style>
     <template>
         <div class="container">
-            <iron-collapse id="toolbar">
-                <div class="toolbar">
-                    <div id="toolbar-button"><paper-icon-button icon="chevron-left" on-tap="_backToKinds"></paper-icon-button></div>
-                    <div id="toolbar-image">&nbsp;</div>
-                    <div id="toolbar-text">
-                        <span>&nbsp;</span>
-                        <paper-dropdown-menu style="width:97%;" always-float-label="false" no-label-float="true" label="[[_paperDropDownMenuLabel]]">
-                            <div class="dropdown-content">
-                                <paper-item on-click="_selectKind">All</paper-item>
-                                <template is="dom-repeat" items="[[_kinds]]">
-                                    <paper-item on-click="_selectKind">[[item.name.en]]</paper-item>
-                                </template>
-                            </div>
-                        </paper-dropdown-menu>
-                    </div>
-                    <div id="toolbar-deco">&nbsp;</div>
-                </div>
-            </iron-collapse>
-            <iron-pages id="pages" attr-for-selected="page" selected="kinds">
-                <div class="grid" page="kinds">
-                    <sa-mission-creation-card class="card"
-                                              count="[[_missions.length]]"
-                                              kinds="[[_kinds]]"
-                                              on-create-mission="_onBeginCreation"
-                                              on-kind-change="_changeKind" >
-                    </sa-mission-creation-card>
-                    <template is="dom-repeat" items="[[_kinds]]" observe="count">
-                        <sa-mission-kind-card class$="[[item.class]]"
-                                              kind="[[item]]"
-                                              on-tap="_showKindMissions">
-                        </sa-mission-kind-card>
-                    </template>
+            <iron-pages id="toolbar" selected="0">
+                <sa-secondary-toolbar-main filter="{{_mainFilter}}"></sa-secondary-toolbar-main>
+                <sa-secondary-toolbar-missions-filter kind="[[_selectedKind]]"
+                                                      on-back-to-kind="_backToKinds" 
+                                                      on-sort-changed="_onSortedChanged" 
+                                                      on-filter-add="_onFilterAdd"
+                                                      on-filter-remove="_onFilterRemove"></sa-secondary-toolbar-missions-filter>
+            </iron-pages>
+            <iron-pages id="pages" attr-for-selected="data-page" selected="missions">                
 
-                    <div>
-                        <paper-fab id="createButton" class="createButton" icon="create" on-click="_onCreateMissionClick"></paper-fab>
-                    </div>
-                </div>
-
-                <div class="grid" page="missions">
-                    <sa-mission-creation-card class="card"
-                                              count="[[_count]]"
-                                              kinds="[[_kinds]]"
-                                              kind="[[_selectedKind]]"
-                                              on-create-mission="_onBeginCreation"
-                                              on-kind-change="_changeKind" >
-                    </sa-mission-creation-card>
-                    <template id="missionsList" is="dom-repeat" items="[[_missions]]" filter="_filterMissions" sort="_sortMissions">
-                        <sa-mission-card class="card"
-                                         on-tap="_onBeginConsultation"
-                                         mission="[[item]]"
-                                         kind="[[_findKindOfMission(toggle, item)]]"
-                                         index="[[index]]"
-                                         on-delete-mission="_onDeleteMission"
-                                         on-edit-mission="_onBeginEdition"
-                                         hide="[[hide]]">
-                        </sa-mission-card>
-                    </template>
-
-                    <div>
-                        <paper-fab id="createButton" class="createButton" icon="create" on-click="_onCreateMissionClick"></paper-fab>
-                    </div>
-                </div>
-                <div page="consultation">
+                <section data-page="missions">
+                    <sa-missions-list update="[[_missionsListUpdate]]" filter="[[_missionsFilter]]" sort="[[_missionsSort]]"></sa-missions-list>
+                </section>
+                <section data-page="kinds">
+                    <sa-kinds-list update="[[_kindsListUpdate]]" on-show-missions="_onShowMissionsOfKind"></sa-kinds-list>
+                </section>
+                <section data-page="consultation">
                     <sa-mission-consult mission="[[mission]]"
                                       kind="[[_selectedKind]]"
                                       on-offer-service="_onOfferService"
                                       on-close-infos="_onCloseInfos"
                                       on-cancel="_onCancel">
                     </sa-mission-consult>
-                </div>
-                <div page="creation">
+                </section>
+                <section data-page="creation">
                     <sa-mission-create mission="{{mission}}"
                                        kind="[[_selectedKind]]"
                                        on-create-mission="_onCreateMission"
-                                       on-cancel="_onCancel">
+                                       on-cancel="_onCancel"
+                                       update="[[_missionCreateUpdate]]"
+                                       >
                     </sa-mission-create>
-                </div>
-                <div page="edition">
+                </section>
+                <section data-page="edition">
                     <sa-mission-edit mission="{{mission}}"
                                      kind="[[_selectedKind]]"
                                      on-update-mission="_onUpdateMission"
                                      on-cancel="_onCancel">
                     </sa-mission-edit>
-                </div>
+                </section>
             </iron-pages>
         </div>
-
-        <iron-ajax id="mission-ajax"
-                   url="[[ajax_url]]"
-                   content-type="application/json"
-                   params="[[ajax_params]]"
-                   handle-as="json"
-                   method="[[ajax_method]]"
-                   on-response="handleResponse"
-                   last-response="{{ajax_response}}">
-        </iron-ajax>
 
     </template>
 
@@ -339,166 +83,29 @@
             Polymer({
                 is: 'sa-missions',
 
-                behaviors: [
-                    Polymer.NeonAnimationRunnerBehavior
-                ],
-
                 properties: {
-                    notification: {
-                        type: Boolean,
-                        notify: true,
-                        observer: 'handleNotification'
-                    },
-                    ajax_params: {
-                        type: Object,
-                        value: function () {
-                            return {
-                                mission: new Object(),
-                                access_token: ''
-                            }
-                        }
-                    },
-                    mission: Object,
-                    opened: Boolean,
-                    ajax_response: {
-                        type: Object,
-                        notify: true
-                    },
-                    ajax_method: String,
-                    ajax_url: {
+                    _mainFilter: {
                         type: String,
-                        value: '/missions'
+                        observer: '_mainFilterChange'
                     },
-                    filter: {
-                        type: String,
-                        value: 'none',
-                        notify: true
-                    },
-                    _missions: {
-                        type: Array,
-                        value: []
-                    },
-                    _kinds: {
-                        type: Array,
-                        value: []
-                    },
-                    _count: Number,
-                    _allowInfosOpen: {
-                        type: Boolean,
-                        value: true
-                    },
-                    _showAllKinds: {
+                    _missionCreateUpdate: {
                         type: Boolean,
                         value: false
+                    },
+                    _missionsListUpdate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _kindsListUpdate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _missionsFilter: {
+                        type:Object
                     }
                 },
-                ready: function () {
-                    Array.prototype.indexOfObject = function (property, value) {
-                        for (var i = 0, len = this.length; i < len; i++) {
-                            if (this[i][property] === value) return i;
-                        }
-                        return -1;
-                    };
-
-                    this.toggle = false;
-                    this._paperDropDownMenuLabel = "All";
-
-                    this.$.toolbar.hide();
-                    this._createEmptyMission();
-
-                    app.socket.on('add-mission', function (data) {
-                        console.log('add mission');
-                        this.push('_missions', data);
-                        var index = this._kinds.indexOfObject('_id', data._type);
-                        this.set('_kinds.' + index + '.count', this._kinds[index].count + 1);
-                    }.bind(this));
-
-                    app.socket.on('update-mission', function (data) {
-                        console.log('update mission');
-                        var index = this._missions.indexOfObject('_id', data._id);
-                        this.splice('_missions', index, 1);
-                        this.push('_missions', data);
-                    }.bind(this));
-
-                    app.socket.on('delete-mission', function (data) {
-                        console.log('delete mission');
-                        var index = this._missions.indexOfObject('_id', data._id);
-                        this.splice('_missions', index, 1);
-                        var index = this._kinds.indexOfObject('_id', data._type);
-                        this.set('_kinds.' + index + '.count', this._kinds[index].count - 1);
-                    }.bind(this));
-
-                    this._showPage('kinds');
-
-                    this.getMissions();
-                },
-                attached: function () {
-
-                },
-                handleNotification: function () {
-                    this.hide = true;
-                    if (window.sessionStorage.token !== "undefined" && window.sessionStorage.token != '') {
-                        if (app.drawer_route == 0) {
-                            this.filter = app.mission_filter;
-                        }
-                        else if (app.drawer_route == 1) {
-                            this.filter = 'sponsor';
-                            this.hide = false;
-                        }
-                        else {
-                            this.filter = 'none';
-                        }
-                    }
-                    else {
-                        this.filter = 'none';
-                    }
-
-                    this.$.missionsList.render();
-                },
-                getMissions: function () {
-                    this.ajax_method = 'GET';
-                    this.ajax_url = '/missions'
-                    this.sendRequest();
-                },
-                getKinds: function () {
-                    this.ajax_method = 'GET';
-                    this.ajax_url = '/kinds'
-                    this.sendRequest();
-                },
-                sendRequest: function () {
-                    this.ajax_params.access_token = window.sessionStorage.token;
-                    this.querySelector('iron-ajax').generateRequest();
-                },
-                handleResponse: function () {
-                    if (!this.ajax_response) {
-                        return;
-                    }
-
-                    if (this.ajax_response.success) {
-                        if (this.ajax_response.method === 'GET') {
-                            if (this.ajax_response.route === "missions") {
-                                this._missions = this.ajax_response.missions;
-                                this._count = this._missions.length;
-                                this.getKinds();
-                            }
-                            else if (this.ajax_response.route === "kinds") {
-                                this._kinds = this.ajax_response.kinds;
-                                this._selectedKind = this._kinds[0];
-
-                                this._kinds.forEach(function (element, index, array) {
-                                    if (element.size === 1) {
-                                        element.class = 'card';
-                                    }
-                                    else if (element.size === 2) {
-                                        element.class = 'card-2';
-                                    }
-                                    else if (element.size === 3) {
-                                        element.class = 'card-3';
-                                    }
-                                });
-                            }
-                        }
-                    }
+                ready:function(){
+                    this._missionsListUpdate = true;
                 },
                 _onBeginCreation: function (e) {
                     this._createEmptyMission();
@@ -553,54 +160,55 @@
                     this.fire('request-login', {});
                     this.$.pages.selected = 0;
                 },
-                _showKindMissions: function (e) {
-                    this._selectedKind = e.model.item;
+                _onShowMissionsOfKind: function (e) {
+                    this._selectedKind = e.detail.kind;
+                    this._missionsfilterAdd('kind');
                     this._showPage('missions');
-                    this.$.missionsList.render();
+                    this.$.toolbar.selected = 1;
                 },
-                _filterMissions: function (item) {
-                    if (!window.sessionStorage.token) {
-                        return this._missionsOfKind(item);
+                _onSortedChanged:function(e){
+                    this._missionsSort = {
+                        type: e.detail.type
                     }
-                    else if (this.filter === 'search') {
-                        return (this._missionsOfKind(item) && item._owner !== window.sessionStorage['id'] && item._agent !== window.sessionStorage['id']);
-                    }
-                    else if (this.filter === 'event') {
-                        return (this._missionsOfKind(item) && item._owner !== window.sessionStorage['id'] && item._agent === window.sessionStorage['id']);
-                    }
-                    else if (this.filter === 'sponsor') {
-                        return this._missionsOfKind(item) && item._owner == window.sessionStorage['id'];
-                    }
-
-                    return true;
                 },
-                _missionsOfKind: function (item) {
-                    if (typeof (this._selectedKind) !== "undefined" && !this._showAllKinds) {
-                        if (item._type === this._selectedKind._id) {
-                            return true;
+                _onFilterAdd: function (e) {
+                    this._missionsfilterAdd(e.detail.type);
+                },
+                _missionsfilterAdd:function(type){
+                    if (!this._missionsFilter) {
+                        this._missionsFilter = {
+                            types: [type],
+                            kind: this._selectedKind
                         }
-                    } else if (this._showAllKinds) {
-                        return true;
                     }
-
-                    return false;
+                    else {
+                        var filter = this._missionsFilter;
+                        this._missionsFilter = null;
+                        filter.types.push(type);
+                        filter.kind = this._selectedKind;
+                        this.set('_missionsFilter', filter);
+                    }
                 },
-                _sortMissions: function (a, b) {
-                    var A = new Date(a.creationDate);
-                    var B = new Date(b.creationDate);
-
-                    return A < B;
+                _onFilterRemove: function (e) {
+                    this._missionsfilterRemove(e.detail.type);
+                },
+                _missionsfilterRemove: function (type) {
+                    var filter = this._missionsFilter;
+                    this._missionsFilter = null;
+                    if (filter) {
+                        for (var idx = 0; idx < filter.types.length; ++idx) {
+                            if (filter.types[idx] == type) {
+                                filter.types.splice(idx, 1);
+                                break;
+                            }
+                        }
+                        filter.kind = this._selectedKind;
+                    }
+                    this.set('_missionsFilter', filter);
                 },
                 _backToKinds: function (e) {
                     this._showPage('kinds');
-                },
-                _changeKind: function (e) {
-                    this._selectedKind = e.detail.kind;
-                    this._paperDropDownMenuLabel = this._selectedKind.name.en;
-                    if (this.$.pages.selected === 'missions') {
-                        this.$.missionsList.render();
-                        this._updateToolbar();
-                    }
+                    this.$.toolbar.selected = 0;
                 },
                 _createEmptyMission: function () {
                     this.set('mission', new Object({
@@ -627,70 +235,51 @@
                     }));
                 },
                 _showPage: function (page) {
+                    if (this._fromPage && this.$.pages.selected && this._fromPage == this.$.pages.selected) { return; }
+
                     this._fromPage = this.$.pages.selected;
 
                     switch (page) {
                         case 'kinds':
-                            this.$.toolbar.hide();
+                            //this.$.toolbar.hide();
+                            this._kindsListUpdate = false;
+                            this._kindsListUpdate = true;
                             break;
                         case 'missions':
-                            this._updateToolbar();
-                            this.$.toolbar.show();
+                            //this._updateToolbar();
+                            //this.$.toolbar.show();
+                            this._missionsListUpdate = false;
+                            this._missionsListUpdate = true;
                             break;
                         case 'creation':
-                            this._updateToolbar();
-                            this.$.toolbar.show();
+                            //this._updateToolbar();
+                            //this.$.toolbar.show();
+                            this._missionCreateUpdate = false;
+                            this._missionCreateUpdate = true;
                             break;
                         case 'edition':
-                            this._updateToolbar();
-                            this.$.toolbar.show();
+                            //this._updateToolbar();
+                            //this.$.toolbar.show();
                             break;
                         case 'consultation':
-                            this._updateToolbar();
-                            this.$.toolbar.show();
+                            //this._updateToolbar();
+                            //this.$.toolbar.show();
                             break;
                     }
 
                     this.$.pages.select(page);
                 },
-                _updateToolbar: function () {
-                    var div = this.querySelector('#toolbar-deco');
-                    if (div == null) { return; }
-                    div.style.background = this._selectedKind.color;
+                _mainFilterChange: function (e) {
+                    if (this.$.pages.selected == e) { return; }
 
-                    div = this.querySelector('#toolbar-image');
-                    if (div == null) { return; }
-                    div.style.backgroundImage = 'url(../../images/kinds/' + this._selectedKind.image.path + ')';
-                    div.style.backgroundPosition = this._selectedKind.image.toolBarXOffset + ' ' + this._selectedKind.image.toolBarYOffset;
-                    div.style.backgroundSize = this._selectedKind.image.toolBarScale;
-                },
-                _handleNeedUpdate: function (e) {
-                    if (this._needUpdate) {
-                        this.$.missionsList.render();
-                        this._needUpdate = false;
+                    switch (this._mainFilter) {
+                        case 'missions':
+                            this._missionsfilterRemove('kind')
+                            this._showPage('missions');
+                            break;
+                        case 'kinds': this._showPage('kinds');
+                            break;
                     }
-                },
-                _selectKind: function (e) {
-                    if (e.target._templateInstance) {
-                        this._selectedKind = e.target._templateInstance.item;
-                        this._showAllKinds = false;
-                        this._paperDropDownMenuLabel = this._selectedKind.name.en;
-                    } else {
-                        this._showAllKinds = true;
-                        this._paperDropDownMenuLabel = e.target.innerText;
-                    }
-                    this.querySelector('paper-dropdown-menu').close();
-                    this.$.missionsList.render();
-                    this.toggle = !this.toggle;
-                    this._updateToolbar();
-                },
-                _findKindOfMission: function (toggle, item) {
-                    var index = this._kinds.indexOfObject('_id', item._type);
-
-                    if (index !== -1) {
-                        return this._kinds[index];
-                    }
-                    return null;
                 }
             });
         })();

@@ -1,21 +1,101 @@
 ﻿
 <dom-module id="sa-login-signin">
     <style>
+        :host {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
 
+            --paper-input-container-underline:{
+                height: 0;
+            }
 
+            --paper-input-container-underline-focus:{
+                height: 0;
+            }
 
+            --paper-input-container-underline-disabled:{
+                height: 0;
+            }
+
+            --paper-input-container-input:{
+                color: #909090;
+            }
+            --paper-checkbox-unchecked-background-color:#606060;
+            --paper-checkbox-unchecked-color:rgba(0, 0, 0, 0);
+            --paper-checkbox-box-unchecked:{
+                border-radius:5px;
+            }
+            --paper-checkbox-label-color:#909090;
+            --paper-checkbox-checked-color:rgba(0,0,0,0);
+        }
+
+        .inputs {
+        }
+
+            .inputs paper-input {
+                margin: 5px 10px;
+                border: solid 1px;
+                border-radius: 5px;
+                font-size: 16px;
+                height: 40px;
+                padding: 2px 15px;
+                background-color: #363636;
+                color: #909090;
+                border: none;
+            }
+
+        .passport-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding: 0 5px;
+        }
+
+            .passport-buttons paper-fab {
+                background-color: #0593d3;
+                margin: 5px;
+            }
+
+        .button {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+            .button paper-button {
+                text-transform: none;
+                background-color: #0593d3;
+                width: 83%;
+                margin: 5px auto;
+            }
+
+        .checkbox{
+            margin:2px auto;
+        }
     </style>
     <template>
+        <div class="inputs">
+            <paper-input always-float-label="false" no-label-float="true" id="email" is="email" label="Email" name="email" value="{{_email::input}}"></paper-input>
+            <paper-input always-float-label="false" no-label-float="true" id="password" is="password" label="Password" type="password" name="password" value="{{_password::input}}"></paper-input>
+        </div>
+        <div class="checkbox">
+            <paper-checkbox noink is="remember" label="Remember Me" checked="{{_remember}}">Remember Me</paper-checkbox>
+        </div>
+        <div class="button">
+            <paper-button on-click="_signin" raised>Sign In</paper-button>
+        </div>
 
-        <div>
-            <paper-input id="email" is="email" label="Email" name="email" value="{{_email::input}}"></paper-input>
-            <paper-input id="password" is="password" label="Password" type="password" name="password" value="{{_password::input}}"></paper-input>
-            </br>
-            </br>
-        </div>
-        <div>
-            <paper-button id="SendButton" on-click="_signin" raised>Signin</paper-button>
-        </div>
+        <iron-ajax id="login-ajax"
+                   url="/users/login"
+                   params="{{_infos}}"
+                   handle-as="json"
+                   method="POST"
+                   on-response="_handleResponse"
+                   last-response="{{_response}}">
+        </iron-ajax>
 
     </template>
 
@@ -30,29 +110,38 @@
                     },
                     _password: {
                         type: String
-                    },
-                    animationConfig: {
-                        type: Object,
-                        value: function () {
-                            return {
-                                'exit': [{
-                                    name: 'fade-out-animation',
-                                    fromPage: this,
-                                    node: this
-                                }]
-                            }
-                        }
                     }
                 },
                 _signin: function (event) {
-                    this.sharedElements = {
-                        hero: this
-                    };
-
-                    this.fire('signin', {
+                    this._infos = {
                         email: this._email,
                         password: this._password
-                    })
+                    };
+                    this.querySelector('iron-ajax').generateRequest();
+                },
+                _handleResponse: function () {
+                    if (typeof this._response == "undefined" || this._response == null) {
+                        return;
+                    }
+
+                    if (this._response.success && this._response.method === 'POST') {
+                        if (this._remember === true) {
+                            window.localStorage.token = this._response.token;
+                            window.localStorage.remember = true;
+                            window.localStorage.setItem('email', this._infos._email);
+                            window.localStorage.setItem('id', this._response.id);
+                            window.localStorage.setItem('user', JSON.stringify(this._response.user));
+                        }
+
+                        window.sessionStorage.token = this._response.token;
+                        window.sessionStorage.setItem('email', this._infos._email);
+                        window.sessionStorage.setItem('id', this._response.id);
+                        window.sessionStorage.setItem('user', JSON.stringify(this._response.user));
+                        
+                        app.user = this._response.user;
+
+                        app.onLogIn();
+                    }
                 }
             });
         })();

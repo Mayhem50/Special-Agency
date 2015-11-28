@@ -220,10 +220,6 @@
                         type: Object,
                         observer: 'handleChange'
                     },
-                    kind: {
-                        type: Object,
-                        observer: 'handleChange'
-                    },
                     _hiddenElement: {
                         type: Boolean,
                         value: true
@@ -241,20 +237,20 @@
                     this._init();
                 },
                 _init: function () {
-                    if (!this.kind) { return; }
+                    if (!this.mission._type) { return; }
 
-                    this.cardName = 'card-mission-' + this.kind.css + '-' + this.index;
+                    this.cardName = 'card-mission-' + this.mission._title.css + '-' + this.index;
                     this.middle = this.cardName + '-middle';
                     this.footer = this.cardName + '-footer';
 
-                    this.$$('#' + this.middle).style.background = this.kind.color;
-                    this.$$('#' + this.footer).style.background = this.kind.color;
+                    this.$$('#' + this.middle).style.background = this.mission._type.color;
+                    this.$$('#' + this.footer).style.background = this.mission._type.color;
 
                     var id = '#' + this.cardName;
 
-                    this.$$(id).style.backgroundImage = 'url(../../images/kinds/' + this.kind.image.path + ')';
-                    this.$$(id).style.backgroundPosition = this.kind.image.xOffset + ' ' + this.kind.image.yOffset;
-                    this.$$(id).style.backgroundSize = this.kind.image.size;
+                    this.$$(id).style.backgroundImage = 'url(../../images/kinds/' + this.mission._type.image.path + ')';
+                    this.$$(id).style.backgroundPosition = this.mission._type.image.xOffset + ' ' + this.mission._type.image.yOffset;
+                    this.$$(id).style.backgroundSize = this.mission._type.image.size;
 
                     if (this.hide) {
                         this.$.command.style.display = 'none';

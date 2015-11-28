@@ -1,0 +1,62 @@
+﻿
+<dom-module id="sa-toolbar-not-logged">
+    <style>
+        :host {
+            display:flex;
+            width:100%;
+            justify-content:space-between;
+            align-items:center;
+
+            --paper-tabs-selection-bar-color: #000;
+
+            --paper-tab:{
+                width:100px;
+            }
+            --paper-tabs:{
+                height:67px;
+            }
+            --paper-tabs-selection-bar:{
+                height:6px;
+            }
+            --paper-tabs-selection-bar-color:#cccccc;
+        }
+        
+    img{
+        height:64px;
+    }
+    </style>
+
+    <template>
+        
+        <div>
+            <img src="../../images/logo/Img-03.png" />
+        </div>
+        <paper-tabs noink attr-for-selected="data-route" selected="{{route}}">
+            <paper-tab data-route="home">Concept</paper-tab>
+            <paper-tab data-route="missions">Missions</paper-tab>
+            <paper-tab data-route="agents">Agents</paper-tab>
+            <paper-tab data-route="sponsors">Sponsors</paper-tab>
+            <paper-tab data-route="news">News</paper-tab>
+            <paper-tab data-route="support">Support</paper-tab>
+        </paper-tabs>
+        <div>How to become a SpecialAgent ?</div>
+        <paper-icon-button icon="search"></paper-icon-button>
+
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-toolbar-not-logged',
+
+                properties: {
+                    route: {
+                        type: String,
+                        value: 'home',
+                        notify:true
+                    }
+                }
+            });
+        })();
+    </script>
+</dom-module>

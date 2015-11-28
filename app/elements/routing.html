@@ -1,8 +1,8 @@
 <script src="../../bower_components/page/page.js"></script>
 <script>
     window.addEventListener('WebComponentsReady', function () {
-        page('/', function () {
-            app.route = 'home';
+        page('/', function () {            
+            isAuthenticated('missions');
         });
 
         page('/login', function () {

@@ -12,14 +12,14 @@ var Type = mongoose.Schema({
         toolBarXOffset: String,
         toolBarYOffset: String,
         scale: String,
-        toolBarScale: String
+        toolbarScale: String
     },
     color: String,
     css: String,
     isTop: Boolean,
     size: Number,
     count: Number,
-    _subTypes: [{ type: mongoose.Schema.ObjectId, ref: 'Type' }],
+    _parentType: { type: mongoose.Schema.ObjectId, ref: 'Mission-Type' },
 });
 
 module.exports = mongoose.model(

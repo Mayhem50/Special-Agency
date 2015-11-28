@@ -2,8 +2,8 @@
 
 module.exports = mongoose.model(
     'Mission', {
-        title : String,
-        _type : { type: mongoose.Schema.Types.ObjectId, ref: 'Type' },
+        _title : { type: mongoose.Schema.Types.ObjectId, ref: 'Mission-Type' },
+        _type : { type: mongoose.Schema.Types.ObjectId, ref: 'Mission-Type' },
         _owner : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         _agent : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         level : Number,
@@ -13,6 +13,7 @@ module.exports = mongoose.model(
         creationDate : { type : Date, default: Date.now },
         wishDates : [{ type : String }],
         finishDate : Date,
+        proOnly: {type: Boolean, default: false, required: true},
         where : {
             longitude : String,
             latitude : String,

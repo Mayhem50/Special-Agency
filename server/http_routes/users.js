@@ -64,10 +64,14 @@ module.exports = function (passport) {
                     if (err) return next(err);
                     
                     var token = jwt.encode(user._id, 'xbJ9Phit');
+                    
+                    user.password = '';
+
                     return res.json( {
                         method : 'POST',
                         token: token,
                         id: user._id,
+                        'user': user,
                         success: true
                     });
                 });

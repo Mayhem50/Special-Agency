@@ -1,0 +1,124 @@
+﻿<link rel="import" href="sa-kind-card.html" />
+
+<dom-module id="sa-kinds-list">
+    <style>
+        :host {
+            display: block;
+        }
+
+        .grid {
+            padding: 4px;
+            margin: 1px auto;
+            width: 95.8%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            min-width: 300px;
+            max-width: 300px;
+            margin: 10px 10px;
+        }
+
+        .card-2 {
+            min-width: 620px;
+            max-width: 620px;
+            margin: 10px 10px;
+        }
+
+        .card-3 {
+            min-width: 940px;
+            max-width: 940px;
+            margin: 10px 10px;
+        }
+    </style>
+
+    <template>
+        <div class="grid">
+            <template id="kindsList" is="dom-repeat" items="[[_kinds]]">
+                <sa-kind-card class$="[[item.class]]"
+                                      kind="[[item]]"
+                                      on-tap="_showMissions">
+                </sa-kind-card>
+            </template>
+        </div>
+
+        <iron-ajax id="kinds-ajax"
+                   url="/kinds"
+                   content-type="application/json"
+                   handle-as="json"
+                   method="GET"
+                   on-response="_handleResponse"
+                   last-response="{{_xhrResponse}}">
+        </iron-ajax>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-kinds-list',
+
+                properties: {
+                    _kinds: Object,
+                    update: {
+                        type: Boolean,
+                        observer: '_updateChanged'
+                    }
+                },
+                ready: function () {
+                    Array.prototype.indexOfObject = function (property, value) {
+                        for (var i = 0, len = this.length; i < len; i++) {
+                            if (this[i][property] === value) return i;
+                        }
+                        return -1;
+                    };
+
+                    app.socket.on('add-kind', function (data) {
+                        console.log('add kind');
+                        this.push('_kinds', data);
+                    }.bind(this));
+
+                    app.socket.on('update-kind', function (data) {
+                        console.log('update kind');
+                        var index = this._kinds.indexOfObject('_id', data._id);
+                        this.splice('_kinds', index, 1);
+                        this.push('_kinds', data);
+                    }.bind(this));
+
+                    app.socket.on('delete-kind', function (data) {
+                        console.log('delete kind');
+                        var index = this._kinds.indexOfObject('_id', data._id);
+                        this.splice('_kinds', index, 1);
+                    }.bind(this));
+                },
+                _updateChanged: function (e) {
+                    if (this.update) {
+                        this.$$('#kinds-ajax').generateRequest();
+                    }
+                },
+                _handleResponse: function () {
+                    if (!this._xhrResponse) { return; }
+
+                    if (this._xhrResponse.success) {
+                        this._kinds = this._xhrResponse.kinds;
+                        this._kinds.forEach(function (element, index, array) {
+                            if (element.size === 1) {
+                                element.class = 'card';
+                            }
+                            else if (element.size === 2) {
+                                element.class = 'card-2';
+                            }
+                            else if (element.size === 3) {
+                                element.class = 'card-3';
+                            }
+                        });
+                        this.$.kindsList.render();
+                    }
+                },
+                _showMissions: function (e) {
+                    this.fire('show-missions', { kind: e.model.item });
+                }
+            });
+        })();
+    </script>
+</dom-module>

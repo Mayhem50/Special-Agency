@@ -1,8 +1,8 @@
 ﻿var express = require('express');
 var jwtauth = require('../controllers/jwtauth');
 var User = require('../models/user');
+var Type = require('../models/mission-type');
 var Mission = require('../models/mission');
-var Kind = require('../models/mission-type');
 
 var router = express.Router();
 
@@ -14,11 +14,11 @@ module.exports = function () {
         var mission = new Mission(req.body.mission);
         mission._owner = req.user._id;
         
-        Kind.findOne({ '_id' : mission._type }, function (err, kind) {
+        Type.findOne({ '_id' : mission._type }, function (err, Type) {
             if (err) { throw err; }
             
-            kind.count = kind.count + 1;
-            kind.save();
+            Type.count = Type.count + 1;
+            Type.save();
         });
         
         mission.save(function (err) {
@@ -37,11 +37,9 @@ module.exports = function () {
     
     router.get('/missions', function (req, res) {
         console.log('Get all missions not finished');
-        Mission.find({}, function (err, missions) {
-            if (err) {
-                return res.sendStatus(500);
-            }
-            
+        Mission.find({}).populate('_type _title').exec(function (err, missions) {
+            if (err) { return res.sendStatus(500); }
+                        
             return res.json({
                 'missions': missions,
                 method: 'GET',
@@ -115,6 +113,20 @@ module.exports = function () {
         }
         else if (req.params.mode == 'sponsor') {
             Mission.find({ '_owner' : req.user._id }, function (err, missions) {
+                if (err) {
+                    return res.sendStatus(500);
+                }
+                
+                return res.json({
+                    'missions': missions,
+                    method: 'GET',
+                    success : true,
+                    route: "missions"
+                });
+            });
+        }
+        else if (req.params.mode == 'type') {
+            Mission.find({ '_type' : req.Type._id }).populate('_type').populate('_title').exec( function (err, missions) {
                 if (err) {
                     return res.sendStatus(500);
                 }

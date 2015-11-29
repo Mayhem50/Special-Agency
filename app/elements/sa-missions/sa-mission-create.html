@@ -1,20 +1,152 @@
 ﻿<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html" />
-<link rel="import" href="../../../bower_components/paper-badge/paper-badge.html" />
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html" />
+<link rel="import" href="../../../bower_components/google-map/google-map.html" />
 
 <link rel="import" href="../sa-dates/sa-dates.html" />
-<link rel="import" href="../sa-rank/sa-rank.html" />
 <link rel="import" href="../date-picker/date-picker.html" />
+<link rel="import" href="../sa-map/sa-map.html" />
 
 <dom-module id="sa-mission-create">
     <style>
-        :host{            
-            --paper-input-container-input:{
-                color:black;
+        :host {
+            --paper-input-container-input: {
+                color: black;
             }
-        }        
-    </style>
-    <template>            
+        }
 
+        #container {
+            display:flex;
+            width:90%;
+            margin: 15px auto;
+        }
+
+        #left-part{
+
+        }
+
+        #right-part{
+
+        }
+
+        #left-row-1{
+            height:300px;
+            display:flex;
+        }
+
+        #left-row-2{            
+            height:495px;
+            display:flex;
+        }
+
+        #left-row-1-cell-1{
+            width:300px;
+            background-color:red;
+        }
+
+        #left-row-1-cell-2{
+            width:550px;
+            background-color:green;
+        }
+
+        #left-row-1-cell-3{
+            width:410px;
+            background-color:blue;
+        }
+        
+        #left-row-2-cell-1{
+            width:850px;
+            background-color:blue;
+            display:flex;
+        }
+
+        #left-row-2-cell-2{
+            width:410px;
+            background-color:#ffd800;
+            display:flex;
+        }
+
+        #left-row-2-cell-1-row-1{
+            height:68px;
+            display:flex;
+        }
+
+        #left-row-2-cell-1-row-2{
+            height:68px;
+            display:flex;
+        }
+        
+        #left-row-2-cell-1-row-3{
+
+        }
+
+        #left-row-2-cell-1-row-1-cell-1{
+
+        }
+
+        #left-row-2-cell-1-row-1-cell-2{
+
+        }
+
+        #left-row-2-cell-1-row-2-cell-1{
+
+        }
+
+        #left-row-2-cell-1-row-2-cell-2{
+
+        }
+
+    </style>
+    <template>
+        <div id="container">
+            <div id="left-part">
+                <div id="left-row-1">
+                    <div id="left-row-1-cell-1">
+                        <div id="reward-text">Reward</div>
+                        <paper-input type="number"><div suffix>€</div></paper-input>
+                    </div>
+                    <div id="left-row-1-cell-2">
+                        <sa-map></sa-map>
+                    </div>
+                    <div id="left-row-1-cell-3">
+                        &nbsp;
+                    </div>
+                </div>
+                <div id="left-row-2">
+                    <div id="left-row-2-cell-1">
+                        <div id="left-row-2-cell-1-row-1">
+                            <div id="left-row-2-cell-1-row-1-cell-1">
+                                <paper-dropdown-menu id="kinds-dropdown-menu" always-float-label="false" no-label-float="true" label="[[kind.name.en]]">
+                                    <div class="dropdown-content">
+                                        <template id="kindsList" is="dom-repeat" items="[[kinds]]">
+                                            <paper-item on-click="_selectKind">[[item.name.en]]</paper-item>
+                                        </template>
+                                    </div>
+                                </paper-dropdown-menu>
+                            </div>
+                            <div id="left-row-2-cell-1-row-1-cell-2">
+                            </div>
+                        </div>
+                        <div id="left-row-2-cell-1-row-2">
+                            <div id="left-row-2-cell-1-row-2-cell-1">
+                                <paper-drop-down-menu></paper-drop-down-menu>
+                            </div>
+                            <div id="left-row-2-cell-1-row-2-cell-2">
+                                <paper-input></paper-input>
+                            </div>
+                        </div>
+                        <div id="left-row-2-cell-1-row-3">
+                            <paper-text-area></paper-text-area>
+                        </div>
+                    </div>
+                    <div id="left-row-2-cell-2">
+
+                    </div>
+                </div>
+            </div>
+            <div id="right-part">
+                &nbsp;
+            </div>
+        </div>
 
         <iron-ajax id="titles-ajax"
                    url="[[_xhrURL]]"
@@ -32,30 +164,70 @@
                 is: 'sa-mission-create',
 
                 properties: {
+                    address:{
+                        type: String,
+                        observer: '_addressChanged'
+                    },
                     mission: {
                         type: Object,
                         notify: true,
                     },
-                    kind: Object,
-                    _titles: Object,
+                    kinds: {
+                        type: Object,
+                        observer: '_kindsChanged'
+                    },
+                    kind: {
+                        type: Object,
+                        observer: '_kindChanged',
+                        notify:true
+                    },
                     _xhrResponse: Object,
                     update: {
                         type: Boolean,
                         observer: '_updateChanged'
-                    }
+                    },
+                    _longitude: Number,
+                    _latitude: Number
                 },
-                _handleResponse: function () {
-                    if (!this._xhrResponse) { return; }
-
-                    if (this._xhrResponse.success) {
-                        this._titles = this._xhrResponse.types;
+                ready: function () {
+                    this._getLocation();
+                },
+                _getLocation:function(){
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function (position) {
+                            this.set('_longitude', position.coords.longitude);
+                            this.set('_latitude', position.coords.latitude);
+                        }.bind(this));
                     }
                 },
                 _updateChanged: function (e) {
-                    if (this.update) {
-                        this._xhrURL = 'types/' + this.kind._id;
-                        this.$$('#titles-ajax').generateRequest();
+                    
+                },
+                _kindChanged: function (e) {
+                    if(this.kind){
+                        var div = this.querySelector('#left-row-1-cell-1');
+                        if (div == null) { return; }
+                        div.style.backgroundImage = 'url(../../images/kinds/' + this.kind.image.path + ')';
+                        div.style.backgroundPosition = this.kind.image.xOffset + ' ' + this.kind.image.yOffset;
+                        div.style.backgroundSize = "cover";
                     }
+                },
+                _kindsChanged: function (e) {
+                    this.$.kindsList.render();
+                },
+                _selectKind: function (e) {
+                    this._updateSelectedKind(e.target._templateInstance.item);
+                    this.$$('#kinds-dropdown-menu').close();
+                },
+                _updateSelectedKind: function (kind) {
+                    this.set('kind', kind);
+                    this.kind.name.en = this.kind.name.en.replace(/^./, this.kind.name.en[0].toUpperCase());
+                    this.kind.name.fr = this.kind.name.fr.replace(/^./, this.kind.name.fr[0].toUpperCase());
+                },
+                _addressChanged: function (e) {
+                    var div = this.querySelector('google-map-search');
+                    if(div)
+                    div.search();
                 }
             });
         })();

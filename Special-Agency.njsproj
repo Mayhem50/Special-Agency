@@ -75,6 +75,7 @@
     <Content Include="app\elements\sa-login\sa-login-signup.html" />
     <Content Include="app\elements\sa-login\sa-login.html" />
     <Content Include="app\elements\sa-kinds\sa-kinds-list.html" />
+    <Content Include="app\elements\sa-map\sa-map.html" />
     <Content Include="app\elements\sa-missions\sa-mission-card.html" />
     <Content Include="app\elements\sa-missions\sa-mission-edit.html" />
     <Content Include="app\elements\sa-missions\sa-mission-creation-card.html" />
@@ -86,7 +87,8 @@
     <Content Include="app\elements\sa-profile\sa-profile.html" />
     <Content Include="app\elements\sa-rank\sa-rank.html" />
     <Content Include="app\elements\sa-toolbar\sa-secondary-toolbar-main.html" />
-    <Content Include="app\elements\sa-toolbar\sa-secondary-toolbar-missions-filter.html" />
+    <Content Include="app\elements\sa-toolbar\sa-secondary-toolbar-second.html" />
+    <Content Include="app\elements\sa-toolbar\sa-toolbar-filter.html" />
     <Content Include="app\elements\sa-toolbar\sa-toolbar-logged.html" />
     <Content Include="app\elements\sa-toolbar\sa-toolbar-not-logged.html" />
     <Content Include="app\favicon.ico" />
@@ -139,6 +141,7 @@
     <Folder Include="app\" />
     <Folder Include="app\elements\" />
     <Folder Include="app\elements\date-picker\" />
+    <Folder Include="app\elements\sa-map\" />
     <Folder Include="app\elements\sa-kinds\" />
     <Folder Include="app\elements\sa-toolbar\" />
     <Folder Include="app\elements\sa-drawer\" />

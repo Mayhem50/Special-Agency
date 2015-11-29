@@ -53,10 +53,6 @@
 
                 properties: {
                     _missions: Object,
-                    update: {
-                        type: Boolean,
-                        observer: '_updateChanged'
-                    },
                     filter: {
                         type: Object,
                         observer: '_needRender'
@@ -91,11 +87,8 @@
                         var index = this._missions.indexOfObject('_id', data._id);
                         this.splice('_missions', index, 1);
                     }.bind(this));
-                },
-                _updateChanged: function (e) {
-                    if (this.update) {
-                        this.$$('#missions-ajax').generateRequest();
-                    }
+
+                    this.$$('#missions-ajax').generateRequest();
                 },
                 _handleResponse: function () {
                     if (!this._xhrResponse) { return; }
@@ -159,6 +152,11 @@
                             var B = new Date(b.creationDate);
 
                             return A < B;
+                        case 'older':
+                            var A = new Date(a.creationDate);
+                            var B = new Date(b.creationDate);
+
+                            return A > B;
                         case 'reward':
                             return a.reward < b.reward;
                         case 'difficulty':

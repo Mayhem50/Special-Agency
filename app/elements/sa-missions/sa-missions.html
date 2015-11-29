@@ -4,7 +4,8 @@
 <link rel="import" href="sa-missions-list.html" />
 <link rel="import" href="../sa-kinds/sa-kinds-list.html" />
 <link rel="import" href="../sa-toolbar/sa-secondary-toolbar-main.html" />
-<link rel="import" href="../sa-toolbar/sa-secondary-toolbar-missions-filter.html" />
+<link rel="import" href="../sa-toolbar/sa-secondary-toolbar-second.html" />
+<link rel="import" href="../sa-toolbar/sa-toolbar-filter.html" />
 
 <dom-module id="sa-missions">
     <style>
@@ -35,19 +36,21 @@
         <div class="container">
             <iron-pages id="toolbar" selected="0">
                 <sa-secondary-toolbar-main filter="{{_mainFilter}}"></sa-secondary-toolbar-main>
-                <sa-secondary-toolbar-missions-filter kind="[[_selectedKind]]"
-                                                      on-back-to-kind="_backToKinds" 
-                                                      on-sort-changed="_onSortedChanged" 
-                                                      on-filter-add="_onFilterAdd"
-                                                      on-filter-remove="_onFilterRemove"></sa-secondary-toolbar-missions-filter>
+                <sa-secondary-toolbar-second kind="[[_selectedKind]]" on-back-to-previous-page="_backToPreviousPage" create-mission="[[createMission]]"></sa-secondary-toolbar-second>
             </iron-pages>
+            <iron-collapse id="filter-toolbar">
+                <sa-toolbar-filter on-sort-changed="_onSortedChanged"
+                                   kind="[[_selectedKind]]"
+                                   on-filter-add="_onFilterAdd"
+                                   on-filter-remove="_onFilterRemove"></sa-toolbar-filter>
+            </iron-collapse>
             <iron-pages id="pages" attr-for-selected="data-page" selected="missions">                
 
                 <section data-page="missions">
-                    <sa-missions-list update="[[_missionsListUpdate]]" filter="[[_missionsFilter]]" sort="[[_missionsSort]]"></sa-missions-list>
+                    <sa-missions-list filter="[[_missionsFilter]]" sort="[[_missionsSort]]"></sa-missions-list>
                 </section>
                 <section data-page="kinds">
-                    <sa-kinds-list update="[[_kindsListUpdate]]" on-show-missions="_onShowMissionsOfKind"></sa-kinds-list>
+                    <sa-kinds-list on-show-missions="_onShowMissionsOfKind" on-get-kinds="_onGetKinds"></sa-kinds-list>
                 </section>
                 <section data-page="consultation">
                     <sa-mission-consult mission="[[mission]]"
@@ -59,7 +62,8 @@
                 </section>
                 <section data-page="creation">
                     <sa-mission-create mission="{{mission}}"
-                                       kind="[[_selectedKind]]"
+                                       kind="{{_selectedKind}}"
+                                       kinds="[[_kinds]]"
                                        on-create-mission="_onCreateMission"
                                        on-cancel="_onCancel"
                                        update="[[_missionCreateUpdate]]"
@@ -84,6 +88,7 @@
                 is: 'sa-missions',
 
                 properties: {
+                    _kinds: Object,
                     _mainFilter: {
                         type: String,
                         observer: '_mainFilterChange'
@@ -102,24 +107,34 @@
                     },
                     _missionsFilter: {
                         type:Object
+                    },
+                    createMission: {
+                        type: Boolean,
+                        notify: true,
+                        observer: '_onBeginCreation'
+                    },
+                    _fromPages: {
+                        type: Array,
+                        value:[]
                     }
                 },
                 ready:function(){
                     this._missionsListUpdate = true;
+                    this.$$('#filter-toolbar').show();
                 },
                 _onBeginCreation: function (e) {
-                    this._createEmptyMission();
-
-                    this.mission.title = e.detail.title || "";
-                    this.mission._type = e.detail.kind._id;
-                    this.mission.reward = e.detail.reward || 0;
-
-                    this._showPage('creation');
+                    if(this.createMission){
+                        this._createEmptyMission();
+                        this._showPage('creation');
+                    }
+                },
+                _onGetKinds: function(e){
+                    this.set('_kinds', e.detail.kinds);
                 },
                 _onCreateMission: function (e) {
                     app.socket.emit('add-mission', this.mission);
                     this._createEmptyMission();
-                    this._showPage(this._fromPage);
+                    this._backToPreviousPage(null);
                 },
                 _onDeleteMission: function (e) {
                     this.mission = e.detail.mission;
@@ -130,7 +145,7 @@
                 _onUpdateMission: function (e) {
                     app.socket.emit('update-mission', this.mission);
                     this._createEmptyMission();
-                    this._showPage(this._fromPage);
+                    this._backToPreviousPage(null);
                 },
                 _onBeginEdition: function (e) {
                     this.mission = e.detail.mission;
@@ -150,11 +165,11 @@
                     this._showPage('consultation');
                 },
                 _onCloseInfos: function (e) {
-                    this._showPage(this._fromPage);
+                    this._backToPreviousPage(null);
                 },
                 _onCancel: function (e) {
                     this._createEmptyMission();
-                    this._showPage(this._fromPage);
+                    this._backToPreviousPage(null);
                 },
                 _onRequestLogin: function (event) {
                     this.fire('request-login', {});
@@ -206,9 +221,18 @@
                     }
                     this.set('_missionsFilter', filter);
                 },
-                _backToKinds: function (e) {
-                    this._showPage('kinds');
-                    this.$.toolbar.selected = 0;
+                _backToPreviousPage: function (e) {
+                    var page = this._fromPages.pop();
+
+                    if (this.$.pages.selected === 'creation' && page == 'missions') {
+                        var backpage = this._fromPages[this._fromPages.length - 1];
+
+                        if(backpage != 'kinds' || this._mainFilter == 'missions')
+                            this.$.toolbar.select(0);
+                    }
+
+                    this.createMission = false;
+                    this._showPage(page);
                 },
                 _createEmptyMission: function () {
                     this.set('mission', new Object({
@@ -235,27 +259,25 @@
                     }));
                 },
                 _showPage: function (page) {
-                    if (this._fromPage && this.$.pages.selected && this._fromPage == this.$.pages.selected) { return; }
-
-                    this._fromPage = this.$.pages.selected;
+                    if(this.$.pages.selected != 'creation')
+                        this._fromPages.push(this.$.pages.selected);
 
                     switch (page) {
                         case 'kinds':
                             //this.$.toolbar.hide();
-                            this._kindsListUpdate = false;
-                            this._kindsListUpdate = true;
+                            this.$.toolbar.select(0);
+                            this.$$('#filter-toolbar').hide();
                             break;
                         case 'missions':
                             //this._updateToolbar();
                             //this.$.toolbar.show();
-                            this._missionsListUpdate = false;
-                            this._missionsListUpdate = true;
+                            this.$$('#filter-toolbar').show();
                             break;
                         case 'creation':
                             //this._updateToolbar();
                             //this.$.toolbar.show();
-                            this._missionCreateUpdate = false;
-                            this._missionCreateUpdate = true;
+                            this.$$('#filter-toolbar').hide();
+                            this.$.toolbar.select(1);
                             break;
                         case 'edition':
                             //this._updateToolbar();
@@ -270,11 +292,11 @@
                     this.$.pages.select(page);
                 },
                 _mainFilterChange: function (e) {
-                    if (this.$.pages.selected == e) { return; }
-
                     switch (this._mainFilter) {
                         case 'missions':
-                            this._missionsfilterRemove('kind')
+                            this._selectedKind = null;
+                            this._missionsfilterRemove('kind');
+                            this.$.toolbar.select(0);
                             this._showPage('missions');
                             break;
                         case 'kinds': this._showPage('kinds');

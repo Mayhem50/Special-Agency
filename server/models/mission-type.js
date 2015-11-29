@@ -9,9 +9,9 @@ var Type = mongoose.Schema({
         path : String,
         xOffset: String,
         yOffset: String,
+        scale: String,
         toolBarXOffset: String,
         toolBarYOffset: String,
-        scale: String,
         toolbarScale: String
     },
     color: String,

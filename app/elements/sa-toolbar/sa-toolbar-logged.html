@@ -33,6 +33,21 @@
     img{
         height:64px;
     }
+
+    paper-button{
+        background-color:#339933;
+        margin:0;
+    }
+
+    #button{       
+        align-self:flex-end;
+        height:52px;
+        border-bottom-left-radius:0;
+        border-bottom-right-radius:0;
+        border-top-left-radius:5px;
+        border-top-right-radius:5px;
+        padding:0;
+    }
     </style>
 
     <template>
@@ -47,8 +62,10 @@
             <paper-tab data-route="rdv">Upcomming RDV</paper-tab>
         </paper-tabs>
         <div>Support</div>
+        <div id="button">
+            <paper-button on-tap="_onCreateMission">Create Mission</paper-button>
+        </div>
         <paper-icon-button icon="search"></paper-icon-button>
-
     </template>
 
     <script>
@@ -62,8 +79,25 @@
                         value: 'missions',
                         notify:true
                     },
-                    ready: function () {
-                        this.route = 'missions';
+                    createMission: {
+                        type: Boolean,
+                        value: false,
+                        notify:true,
+                        observer: '_createMissionChanged'
+                    }
+                },
+                ready: function () {
+                    this.route = 'missions';
+                },
+                _onCreateMission: function (e) {
+                    this.createMission = true;
+                },
+                _createMissionChanged: function (e) {
+                    if (this.createMission) {
+                        this.$.button.style.background = "#339933";
+                    }
+                    else {
+                        this.$.button.style.background = "rgba(0, 0, 0, 0)";
                     }
                 }
             });

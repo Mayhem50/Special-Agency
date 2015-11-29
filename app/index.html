@@ -59,7 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <paper-toolbar id="main-toolbar" justify="justified " middle-justify="start">
                         <iron-pages class="toolbar-pages" selected="[[isLogged]]">
                             <sa-toolbar-not-logged route="{{route}}"></sa-toolbar-not-logged>
-                            <sa-toolbar-logged route="{{route}}"></sa-toolbar-logged>
+                            <sa-toolbar-logged route="{{route}}" create-mission="{{createMission}}"></sa-toolbar-logged>
                         </iron-pages>
                     </paper-toolbar>
                     <!--</iron-collapse>-->
@@ -82,7 +82,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <iron-pages id="page-content-selector" attr-for-selected="data-route" selected="{{route}}">
                                 
                                 <section data-route="missions">
-                                    <sa-missions></sa-missions>
+                                    <sa-missions create-mission="{{createMission}}"></sa-missions>
                                 </section>
 
                                 <section data-route="messages"></section>

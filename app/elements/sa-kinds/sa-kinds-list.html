@@ -60,10 +60,6 @@
 
                 properties: {
                     _kinds: Object,
-                    update: {
-                        type: Boolean,
-                        observer: '_updateChanged'
-                    }
                 },
                 ready: function () {
                     Array.prototype.indexOfObject = function (property, value) {
@@ -90,11 +86,8 @@
                         var index = this._kinds.indexOfObject('_id', data._id);
                         this.splice('_kinds', index, 1);
                     }.bind(this));
-                },
-                _updateChanged: function (e) {
-                    if (this.update) {
-                        this.$$('#kinds-ajax').generateRequest();
-                    }
+
+                    this.$$('#kinds-ajax').generateRequest();
                 },
                 _handleResponse: function () {
                     if (!this._xhrResponse) { return; }
@@ -113,6 +106,7 @@
                             }
                         });
                         this.$.kindsList.render();
+                        this.fire('get-kinds', { kinds: this._kinds });
                     }
                 },
                 _showMissions: function (e) {

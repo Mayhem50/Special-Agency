@@ -1,0 +1,147 @@
+﻿
+<dom-module id="sa-toolbar-filter">
+    <style>
+        :host {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            height: 50px;
+            margin: 0;
+            background-color: #4a4a4a;
+            justify-content:space-between;
+        }
+
+        #filters {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            margin-right: 25px;
+            color: #fff;
+        }
+
+        #sorts {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            margin-left: 25px;
+            color: #fff;
+        }
+
+        .button {
+            border-radius: 15px;
+            padding: 2px 12px;
+            text-transform: uppercase;
+            background-color: #494949;
+            margin: 0 5px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 3px;
+        }
+
+        .button-selected {
+        }
+
+        .button-unselected {
+            background-color: #494949;
+        }
+    </style>
+
+    <template>
+            <div id="sorts">
+                <span>Sort by : </span>
+                <div id="last-add" class="sort button" on-click="_sortChanged">Last add</div>
+                <div id="older" class="sort button" on-click="_sortChanged">Older</div>
+                <div id="reward" class="sort button" on-click="_sortChanged">Reward</div>
+                <div id="difficulty" class="sort button" on-click="_sortChanged">Difficulty</div>
+            </div>
+            <div id="filters">
+                <span>Filter by : </span>
+                <div id="ending-soon" class="button" on-click="_filterChanged">Ending soon</div>
+                <div id="arround-me" class="button" on-click="_filterChanged">Arround me</div>
+                <div id="pro-only" class="button" on-click="_filterChanged">Pro only</div>
+            </div>
+
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-toolbar-filter',
+
+                properties: {
+                    kind: {
+                        type: Object,
+                        observer: '_updateContent'
+                    }
+                },
+                ready:function(){
+                    this._updateContent();
+                },
+                _updateContent: function () {
+                    this.$$('#last-add').className = this.$$('#last-add').className.replace(/(?:^|\s)button-selected(?!\S)/g, '');
+                    this._sortChanged(e = { target: this.$$('#last-add') });
+                    this._updateColor();
+                },
+                _sortChanged: function (e) {
+                    this._switchColorButtons(e);
+                    this.fire('sort-changed', { type: e.target.id });
+                },
+                _filterChanged: function (e) {
+                    if (this._toggleButtonsColor(e))
+                        this.fire('filter-add', { type: e.target.id });
+                    else
+                        this.fire('filter-remove', { type: e.target.id });
+                },
+                _toggleButtonsColor: function (e) {
+                    if (e.target.className.includes('button-unselected') || !e.target.className.includes('button-selected')) {
+                        e.target.className = e.target.className.replace(/(?:^|\s)button-unselected(?!\S)/g, '');
+                        e.target.className += ' button-selected ';
+                        e.target.style.background = this._getColor();
+                        return true;
+                    }
+                    else {
+                        e.target.className = e.target.className.replace(/(?:^|\s)button-selected(?!\S)/g, '');
+                        e.target.style.background = '';
+                        e.target.className += ' button-unselected ';
+                        return false;
+                    }
+                },
+                _switchColorButtons: function (e) {
+                    var divs = this.querySelectorAll('.sort');
+                    if (!divs) { return; }
+
+                    for (var idx = 0; idx < divs.length; ++idx) {
+                        divs[idx].className = divs[idx].className.replace(/(?:^|\s)button-unselected(?!\S)/g, '');
+                        divs[idx].className = divs[idx].className.replace(/(?:^|\s)button-selected(?!\S)/g, '');
+                        if (e.target == divs[idx] && !divs[idx].className.includes('button-selected')) {
+                            divs[idx].className += ' button-selected ';
+                            divs[idx].style.background = this._getColor();
+                        }
+                        else {
+                            divs[idx].style.background = '';
+                            divs[idx].className += ' button-unselected ';
+                        }
+                    }
+                },
+                _getColor: function () {
+                    if (this.kind) {
+                        return this.kind.color;
+                    }
+                    else {
+                        return "#3398cc";
+                    }
+                },
+                _updateColor: function () {                    
+                    var divs = this.querySelectorAll('.button');
+                    if (!divs) { return; }
+
+                    for (var idx = 0; idx < divs.length; ++idx) {
+                        if (divs[idx].className.includes('button-selected')) {
+                            divs[idx].style.background = this._getColor();
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+</dom-module>

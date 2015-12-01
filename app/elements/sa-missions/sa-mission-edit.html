@@ -3,7 +3,6 @@
 
 <link rel="import" href="../sa-dates/sa-dates.html" />
 <link rel="import" href="../sa-rank/sa-rank.html" />
-<link rel="import" href="../date-picker/date-picker.html" />
 
 <dom-module id="sa-mission-edit">
     <style>
@@ -422,7 +421,7 @@
                     var picker = this.querySelector('date-picker');
                     if (picker) {
                         var date = new Date(Date.now());
-                        picker._genTable(date.getUTCFullYear(), date.getUTCMonth());
+                        //picker._genTable(date.getUTCFullYear(), date.getUTCMonth());
                     }
                 }
             });

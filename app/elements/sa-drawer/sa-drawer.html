@@ -16,13 +16,24 @@
         .not-logged-container{            
             display:flex;
             flex-direction:column;
-            height:80vh;
+            height:77vh;
         }
 
-        .image{
-            width:100%;
-            height:20vh;
-            background-color:red;
+        #avatar-container{
+            width:220px;
+            height:220px;
+            background-image:url('../../images/gradient-2_300x300.png');
+            background-repeat:no-repeat;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        #avatar{            
+            width:155px;
+            height:155px;
+            background-repeat:no-repeat;
+            border-radius:50%;
         }
 
         .footer{
@@ -52,11 +63,11 @@
         }
 
         .dummy{
-            height:55.4vh;
+            height:52.3vh;
         }
         
         .dummy2{
-            height:30vh;
+            height:28vh;
         }
 
         #signin-collapse{
@@ -69,7 +80,7 @@
             display:flex;
             flex-direction:column;
             justify-content:space-between;
-            height:80vh;
+            height:77vh;
             align-items:center;
         }
 
@@ -84,8 +95,8 @@
 
     <template>
         <div class="container">
-            <div class="image">
-
+            <div id="avatar-container">
+                <div id="avatar"></div>
             </div>
             <div class="content">
                 <iron-pages id="drawer-page" selected="[[isLogged]]">
@@ -93,7 +104,7 @@
                     <section class="not-logged-container">
                         <iron-collapse id="signin-collapse">
                             <div class="signin">
-                                <sa-login-signin></sa-login-signin>
+                                <sa-login-signin user="{{user}}"></sa-login-signin>
                                 <div class="dummy"><span>&nbsp;</span></div>
                             </div>
                         </iron-collapse>
@@ -101,7 +112,7 @@
                             <paper-button id="toggle-button" on-tap="_toggleView">Sign Up</paper-button>
                             <iron-collapse id="signup-collapse" on-transition-end="_openSignIn">
                                 <div class="signin">
-                                    <sa-login-signup></sa-login-signup>
+                                    <sa-login-signup user="{{user}}"></sa-login-signup>
                                 </div>
                                 <div class="dummy2"><span>&nbsp;</span></div>
                             </iron-collapse>
@@ -143,12 +154,23 @@
                     tabSelected: {
                         type: Number,
                         value:0
+                    },
+                    user: {
+                        type: Object,
+                        observer: '_userChanged'
                     }
                 },
-                ready:function(){
+                ready: function () {
+                    this.$.avatar.style.background = "url('../../images/default_avatar.png')";
                     this.$$('#signin-collapse').show();
                     this.$$('#signup-collapse').hide();
 
+                },
+                _onSignup:function(e){
+                    this.querySelector('sa-login-signin').signin({
+                        email: e.detail.email,
+                        password: e.detail.password
+                    });
                 },
                 _computeSelectedPage: function () {
                     if (app.isLogged) {
@@ -157,6 +179,12 @@
                     else {
                         return "not-logged";
                     }
+                },
+                _userChanged: function (e) {
+                    if (this.user)
+                        this.$.avatar.style.background = this.user.avatar;
+                    else
+                        this.$.avatar.style.background = "url('../../images/default_avatar.png')";
                 },
                 _toggleView: function (e) {
                     if (this.$$('#signin-collapse').opened) {

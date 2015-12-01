@@ -1,5 +1,5 @@
 ﻿<link rel="import" href="sa-mission-card.html" />
-
+<link rel="import" href="../sa-xhr/sa-xhr.html" />
 <dom-module id="sa-missions-list">
     <style>
         :host {
@@ -19,12 +19,11 @@
             max-width: 300px;
             margin: 10px 10px;
         }
-        
     </style>
 
     <template>
         <div class="grid">
-            <template id="missionsList" is="dom-repeat" items="[[_missions]]" filter="_filterMissions" sort="_sortMissions">
+            <template id="list" is="dom-repeat" items="[[_missions]]" filter="_filterMissions" sort="_sortMissions">
                 <sa-mission-card class="card"
                                  on-tap="_onBeginConsultation"
                                  mission="[[item]]"
@@ -36,14 +35,10 @@
             </template>
         </div>
 
-        <iron-ajax id="missions-ajax"
-                   url="/missions"
-                   content-type="application/json"
-                   handle-as="json"
-                   method="GET"
-                   on-response="_handleResponse"
-                   last-response="{{_xhrResponse}}">
-        </iron-ajax>
+        <sa-xhr id="xhr"
+                url="/missions"
+                method="get"
+                result="{{_missions}}"></sa-xhr>
     </template>
 
     <script>
@@ -52,7 +47,10 @@
                 is: 'sa-missions-list',
 
                 properties: {
-                    _missions: Object,
+                    _missions: {
+                        type: Object,
+                        observer: '_missionsChanged'
+                    },
                     filter: {
                         type: Object,
                         observer: '_needRender'
@@ -87,16 +85,15 @@
                         var index = this._missions.indexOfObject('_id', data._id);
                         this.splice('_missions', index, 1);
                     }.bind(this));
-
-                    this.$$('#missions-ajax').generateRequest();
                 },
-                _handleResponse: function () {
-                    if (!this._xhrResponse) { return; }
-
-                    if (this._xhrResponse.success) {
-                        this._missions = this._xhrResponse.missions;
-                        this.$.missionsList.render();
-                    }
+                attached: function () {
+                    this.$.xhr.request();
+                },
+                _missionsChanged: function (e) {
+                    this.$.list.render();
+                },
+                _onBeginConsultation: function (e) {
+                    this.fire('show-mission', { mission: e.model.item });
                 },
                 _filterMissions: function (item) {
                     if (!this.filter) { return true; }
@@ -133,7 +130,7 @@
                                 break;
                         }
 
-                        if(!ret){ return ret;}
+                        if (!ret) { return ret; }
                     }
 
                     return ret;
@@ -166,7 +163,7 @@
                 _needRender: function (e) {
                     if (!e) { return; }
 
-                    this.$.missionsList.render();
+                    this.$.list.render();
                 }
             });
         })();

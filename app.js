@@ -35,12 +35,14 @@ var http_missions = require('./server/http_routes/missions')(passport);
 var http_helpers = require('./server/http_routes/helpers')();
 var http_kinds = require('./server/http_routes/kinds')();
 var http_chats = require('./server/http_routes/chats')();
+var http_translation = require('./server/http_routes/translations')();
 
 app.use(http_index);
 app.use(http_users);
 app.use(http_missions);
 app.use(http_helpers);
 app.use(http_kinds);
+app.use(http_translation);
 
 //app.use(csrf());
 

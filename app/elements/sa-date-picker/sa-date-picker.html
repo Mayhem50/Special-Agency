@@ -1,30 +1,29 @@
 
-<dom-module id="date-picker">
+<dom-module id="sa-date-picker">
     <style>
         :host {
-            display: block;
+            display: flex;
+            flex-direction:column;
+            align-items:center;
             min-width: 320px;
         }
 
         [header] {
-            height: 40px;
+            background-color:#494949;
+            color:#b8b8b8;
+            border-radius:2px;
+            height: 24px;
             line-height: 40px;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-
-            @apply(--layout-horizontal);
-            @apply(--layout-justified);
-            @apply(--pk-datepicker-header);
+            width:77%;
+            display:flex;
+            justify-content:center;
+            @apply(--sa-datepicker-header);
         }
 
             [header] > div {
                 @apply(--layout-horizontal);
                 @apply(--layout-justified);
-                @apply(--pk-datepicker-header-parts);
+                @apply(--sa-datepicker-header-parts);
             }
 
                 [header] > div > div {
@@ -34,8 +33,7 @@
 
                 [header] > div.month-display,
                 [header] > div.year-display {
-                    width: 40%;
-                    @apply(--pk-datepicker-header-display);
+                    @apply(--sa-datepicker-header-display);
                 }
 
             [header] div.month-display > div:hover ::content [prev-month],
@@ -45,96 +43,120 @@
             [header] div.extended-display > div:hover ::content [go-selected],
             [header] div.extended-display > div:hover ::content [go-today] {
                 cursor: pointer;
-                color: #BC5005;
-                @apply(--pk-datepicker-header-icon-hover);
+                color: #cccccc;
+                @apply(--sa-datepicker-header-icon-hover);
             }
 
             [header] .go-today {
                 padding-left: 5px;
                 cursor: pointer;
-                @apply(--pk-datepicker-header-today);
+                @apply(--sa-datepicker-header-today);
             }
 
             [header] .go-selected {
                 cursor: pointer;
-                @apply(--pk-datepicker-header-selected);
+                @apply(--sa-datepicker-header-selected);
             }
 
             [header] #currentYear,
             [header] #currentMonth {
                 cursor: pointer;
-                @apply(--pk-datepicker-header-label);
+                @apply(--sa-datepicker-header-label);
             }
 
                 [header] #currentYear:hover,
                 [header] #currentMonth:hover {
                     cursor: pointer;
                     color: #BC5005;
-                    @apply(--pk-datepicker-header-label-hover);
+                    @apply(--sa-datepicker-header-label-hover);
                 }
 
         [content] {
             position: relative;
             overflow: hidden;
+            display:flex;
+            justify-content:center;
+            align-items:stretch;
+            height:237px;
+            width:100%;
         }
 
         table {
             width: 100%;
+            flex-grow:1;
+        }
+
+        #calendar{
+            width:100%;
         }
 
             table td {
                 line-height: 25px;
                 text-align: center;
-                padding: 2px;
-                @apply(--pk-datepicker-cell);
+                padding: 0;
+                @apply(--sa-datepicker-cell);
+            }
+
+            table thead{
+                color:#b8b8b8;
             }
 
         td > div {
-            display: inline-block;
-            margin: auto;
-            width: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius:2px;
             height: 30px;
-            line-height: 30px;
-            @apply(--pk-datepicker-number);
+            font-size:24px;
+            background-color:#b8b8b8;
+            margin:1px;
+            @apply(--sa-datepicker-number);
         }
 
             td > div:hover {
-                background-color: #FFD67D;
-                border-radius: 50%;
+            border-radius:2px;
+                background-color: #33cc33;
                 cursor: pointer;
-                @apply(--pk-datepicker-number-hover);
+                @apply(--sa-datepicker-number-hover);
             }
 
             td > div.today {
-                border-radius: 15px;
+                border-radius:2px;
                 cursor: pointer;
                 background-color: #BC5005;
                 color: #ffffff;
-                @apply(--pk-datepicker-today);
+                @apply(--sa-datepicker-today);
+            }
+
+            td > div.today:hover {
+                border-radius:2px;
+                cursor: pointer;
+                background-color: #33cc33;
+                color: #ffffff;
+                @apply(--sa-datepicker-today);
             }
 
             td > div.selected {
-                border-radius: 15px;
+                border-radius:2px;
                 cursor: pointer;
-                background-color: #FFD67D;
+                background-color: #33cc33;
                 color: #ffffff;
-                @apply(--pk-datepicker-selected);
+                @apply(--sa-datepicker-selected);
             }
             
             td > div.agent-selected {
-                border-radius: 50%;
+                border-radius:2px;
                 cursor: pointer;
                 background-color: #ff0000;
                 color: #ffffff;
-                @apply(--pk-datepicker-second-selected);
+                @apply(--sa-datepicker-second-selected);
             }
             
             td > div.both-selected {
-                border-radius: 50%;
                 cursor: pointer;
                 color: #ffffff;
                 background-color:green;
-                @apply(--pk-datepicker-both-selected);
+                @apply(--sa-datepicker-both-selected);
             }
 
         #yearList {
@@ -142,7 +164,7 @@
             @apply(--layout-wrap);
             @apply(--layout-fit);
             overflow-y: auto;
-            @apply(--pk-datepicker-yearlist);
+            @apply(--sa-datepicker-yearlist);
         }
 
             #yearList.hidden {
@@ -152,20 +174,20 @@
             #yearList > div {
                 cursor: pointer;
                 margin: 5px;
-                @apply(--pk-datepicker-yearlist-item);
+                @apply(--sa-datepicker-yearlist-item);
             }
 
                 #yearList > div:hover {
                     color: #BC5005;
-                    @apply(--pk-datepicker-yearlist-item-hover);
+                    @apply(--sa-datepicker-yearlist-item-hover);
                 }
 
                 #yearList > div.year-current {
-                    @apply(--pk-datepicker-yearlist-item-current);
+                    @apply(--sa-datepicker-yearlist-item-current);
                 }
 
                 #yearList > div.year-selected {
-                    @apply(--pk-datepicker-yearlist-item-selected);
+                    @apply(--sa-datepicker-yearlist-item-selected);
                 }
 
         #monthList {
@@ -174,7 +196,7 @@
             @apply(--layout-wrap);
             @apply(--layout-fit);
             overflow-y: auto;
-            @apply(--pk-datepicker-monthlist);
+            @apply(--sa-datepicker-monthlist);
         }
 
             #monthList.hidden {
@@ -183,23 +205,27 @@
 
             #monthList > div {
                 cursor: pointer;
-                margin: 0 15px;
-                @apply(--pk-datepicker-monthlist-item);
+                @apply(--sa-datepicker-monthlist-item);
             }
 
                 #monthList > div:hover {
                     color: #BC5005;
-                    @apply(--pk-datepicker-monthlist-item-hover);
+                    @apply(--sa-datepicker-monthlist-item-hover);
                 }
+
+        .button{
+            display:flex;
+            align-items:center;
+            color:#cbcbcb;
+            font-weight:600;
+        }
     </style>
     <template>
         <div header>
             <div class="month-display">
-                <div on-click="_prevMonthHandler"><content select="[prev-month]"></content></div>
-                <div on-click="_toggleMonthList" id="currentMonth">{{currentMonth}}</div>
-                <div on-click="_nextMonthHandler"><content select="[next-month]"></content></div>
+                <div id="currentMonth">{{currentMonth}}</div>
             </div>
-            <div class="year-display">
+            <div class="year-display" hidden$="{{hiddenYear}}">
                 <div on-click="_prevYearHandler"><content select="[prev-year]"></content></div>
                 <div on-click="_toggleYearList" id="currentYear">{{date.year}}</div>
                 <div on-click="_nextYearHandler"><content select="[next-year]"></content></div>
@@ -210,7 +236,9 @@
             </div>
         </div>
         <div content>
+            <div class="button" on-click="_prevMonthHandler"><content select="[prev-month]"></content></div>
             <div id="calendar" cellpadding="0" cellspacing="0"></div>
+            <div class="button" on-click="_nextMonthHandler"><content select="[next-month]"></content></div>
             <div id="yearList" class="hidden">
                 <template is="dom-repeat" items="{{yearList}}">
                     <div on-click="_selectYear" class$="[[_yearClass(item)]]">{{item}}</div>
@@ -226,10 +254,14 @@
 </dom-module>
 <script>
     Polymer({
-        is: 'date-picker',
+        is: 'sa-date-picker',
 
         properties: {
 
+            hiddenYear: {
+                type: Boolean,
+                value: false
+            },
             /**
             * This property can be used to localize the elements day labels.
             */
@@ -311,10 +343,10 @@
                 type: Number,
                 value: 100
             },
-            edit: {
+            disabled: {
                 type: Boolean,
-                value:false
-            }
+                value: false
+            },
         },
 
         observers: [
@@ -369,7 +401,7 @@
         * Fires the `date-selected` event if some date was selected.
         */
         _selectionHandler: function (e) {
-            if (!this.edit) {
+            if (this.disabled) {
                 //this._secondUserSelected(e);
                 return;
             }

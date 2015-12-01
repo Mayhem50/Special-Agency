@@ -1,0 +1,60 @@
+﻿
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html" />
+
+<dom-module id="sa-xhr">
+    <style>
+        :host {
+        }
+    </style>
+    <template>
+        <iron-ajax id="xhr"
+                   url="[[url]]"
+                   content-type="application/json"
+                   handle-as="json"
+                   body="[[body]]"
+                   params="[[params]]"
+                   method="[[method]]"
+                   on-response="_handleResponse"
+                   last-response="{{_xhrResponse}}">
+        </iron-ajax>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-xhr',
+
+                properties: {
+                    result: {
+                        type: Object,
+                        notify: true
+                    },
+                    body: Object,
+                    params: Object,
+                    url: String,
+                    method: {
+                        type: String,
+                        value: 'get'
+                    },
+                    _xhrResponse: Object
+                },
+                ready: function () {
+                    
+                },
+                _handleResponse: function () {
+                    if (!this._xhrResponse) { return; }
+
+                    if (this._xhrResponse.success) {
+                        this.result = this._xhrResponse.result;
+                        this.fire('result');
+                    }
+                },
+                request: function () {
+                    this.$.xhr.generateRequest();
+                }
+            });
+        })();
+
+    </script>
+</dom-module>
+

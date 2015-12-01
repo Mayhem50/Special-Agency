@@ -10,7 +10,7 @@ module.exports = function () {
         
         User.findOne({ 'email' : req.query.email }, function (err, user) {
             if (err) {
-                return next(err);
+                throw(err);
             }
             
             if (user) {

@@ -51,16 +51,16 @@ var styleTask = function (stylesPath, srcs) {
 
 //Start database / Kill it if it run
 gulp.task('mongo', function () {
-    exec('mongod --dbpath ../', function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-    });
+    //exec('mongod --dbpath ../', function (err, stdout, stderr) {
+    //    console.log(stdout);
+    //    console.log(stderr);
+    //});
 });
 
 //Start server / Kill it if it run
 gulp.task('server', function () {
     if (node) node.kill()
-    node = spawn('node', ['bin/www'], { stdio: 'inherit' })
+    node = spawn('node', ['app.js'], { stdio: 'inherit' })
     node.on('close', function (code) {
         if (code === 8) {
             gulp.log('Error detected, waiting for changes...');
@@ -212,7 +212,7 @@ gulp.task('serve', ['mongo','styles', 'elements', 'images', 'server'], function 
                 }
             }
         },
-        proxy : 'http://localhost:3000',
+        proxy : 'http://127.0.0.1:3000',
         port : 4000,
         browser : 'google chrome',
     // Run as an http by uncommenting 'http: true'

@@ -35,7 +35,7 @@ module.exports = function () {
             if (err) { throw err; }
                               
             return res.json({
-                'kinds': kinds,
+                result: kinds,
                 method: 'GET',
                 success : true,
                 route: "kinds"

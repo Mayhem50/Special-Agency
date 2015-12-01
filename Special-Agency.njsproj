@@ -34,7 +34,6 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="app\scripts\client-app.js" />
-    <Compile Include="app\scripts\date.js" />
     <Compile Include="app\scripts\jquery-1.11.3.js" />
     <Compile Include="app\sw-import.js" />
     <Compile Include="gulpfile.js" />
@@ -48,9 +47,11 @@
     <Compile Include="server\controllers\passport\passport-signup.js" />
     <Compile Include="server\controllers\session.js" />
     <Compile Include="server\http_routes\chats.js" />
+    <Compile Include="server\http_routes\translations.js" />
     <Compile Include="server\http_routes\types.js" />
     <Compile Include="server\io_routes\chats.js" />
     <Compile Include="server\io_routes\missions.js" />
+    <Compile Include="server\models\translation.js" />
     <Compile Include="server\models\google-id.js" />
     <Compile Include="server\http_routes\kinds.js" />
     <Compile Include="server\models\chat.js" />
@@ -62,7 +63,7 @@
     <Compile Include="server\http_routes\missions.js" />
     <Compile Include="server\http_routes\users.js" />
     <Compile Include="server\controllers\server.js" />
-    <Content Include="app\elements\date-picker\date-picker.html" />
+    <Content Include="app\elements\sa-date-picker\sa-date-picker.html" />
     <Content Include="app\elements\elements.html" />
     <Content Include="app\elements\routing.html" />
     <Content Include="app\elements\sa-button\sa-button.html" />
@@ -79,20 +80,28 @@
     <Content Include="app\elements\sa-missions\sa-mission-card.html" />
     <Content Include="app\elements\sa-missions\sa-mission-edit.html" />
     <Content Include="app\elements\sa-missions\sa-mission-creation-card.html" />
-    <Content Include="app\elements\sa-missions\sa-mission-create.html" />
-    <Content Include="app\elements\sa-missions\sa-mission-consult.html" />
+    <Content Include="app\elements\sa-missions\sa-mission-infos.html" />
     <Content Include="app\elements\sa-kinds\sa-kind-card.html" />
     <Content Include="app\elements\sa-missions\sa-missions-list.html" />
     <Content Include="app\elements\sa-missions\sa-missions.html" />
     <Content Include="app\elements\sa-profile\sa-profile.html" />
+    <Content Include="app\elements\sa-level\sa-level.html" />
     <Content Include="app\elements\sa-rank\sa-rank.html" />
     <Content Include="app\elements\sa-toolbar\sa-secondary-toolbar-main.html" />
     <Content Include="app\elements\sa-toolbar\sa-secondary-toolbar-second.html" />
     <Content Include="app\elements\sa-toolbar\sa-toolbar-filter.html" />
     <Content Include="app\elements\sa-toolbar\sa-toolbar-logged.html" />
     <Content Include="app\elements\sa-toolbar\sa-toolbar-not-logged.html" />
+    <Content Include="app\elements\sa-xhr\sa-xhr.html" />
     <Content Include="app\favicon.ico" />
     <Content Include="app\images\google-plus.jpg" />
+    <Content Include="app\images\gradient-1.png" />
+    <Content Include="app\images\gradient-2_300x300.png" />
+    <Content Include="app\images\levels\advanced.jpg" />
+    <Content Include="app\images\levels\difficult.jpg" />
+    <Content Include="app\images\levels\easy.jpg" />
+    <Content Include="app\images\levels\normal.jpg" />
+    <Content Include="app\images\levels\simple.jpg" />
     <Content Include="app\images\logo\Img-02.png" />
     <Content Include="app\images\logo\Img-03 2.png" />
     <Content Include="app\images\logo\Img-03.png" />
@@ -140,9 +149,11 @@
   <ItemGroup>
     <Folder Include="app\" />
     <Folder Include="app\elements\" />
-    <Folder Include="app\elements\date-picker\" />
+    <Folder Include="app\elements\sa-xhr\" />
+    <Folder Include="app\elements\sa-date-picker\" />
     <Folder Include="app\elements\sa-map\" />
     <Folder Include="app\elements\sa-kinds\" />
+    <Folder Include="app\elements\sa-level\" />
     <Folder Include="app\elements\sa-toolbar\" />
     <Folder Include="app\elements\sa-drawer\" />
     <Folder Include="app\elements\sa-rank\" />
@@ -154,6 +165,7 @@
     <Folder Include="app\elements\sa-missions\" />
     <Folder Include="app\elements\sa-profile\" />
     <Folder Include="app\images\" />
+    <Folder Include="app\images\levels\" />
     <Folder Include="app\images\logo\" />
     <Folder Include="app\images\missions\" />
     <Folder Include="app\images\kinds\" />

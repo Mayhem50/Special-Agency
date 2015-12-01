@@ -1,4 +1,6 @@
 ﻿
+<link rel="import" href="../sa-xhr/sa-xhr.html" />
+
 <dom-module id="sa-login-signup">
     <style>
         :host {
@@ -75,6 +77,8 @@
         .checkbox{
             margin:2px auto;
         }
+
+       
     </style>
     <template>
         <div class="passport-buttons">
@@ -90,7 +94,7 @@
             <paper-input always-float-label="false" no-label-float="true" id="email" is="email" label="Email" name="email" value="{{_email::input}}" error-message="{{_emailErrorMessage}}" on-keyup="_checkEmail"></paper-input>
 
             <paper-input always-float-label="false" no-label-float="true" id="password" is="password" label="Password" type="password" name="password" value="{{_password::input}}"></paper-input>
-            <paper-input always-float-label="false" no-label-float="true"id="passwordConfirm" is="passwordConfirm" type="password" label="Confirm Password" value="{{_passwordConfirm}}" error-message="Not same password"></paper-input>
+            <paper-input always-float-label="false" no-label-float="true" id="passwordConfirm" is="passwordConfirm" type="password" label="Confirm Password" value="{{_passwordConfirm}}" error-message="Not same password"></paper-input>
 
         </div>
         <div class="checkbox">
@@ -102,13 +106,20 @@
         </div>
 
         <iron-ajax id="check-availability-ajax"
-                   url="checkAvailability/email"
-                   params="{{_email}}"
+                   url="/checkAvailability/email"
+                   params="[[_params]]"
                    handle-as="json"
                    method="post"
                    on-response="_handleResponse"
                    last-response="{{_response}}">
         </iron-ajax>
+
+        <sa-xhr id="xhr"
+                method="post"
+                body="[[_params]]"
+                url="/users"
+                result="{{user}}"
+                on-result="_onResult"></sa-xhr>
 
 </template>
 
@@ -170,30 +181,40 @@
                                 }]
                             }
                         }
+                    },
+                    user: {
+                        type: Object,
+                        notify:true
                     }
                 },
                 _signup: function () {
                     if (this._validateBeforeSend()) {
-                        this.fire('signup', {
+                        this._params = {
                             email: this._email,
-                            firstName: this._firstName,
-                            lastName: this._lastName,
                             password: this._password
-                        });
+                        }
+                        this.$.xhr.request();
                     }
                 },
+                _onResult:function(e){
+                    app.onLogIn();
+                },
                 _checkEmail: function () {
-                    if (!this.isForLogin) {
+                    if (!this.isForLogin && this._email != '') {
                         var regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
                         if (!regex.test(this._email)) {
                             this.emailErrorMessage = 'Not an email';
-                            document.getElementById('email').invalid = true;
+                            this.$.email.style.border = '1px solid red';
                         }
                         else {
-                            document.getElementById('email').invalid = false;
+                            this.$.email.style.border = '0 solid red';
                         }
                         this.availabilityRoute = "checkAvailability/email";
+                        this._params = { email: this._email };
                         document.getElementById('check-availability-ajax').generateRequest();
+                    }
+                    else {
+                        this.$.email.style.border = '0 solid red';
                     }
                 },
                 _handleResponse: function () {
@@ -205,13 +226,16 @@
 
                     if (!this._response.isFree) {
                         this.emailErrorMessage = 'Email albready used';
-                        document.getElementById('email').invalid = true;
+                        this.$.email.style.border = '1px solid red';
                     }
                     else {
                         var regex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
                         if (!regex.test(this._email)) {
                             this.emailErrorMessage = 'Not an email';
-                            document.getElementById('email').invalid = true;
+                            this.$.email.style.border = '1px solid red';
+                        }
+                        else {
+                            this.$.email.style.border = '0 solid red';
                         }
                     }
                 },

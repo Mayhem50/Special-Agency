@@ -2,10 +2,11 @@
 
 module.exports = mongoose.model(
     'Mission', {
-        _title : { type: mongoose.Schema.Types.ObjectId, ref: 'Mission-Type' },
+        _typeTitle : { type: mongoose.Schema.Types.ObjectId, ref: 'Mission-Type' },
         _type : { type: mongoose.Schema.Types.ObjectId, ref: 'Mission-Type' },
         _owner : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         _agent : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        title: String,
         level : Number,
         reward : Number,
         descritpion : String,
@@ -14,15 +15,10 @@ module.exports = mongoose.model(
         wishDates : [{ type : String }],
         finishDate : Date,
         proOnly: {type: Boolean, default: false, required: true},
-        where : {
-            longitude : String,
-            latitude : String,
-            address : {
-                number : String,
-                street : String,
-                state : String,
-                zip : String
-            }
+        place : {
+            longitude : Number,
+            latitude : Number,
+            address : String
         },
         rank : Number,
         photos : [String],

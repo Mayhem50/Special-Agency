@@ -1,4 +1,5 @@
 ﻿<link rel="import" href="sa-kind-card.html" />
+<link rel="import" href="../sa-xhr/sa-xhr.html" />
 
 <dom-module id="sa-kinds-list">
     <style>
@@ -35,7 +36,7 @@
 
     <template>
         <div class="grid">
-            <template id="kindsList" is="dom-repeat" items="[[_kinds]]">
+            <template id="list" is="dom-repeat" items="[[_kinds]]">
                 <sa-kind-card class$="[[item.class]]"
                                       kind="[[item]]"
                                       on-tap="_showMissions">
@@ -43,14 +44,11 @@
             </template>
         </div>
 
-        <iron-ajax id="kinds-ajax"
-                   url="/kinds"
-                   content-type="application/json"
-                   handle-as="json"
-                   method="GET"
-                   on-response="_handleResponse"
-                   last-response="{{_xhrResponse}}">
-        </iron-ajax>
+
+        <sa-xhr id="xhr"
+                url="/kinds"
+                method="get"
+                result="{{_kinds}}"></sa-xhr>
     </template>
 
     <script>
@@ -59,7 +57,10 @@
                 is: 'sa-kinds-list',
 
                 properties: {
-                    _kinds: Object,
+                    _kinds: {
+                        type: Object,
+                        observer: '_kindsChanged'
+                    }
                 },
                 ready: function () {
                     Array.prototype.indexOfObject = function (property, value) {
@@ -86,28 +87,24 @@
                         var index = this._kinds.indexOfObject('_id', data._id);
                         this.splice('_kinds', index, 1);
                     }.bind(this));
-
-                    this.$$('#kinds-ajax').generateRequest();
                 },
-                _handleResponse: function () {
-                    if (!this._xhrResponse) { return; }
-
-                    if (this._xhrResponse.success) {
-                        this._kinds = this._xhrResponse.kinds;
-                        this._kinds.forEach(function (element, index, array) {
-                            if (element.size === 1) {
-                                element.class = 'card';
-                            }
-                            else if (element.size === 2) {
-                                element.class = 'card-2';
-                            }
-                            else if (element.size === 3) {
-                                element.class = 'card-3';
-                            }
-                        });
-                        this.$.kindsList.render();
-                        this.fire('get-kinds', { kinds: this._kinds });
-                    }
+                attached: function () {
+                    this.$.xhr.request();
+                },
+                _kindsChanged: function () {
+                    this._kinds.forEach(function (element, index, array) {
+                        if (element.size === 1) {
+                            element.class = 'card';
+                        }
+                        else if (element.size === 2) {
+                            element.class = 'card-2';
+                        }
+                        else if (element.size === 3) {
+                            element.class = 'card-3';
+                        }
+                    });
+                    this.$.list.render();
+                    this.fire('get-kinds', { kinds: this._kinds });
                 },
                 _showMissions: function (e) {
                     this.fire('show-missions', { kind: e.model.item });

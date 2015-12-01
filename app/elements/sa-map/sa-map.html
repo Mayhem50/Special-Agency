@@ -30,6 +30,7 @@
             };
 
             --paper-input-container-underline-disabled: {
+                border-color:rgba(114, 114, 114, 0);
                 height: 0;
             };
         }
@@ -38,21 +39,29 @@
             width: 550px;
             height: 300px;
             float: left;
+            @apply(--sa-map-map);
         }
 
         .map-input {
             position: absolute;
-            margin-top: 266px;
             margin-left: auto;
             margin-right: auto;
+            margin-top:265px;
+            @apply(--sa-map-input);
+        }
+
+        [header]{
+            @apply(--sa-map-header);
         }
     </style>
     <template>
-        <google-maps-api on-api-load="mapApiLoaded" libraries="{{libraries}}"></google-maps-api>
-        <google-map-search id="search" map="[[map]]" query="street_address" results="{{results}}"></google-map-search>
-        <google-map map="{{map}}" longitude="{{_longitude}}" latitude="{{_latitude}}" zoom="15" disable-default-ui></google-map>
+        <div header>
+            <content select="[map-title]"></content>
+        </div>
+        <google-maps-api on-api-load="mapApiLoaded" libraries="places"></google-maps-api>
+        <google-map map="{{map}}" id="map" longitude="{{longitude}}" latitude="{{latitude}}" zoom="[[zoom]]" disable-default-ui></google-map>
 
-        <paper-input id="autocomplete" class="map-input" always-float-label="false" no-label-float="true"></paper-input>
+        <paper-input disabled="[[disabled]]" id="autocomplete" class="map-input" always-float-label="false" no-label-float="true"></paper-input>
 
     </template>
 
@@ -62,48 +71,101 @@
                 is: 'sa-map',
 
                 properties: {
-                    _longitude: Number,
-                    _latitude: Number,
-                    version: '3.exp',
-                    libraries: "places",
-                    placeId: {
+                    zoom:Number,
+                    map: Object,
+                    disabled:{
+                        type: Boolean,
+                        value: false
+                    },
+                    longitude: {
+                        type: Number,
+                        notify: true
+                    },
+                    latitude: {
+                        type: Number,
+                        notify: true
+                    },
+                    address: {
                         type: String,
-                        observer: '_placeIdChanged'
-                    }
+                        notify: true
+                    },
+                    markers: {
+                        type: Array,
+                        value:[]
+                    },
+                    circle: Object
                 },
                 ready: function () {
-                    this._getLocation();
+                    this.getLocation();
                 },
                 mapApiLoaded: function (e) {
                     this.autocomplete = new google.maps.places.Autocomplete(this.$.autocomplete);
                     google.maps.event.addListener(this.autocomplete, 'place_changed', function () {
                         var place = this.autocomplete.getPlace();
-                        this.location = place.formatted_address;
 
-                        this._longitude = place.geometry.location.lng();
-                        this._latitude = place.geometry.location.lat();
+                        this.address = place.formatted_address;
+                        this.longitude = place.geometry.location.lng();
+                        this.latitude = place.geometry.location.lat();
 
-                        this.placeId = place.place_id;
+                        this.markers.forEach(function (marker) {
+                            marker.setMap(null);
+                        });
+                        this.markers = [];
+
+                        this.markers.push(new google.maps.Marker({
+                            map: this.map,
+                            icon: icon,
+                            title: place.name,
+                            position: place.geometry.location
+                        }));
+
                     }.bind(this));
                 },
-                _getLocation: function () {
+                getLocation: function () {
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(function (position) {
-                            this.set('_longitude', position.coords.longitude);
-                            this.set('_latitude', position.coords.latitude);
+                            this.set('longitude', position.coords.longitude);
+                            this.set('latitude', position.coords.latitude);
                         }.bind(this));
                     }
                 },
-                _addressChanged: function (e) {
-                    var div = this.querySelector('google-map-search');
-                    if (div)
-                        div.search();
+                setLocation:function(longitude, latitude){
+                    this.set('longitude', longitude);
+                    this.set('latitude', latitude);
                 },
-                _placeIdChanged: function (e) {
-                    if (this.placeId) {
-                        var details = this.$.search.getDetails(this.placeId);
-                        return details;
-                    }
+                drawMarker: function (longitude, latitude, address) {
+                    var latlng = { lat: latitude, lng: longitude };
+                    
+                    this.markers.push(new google.maps.Marker({
+                        map: this.map,
+                        icon: icon,
+                        title: address,
+                        position: latlng
+                    }));
+                },
+                clearMarkers: function () {
+                    if(this.markers)
+                        this.markers.forEach(function (marker) {
+                            marker.setMap(null);
+                        });
+                    this.markers = [];
+                },
+                drawCircle: function (longitude, latitude) {
+                    var latlng = { lat: latitude, lng: longitude };
+                    this.circle = new google.maps.Circle({
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: '#FF0000',
+                        fillOpacity: 0.35,
+                        map: this.map,
+                        center: latlng,
+                        radius: 100
+                    });
+                },
+                clearCircle: function () {
+                    if(this.circle)
+                        this.circle.setMap(null);
                 }
             });
         })();

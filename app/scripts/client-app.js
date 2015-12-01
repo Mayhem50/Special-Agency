@@ -74,11 +74,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     };
     
     app.onLogIn = function () {
-        app.route = 'home';
+        app.route = 'missions';
         app.isLogged = true;
-        app.mission_filter = 'search';
-        app.drawer_route = 0;
-        app.missions_notify = !app.missions_notify;
     };
     
     app.onLogOut = function (){
@@ -167,7 +164,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
     });
     
-    app.socket = io.connect('', {
+    app.socket = io.connect('http://192.168.11.136:3000', {
         query: 'token=' + window.sessionStorage.token
     });
 })(document);

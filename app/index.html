@@ -1,13 +1,4 @@
 ﻿<!doctype html>
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <html lang="">
 <head>
     <meta charset="utf-8">
@@ -38,11 +29,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- endbuild-->
     <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="scripts/jquery-1.11.3.js"></script>
+    <script src="/scripts/jquery-1.11.3.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <!-- endbuild -->
     <!-- will be replaced with elements/elements.vulcanized.html -->
-    <link rel="import" href="elements/elements.html">
+    <link rel="import" href="/elements/elements.html">
     <!-- endreplace-->
 </head>
 <body unresolved class="fullbleed layout vertical">
@@ -51,10 +42,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-container>
             <paper-drawer-panel drawer-width="220px" responsive-width="0px" id="paper-drawer-panel" selected="main">
                 <paper-scroll-header-panel drawer>
-                    <sa-drawer is-logged="[[isLogged]]"></sa-drawer>
+                    <sa-drawer is-logged="[[isLogged]]" user="{{user}}"></sa-drawer>
                 </paper-scroll-header-panel>
 
-                <paper-scroll-header-panel main fixed>
+                <paper-scroll-header-panel main fixed id="main">
                     <!--<iron-collapse id="main-toolbar-collapse">-->
                     <paper-toolbar id="main-toolbar" justify="justified " middle-justify="start">
                         <iron-pages class="toolbar-pages" selected="[[isLogged]]">
@@ -70,7 +61,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <section data-route="home"></section>
 
                                 <section data-route="missions">
-                                    <sa-missions notification="{{missions_notify}}" on-request-login="onRequestLogin"></sa-missions>
+                                    <sa-missions notification="{{missions_notify}}" on-request-login="onRequestLogin" ></sa-missions>
                                 </section>
 
                                 <section data-route="agents"></section>
@@ -100,7 +91,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </iron-container>
     </template>
     <!-- build:js scripts/app.js -->
-    <script src="scripts/client-app.js"></script>
+    <script src="/scripts/client-app.js"></script>
+    <!-- Configure your routes here -->
+    <link rel="import" href="../elements/routing.html">
     <!-- endbuild-->
 </body>
 </html>

@@ -105,6 +105,10 @@
                 is: 'sa-login-signin',
 
                 properties: {
+                    user:{
+                        type:Object,
+                        notify: true
+                    },
                     _email: {
                         type: String
                     },
@@ -117,6 +121,10 @@
                         email: this._email,
                         password: this._password
                     };
+                    this.querySelector('iron-ajax').generateRequest();
+                },
+                signin: function (infos, signup) {
+                    this._infos = infos;                    
                     this.querySelector('iron-ajax').generateRequest();
                 },
                 _handleResponse: function () {
@@ -138,7 +146,8 @@
                         window.sessionStorage.setItem('id', this._response.id);
                         window.sessionStorage.setItem('user', JSON.stringify(this._response.user));
                         
-                        app.user = this._response.user;
+                        this.user = this._response.result;
+                        app.user = this.user;
 
                         app.onLogIn();
                     }

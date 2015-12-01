@@ -50,6 +50,7 @@
     }
 
     function isAuthenticated(route, successCb, failCb) {
+        console.log(window.sessionStorage.token);
         $.ajax({
             url: '/token',
             data: {

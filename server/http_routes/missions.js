@@ -41,7 +41,7 @@ module.exports = function () {
             if (err) { return res.sendStatus(500); }
                         
             return res.json({
-                'missions': missions,
+                result: missions,
                 method: 'GET',
                 success : true,
                 route: "missions"
@@ -69,7 +69,7 @@ module.exports = function () {
                 }
                 
                 return res.json({
-                    'missions': missions,
+                    result: missions,
                     method: 'POST',
                     success : true,
                     route: "missions"
@@ -83,7 +83,7 @@ module.exports = function () {
                 }
                 
                 return res.json({
-                    'missions': missions,
+                    result: missions,
                     method: 'POST',
                     success : true,
                     route: "missions"
@@ -104,7 +104,7 @@ module.exports = function () {
                 }
                 
                 return res.json({
-                    'missions': missions,
+                    result: missions,
                     method: 'GET',
                     success : true,
                     route: "missions"
@@ -132,7 +132,7 @@ module.exports = function () {
                 }
                 
                 return res.json({
-                    'missions': missions,
+                    result: missions,
                     method: 'GET',
                     success : true,
                     route: "missions"
@@ -193,7 +193,7 @@ module.exports = function () {
             return res.json({
                 success: true,
                 method: 'DELETE',
-                mission: mission._id,
+                result: mission._id,
                 route: "missions"
             });
         })

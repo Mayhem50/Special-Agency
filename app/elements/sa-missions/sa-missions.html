@@ -83,10 +83,20 @@
                         type: Array,
                         value:[]
                     },
-                    _infosAction : String
+                    _infosAction: String,
+                    clear:{
+                        type: Boolean,
+                        observer:'_onClear'
+                    },
                 },
                 ready:function(){
                     this.$$('#filter-toolbar').show();
+                },
+                _onClear:function(e){
+                    if (this.clear) {
+                        this._fromPages = [];
+                        this._mainFilter = 'missions';
+                    }
                 },
                 _onBeginCreation: function (e) {
                     if(this.createMission){
@@ -206,6 +216,7 @@
                         case 'missions':
                             this._selectedKind = null;
                             this._missionsfilterRemove('kind');
+                            this._missionsfilterAdd('agent');
                             this.$.toolbar.select(0);
                             this._showPage('missions');
                             break;

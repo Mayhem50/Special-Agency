@@ -51,6 +51,8 @@
     <Compile Include="server\http_routes\types.js" />
     <Compile Include="server\io_routes\chats.js" />
     <Compile Include="server\io_routes\missions.js" />
+    <Compile Include="server\models\default_strings.js" />
+    <Compile Include="server\models\message.js" />
     <Compile Include="server\models\translation.js" />
     <Compile Include="server\models\google-id.js" />
     <Compile Include="server\http_routes\kinds.js" />

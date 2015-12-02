@@ -161,7 +161,7 @@
                     }
                 },
                 ready: function () {
-                    this.$.avatar.style.background = "url('../../images/default_avatar.png')";
+                    this._userChanged(null);
                     this.$$('#signin-collapse').show();
                     this.$$('#signup-collapse').hide();
 
@@ -203,6 +203,7 @@
                 _logOut: function (e) {
                     clearToken();
                     app.onLogOut();
+                    this._userChanged(null);
                 }
             });
         })();

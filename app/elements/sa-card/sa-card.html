@@ -6,48 +6,31 @@
             display: block;
         }
 
-        .tool {
-            width: 32px;
-            height: 32px;
+        paper-card{
+            width:300px;
+            border-radius:7px;
+            @apply(--sa-card);
         }
 
-        paper-card {
-            height: 480px;
-            padding: 2px;
-            margin: 15px 10px;
+        [header]{
+            @apply(--sa-card-header);
         }
-
-        .card-header {
-            height: 336px;
+        
+        [middle]{
+            @apply(--sa-card-middle);
         }
-
-        .card-middle {
-            height: 48px;
-        }
-
-        .card-footer {
-            height: 96px;
+        
+        [footer]{
+            @apply(--sa-card-footer);
         }
     </style>
 
-    <template>
-        
+    <template>        
         <paper-card>
-
-            <div class="card-header">
-                <content id="headerContent" select="header"></content>
-            </div>
-
-            <div class="card-middle">
-                <content id="headerContent" select="middle"></content>
-            </div>
-
-            <div class="card-footer">
-                <content id="headerContent" select="footer"></content>
-            </div>
-            
+                <content id="headerContent" select="[header]"></content>
+                <content id="middleContent" select="[middle]"></content>
+                <content id="footerContent" select="[footer]"></content>        
         </paper-card>
-
     </template>
 
     <script>
@@ -56,10 +39,6 @@
                 is: 'sa-card',
                 
                 properties: {
-                    _hiddenElement: {
-                        type: Boolean,
-                        value: true
-                    },
                 }
             });
         })();

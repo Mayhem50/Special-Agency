@@ -73,7 +73,7 @@
                             <iron-pages id="page-content-selector" attr-for-selected="data-route" selected="{{route}}">
                                 
                                 <section data-route="missions">
-                                    <sa-missions create-mission="{{createMission}}"></sa-missions>
+                                    <sa-missions create-mission="{{createMission}}" clear="{{!isLogged}}"></sa-missions>
                                 </section>
 
                                 <section data-route="messages"></section>

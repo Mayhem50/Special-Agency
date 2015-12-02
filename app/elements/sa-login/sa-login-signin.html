@@ -146,9 +146,6 @@
                         window.sessionStorage.setItem('id', this._response.id);
                         window.sessionStorage.setItem('user', JSON.stringify(this._response.user));
                         
-                        this.user = this._response.result;
-                        app.user = this.user;
-
                         app.onLogIn();
                     }
                 }

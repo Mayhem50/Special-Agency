@@ -196,7 +196,20 @@
                         this.$.xhr.request();
                     }
                 },
-                _onResult:function(e){
+                _onResult: function (e) {
+                    if (this._remember === true) {
+                        window.localStorage.token = this._response.token;
+                        window.localStorage.remember = true;
+                        window.localStorage.setItem('email', this._infos._email);
+                        window.localStorage.setItem('id', this._response.id);
+                        window.localStorage.setItem('user', JSON.stringify(this._response.user));
+                    }
+
+                    window.sessionStorage.token = this._response.token;
+                    window.sessionStorage.setItem('email', this._infos._email);
+                    window.sessionStorage.setItem('id', this._response.id);
+                    window.sessionStorage.setItem('user', JSON.stringify(this._response.user));
+
                     app.onLogIn();
                 },
                 _checkEmail: function () {

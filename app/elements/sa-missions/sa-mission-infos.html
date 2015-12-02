@@ -557,7 +557,10 @@
                                     <paper-icon-button icon="save"></paper-icon-button>
                                     <div>Save as draft</div>
                                 </div>
-                                <paper-button on-tap="_addMission"><iron-icon icon="check"></iron-icon><span>Send Mission</span></paper-button>
+                                <iron-pages id="apply-button" selected="0">
+                                    <paper-button on-tap="_addMission"><iron-icon icon="check"></iron-icon><span>Send Mission</span></paper-button>
+                                    <paper-button on-tap="_postuleMission"><iron-icon icon="check"></iron-icon><span>Postule Mission</span></paper-button>
+                                </iron-pages>
                             </div>
                         </div>
                     </div>
@@ -677,6 +680,9 @@
                     this._createEmptyMission();
                     this.fire('close-infos');
                 },
+                _postuleMission:function(){
+                    app.socket.emit('postulate-mission', { mission: this.mission, lang : app.lang || 'fr' } );
+                },
                 _selectLevel: function (e) {
                     this.mission.level = e.target.id;
                     this.$$('#levels-dropdown-menu').close();
@@ -699,6 +705,7 @@
                             this._clear();
                             this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
                             this.$$('#avatar').style.backgroundImage = app.user.avatar;
+                            this.$$('#apply-button').select(0);
                             break;
                         }
                         case 'edition': {
@@ -709,6 +716,7 @@
                             this.$.map.clearCircle();
                             this.$.map.setLocation(this.mission.place.longitude, this.mission.place.latitude);
                             this.$.map.drawMarker(this.mission.place.longitude, this.mission.place.latitude, this.mission.place.address);
+                            this.$$('#apply-button').select(0);
                             break;
                         }
                         case 'consultation': {
@@ -718,7 +726,8 @@
                             this.$.map.clearMarkers();
                             this.$.map.clearCircle();
                             this.$.map.setLocation(this.mission.place.longitude, this.mission.place.latitude);
-                            this.$.map.drawCircle(this.mission.place.longitude, this.mission.place.latitude);
+                            this.$.map.drawMarker(this.mission.place.longitude, this.mission.place.latitude, this.mission.place.address);
+                            this.$$('#apply-button').select(1);
                             break;
                         }
                     }

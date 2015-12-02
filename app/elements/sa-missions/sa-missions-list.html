@@ -125,6 +125,12 @@
                             case 'pro-only':
                                 ret &= item.proOnly && item._type._id === this.filter.kind._id;
                                 break;
+                            case 'sponsor':
+                                ret &= item._owner == app.user._id;
+                                break;
+                            case 'agent':
+                                ret &= item._owner != app.user._id;
+                                break;
                             default:
                                 ret &= true;
                                 break;

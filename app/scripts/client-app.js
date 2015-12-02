@@ -76,11 +76,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app.onLogIn = function () {
         app.route = 'missions';
         app.isLogged = true;
+        app.user = JSON.parse(window.sessionStorage['user']);
     };
     
     app.onLogOut = function (){
         app.route = 'home';
         app.isLogged = false;
+        app.user = null;
     };
     
     app.onRequestLogin = function (){
@@ -116,7 +118,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             app.isLogged = true;
             //document.getElementById('deconnexionToggle').show(); 
             
-            app.user = JSON.parse(window.sessionStorage['user']) 
+            app.onLogIn();
                         
             app.socket.on('connect', function () {
                 console.log('authenticated');

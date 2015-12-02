@@ -36,10 +36,16 @@
                         type: String,
                         value: 'get'
                     },
+                    auto: {
+                        type: Boolean,
+                        value: false
+                    },
                     _xhrResponse: Object
                 },
-                ready: function () {
-                    
+                attached: function () {
+                    if (this.auto) {
+                        this.request();
+                    }
                 },
                 _handleResponse: function () {
                     if (!this._xhrResponse) { return; }

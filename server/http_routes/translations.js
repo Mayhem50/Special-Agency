@@ -8,11 +8,11 @@ module.exports = function () {
         console.log('Get translation');
         console.log(req.query.translation);
         
-        Translation.find({}, function (err, kinds) {
+        Translation.find({}, function (err, translations) {
             if (err) { throw err; }
             
             return res.json({
-                result: translation,
+                result: translations,
                 method : 'GET',
                 success: true,
                 route: "translation"

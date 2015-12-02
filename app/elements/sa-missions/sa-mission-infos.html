@@ -5,6 +5,9 @@
 <link rel="import" href="../sa-dates/sa-dates.html" />
 <link rel="import" href="../sa-date-picker/sa-date-picker.html" />
 <link rel="import" href="../sa-map/sa-map.html" />
+<link rel="import" href="../sa-translations/sa-translation.html" />
+<link rel="import" href="../sa-missions/sa-mission-card.html" />
+
 <link rel="import" href="../sa-xhr/sa-xhr.html" />
 
 <dom-module id="sa-mission-infos">
@@ -55,37 +58,37 @@
         }
 
         #left-row-1-cell-1{
-            width:300px;
-            background-color:red;  
+            width:300px; 
             display:flex;
             flex-direction:column;
-            border-top-left-radius:5px;          
+            border-top-left-radius:5px; 
+            justify-content:space-around;   
+            background-color:#ffffff;
         }
 
-        #left-row-1-cell-1 paper-input{      
-            margin-left:35px;
-                            
+        #reward-part{
+            display: flex;
+            align-items: baseline;
+            padding: 0 30px;
+        }
+
+        #reward-part paper-input{      
+            font-size: 16px;
+            width:80px;
+            height: 40px;
+            padding: 2px 15px;
+            background-color: rgb(247, 247, 247);
+            color: #cccccc;
+            border:1px solid #d6d6d6;  
+            border-radius:5px; 
+            margin: 0 auto;   
+            text-align:right;
+            --paper-input-container-label : {                    
+                    color: #999999;
+                    text-align:center;
+            }
             --paper-input-container-input-color: #cccccc;
-
-            --paper-input-container-input:{
-                color:#454545;
-                font-size:32px;
-                text-align:right;
-            };
-
-            --paper-input-suffix:{
-                font-size:32px;
-                line-height:normal;
-            };
-
-            --paper-input-container:{
-                padding: 4px;
-                background-color: rgba(220, 220, 220, 0.75);
-                margin-left: 7px;
-                border-radius: 5px;
-                flex-grow: 1;
-                width:50%;
-            };
+            --paper-menu-button-dropdown-background:rgba(0, 0, 0, 0.67);            
 
             --paper-input-container-underline: {
                 height: 0;
@@ -102,14 +105,13 @@
         }
 
         #reward-text{
-            margin:7px 10px;
-            font-size:32px;
-            color:#ffffff;
+            font-size:18px;
+            color:#454545;
+            margin-right:10px;
         }
 
         #left-row-1-cell-2{
             width:550px;
-            background-color:green;
             display:flex;
             flex-direction:column;
         }
@@ -229,7 +231,6 @@
         #left-row-2-cell-1-row-1{
             height:68px;
             display:flex;
-            justify-content:space-around;
         }
 
         #left-row-2-cell-1-row-2{
@@ -279,25 +280,27 @@
             };
         }
 
-        #left-row-2-cell-1-row-1-cell-1{
+        .kinds-part{
             display:flex;
             align-items:center;
+            padding:0 30px;
         }
 
-        #left-row-2-cell-1-row-1-cell-1 paper-dropdown-menu{  
+        .dropdown-menu {
             font-size: 16px;
             height: 40px;
             padding: 2px 15px;
             background-color: rgb(247, 247, 247);
             color: #cccccc;
             border:1px solid #d6d6d6;  
-            border-radius:5px;    
+            border-radius:5px; 
+            margin: 0 auto;   
             --paper-input-container-label : {                    
                     color: #999999;
                     text-align:center;
             }
             --paper-input-container-input-color: #cccccc;
-            --paper-menu-button-dropdown-background:rgba(0, 0, 0, 0.67);            
+            --paper-menu-button-dropdown-background:rgba(255, 255, 255, 0.87);            
 
             --paper-input-container-underline: {
                 height: 0;
@@ -396,9 +399,10 @@
             margin-right:5px;
         }
 
-        #left-row-2-cell-1-row-1-cell-2{
+        #level-part{
             display:flex;
-            align-items:center;
+            align-items:center;            
+            padding:0 30px;
         }
 
         #level-image{
@@ -416,7 +420,7 @@
             border-top-left-radius:5px;
         }
 
-        #left-row-2-cell-1-row-1-cell-2 paper-dropdown-menu{
+        #level-part paper-dropdown-menu{
             font-size: 16px;
             height: 40px;
             padding: 2px 15px;
@@ -431,7 +435,7 @@
             }
 
             --paper-input-container-input-color: #cccccc;
-            --paper-menu-button-dropdown-background:rgba(1, 1, 1, 0.67);            
+            --paper-menu-button-dropdown-background:rgba(255, 255, 255, 0.87);            
 
             --paper-input-container-underline: {
                 height: 0;
@@ -481,14 +485,55 @@
             background-repeat:no-repeat;
         }
 
+        #level-background{
+            display:flex;
+            align-items:center;
+            height:32px;
+        }
+
     </style>
     <template>
         <div id="container">
             <paper-card id="left-part">
                 <div id="left-row-1">
                     <div id="left-row-1-cell-1">
-                        <div id="reward-text">Reward</div>
-                        <paper-input disabled="[[disabled]]" type="number" always-float-label="false" no-label-float="true" value="{{mission.reward::input}}"><div suffix>€</div></paper-input>
+                        <div id="reward-part">
+                            <div id="reward-text">[[_translations.texts.reward]]</div>
+                            <paper-input disabled="[[disabled]]" type="number" always-float-label="false" no-label-float="true" value="{{mission.reward::input}}"><div suffix>€</div></paper-input>
+                        </div>
+                        <div class="kinds-part">
+                            <paper-dropdown-menu class="dropdown-menu" disabled="[[disabled]]" id="kinds-dropdown-menu" always-float-label="false" no-label-float="true" label="[[kind.name.en]]">
+                                <div class="dropdown-content">
+                                    <template id="kindsList" is="dom-repeat" items="[[kinds]]">
+                                        <paper-item on-click="_selectKind">[[item.name.en]]</paper-item>
+                                    </template>
+                                </div>
+                            </paper-dropdown-menu>
+                        </div>
+
+                        <div class="kinds-part">
+                            <paper-dropdown-menu class="dropdown-menu" disabled="[[disabled]]" id="kinds-dropdown-menu" always-float-label="false" no-label-float="true" label="[[subKind.name.en]]">
+                                <div class="dropdown-content">
+                                    <template id="subKindsList" is="dom-repeat" items="[[subKinds]]">
+                                        <paper-item on-click="_selectSubKind">[[item.name.en]]</paper-item>
+                                    </template>
+                                </div>
+                            </paper-dropdown-menu>
+                        </div>
+                        <div id="level-part">
+                            <div id="level-background">
+                                <div id="level-image"></div>
+                            </div>
+                            <paper-dropdown-menu disabled="[[disabled]]" id="levels-dropdown-menu" always-float-label="false" no-label-float="true" selected="{{mission.level}}" label="[[levelLabel]]">
+                                <div class="dropdown-content">
+                                    <paper-item id="1" on-click="_selectLevel">{{_translations.texts.easy}}</paper-item>
+                                    <paper-item id="2" on-click="_selectLevel">{{_translations.texts.simple}}</paper-item>
+                                    <paper-item id="3" on-click="_selectLevel">{{_translations.texts.normal}}</paper-item>
+                                    <paper-item id="4" on-click="_selectLevel">{{_translations.texts.advanced}}</paper-item>
+                                    <paper-item id="5" on-click="_selectLevel">{{_translations.texts.difficult}}</paper-item>
+                                </div>
+                            </paper-dropdown-menu>
+                        </div>
                     </div>
                     <div id="left-row-1-cell-2">
                         <sa-map id="map" disabled="[[disabled]]" latitude="{{mission.place.latitude}}" longitude="{{mission.place.longitude}}" address="{{mission.place.address}}" zoom="[[zoom]]">
@@ -506,27 +551,7 @@
                 <div id="left-row-2">
                     <div id="left-row-2-cell-1">
                         <div id="left-row-2-cell-1-row-1">
-                            <div id="left-row-2-cell-1-row-1-cell-1">
-                                <paper-dropdown-menu disabled="[[disabled]]" id="kinds-dropdown-menu" always-float-label="false" no-label-float="true" label="[[kind.name.en]]">
-                                    <div class="dropdown-content">
-                                        <template id="kindsList" is="dom-repeat" items="[[kinds]]">
-                                            <paper-item on-click="_selectKind">[[item.name.en]]</paper-item>
-                                        </template>
-                                    </div>
-                                </paper-dropdown-menu>
-                            </div>
-                            <div id="left-row-2-cell-1-row-1-cell-2">
-                                <div id="level-image"></div>
-                                <paper-dropdown-menu disabled="[[disabled]]" id="levels-dropdown-menu" always-float-label="false" no-label-float="true" selected="{{mission.level}}" label="[[levelLabel]]">
-                                    <div class="dropdown-content">
-                                        <paper-item id="1" on-click="_selectLevel">{{_translations.texts.easy}}</paper-item>
-                                        <paper-item id="2" on-click="_selectLevel">{{_translations.texts.simple}}</paper-item>
-                                        <paper-item id="3" on-click="_selectLevel">{{_translations.texts.normal}}</paper-item>
-                                        <paper-item id="4" on-click="_selectLevel">{{_translations.texts.advanced}}</paper-item>
-                                        <paper-item id="5" on-click="_selectLevel">{{_translations.texts.difficult}}</paper-item>
-                                    </div>
-                                </paper-dropdown-menu>
-                            </div>
+                            
                         </div>
                         <div id="left-row-2-cell-1-row-2">
                             <div id="left-row-2-cell-1-row-2-cell-1">
@@ -548,18 +573,17 @@
                                 <paper-checkbox noink disabled="[[disabled]]">RDV 15:00 - 18:00</paper-checkbox>
                                 <paper-checkbox noink disabled="[[disabled]]">RDV 18:00 - 21:00</paper-checkbox>
                                 <div class="separator"></div>
-                                <paper-checkbox noink disabled="[[disabled]]">Tools provided</paper-checkbox>
+                                <paper-checkbox noink disabled="[[disabled]]">{{_translations.texts.tool_provided}}</paper-checkbox>
                                 <div class="separator"></div>
                                 <paper-textarea disabled="[[disabled]]" always-float-label="false" no-label-float="true"></paper-textarea>
                             </div>
                             <div id="buttons">
-                                <div id="draft-part">
-                                    <paper-icon-button icon="save"></paper-icon-button>
-                                    <div>Save as draft</div>
+                                <div id="draft-part" on-click="test">
+                                    <paper-icon-button icon="save"></paper-icon-button><div>{{_translations.texts.save_draft}}</div>
                                 </div>
                                 <iron-pages id="apply-button" selected="0">
-                                    <paper-button on-tap="_addMission"><iron-icon icon="check"></iron-icon><span>Send Mission</span></paper-button>
-                                    <paper-button on-tap="_postuleMission"><iron-icon icon="check"></iron-icon><span>Postule Mission</span></paper-button>
+                                    <paper-button on-tap="_addMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span></paper-button>
+                                    <paper-button on-tap="_postuleMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.postulate_mission}}</span></paper-button>
                                 </iron-pages>
                             </div>
                         </div>
@@ -567,30 +591,19 @@
                 </div>
             </paper-card>
 
-            <paper-card id="right-part">
-                <div id="right-title">
+            <sa-mission-card id="right-part"
+                             class="card"
+                             mission="[[mission]]"
+                             hide></sa-mission-card>
+            </div>
 
-                </div>
-                <div id="right-header">
-                    <div id="avatar">
-                        <div id="mask"></div>
-                    </div>
-                    <div id="agent_id"></div>
-                    <div id="comments"></div>
-                    <div id="reference"></div>
-                </div>
-                <div id="right-content">
-                    <paper-textarea>
-
-                    </paper-textarea>
-                </div>
-            </paper-card>
-        </div>
+        <sa-translation id="translation"
+                        element="sa-mission-infos"
+                        translations="{{_translations}}"></sa-translation>
 
         <sa-xhr id="xhr"
-                url="/translation/en/sa-mission-infos"
-                method="GET"
-                result="{{_translations}}"></sa-xhr>
+                url="[[subKindsUrl]]"
+                result="{{subKinds}}"></sa-xhr>
 
     </template>
 
@@ -626,22 +639,20 @@
                         type: Object,
                         observer: '_kindChanged',
                         notify: true
-                    }
+                    },
+                    subKinds: {
+                        type: Object,
+                        observer: '_subKindsChanged'
+                    },
+                    subKind: Object
                 },
                 ready: function () {
                     this._createEmptyMission();
                 },
                 _kindChanged: function (e) {
                     if (this.kind) {
-                        var div = this.querySelector('#left-row-1-cell-1');
-                        if (div == null) { return; }
-                        div.style.backgroundImage = 'url(../../images/kinds/' + this.kind.image.path + ')';
-                        div.style.backgroundPosition = this.kind.image.xOffset + ' ' + this.kind.image.yOffset;
-                        div.style.backgroundSize = "cover";
+                        this._setLevel();
                     }
-                },
-                attached: function () {
-                    this.$.xhr.request();
                 },
                 _kindsChanged: function (e) {
                     this.kind = this.kinds[0];
@@ -655,11 +666,31 @@
                     this.set('kind', e);
                     this.kind.name.en = this.kind.name.en.replace(/^./, this.kind.name.en[0].toUpperCase());
                     this.kind.name.fr = this.kind.name.fr.replace(/^./, this.kind.name.fr[0].toUpperCase());
+                    this.mission._type = this.kind;
+                    this.$$('#right-part').init();
+                    this.subKindsUrl = '/kinds/' + this.kind._id;
+                    this.$.xhr.request();
+                },
+                _subKindsChanged: function (e) {
+                    if (this.suKinds)
+                        this.subKind = this.suKinds[0];
+                    this.$.subKindsList.render();
+                },
+                _selectSubKind: function (e) {
+                    this._updateSelectedSubKind(e.target._templateInstance.item);
+                    this.$$('#kinds-dropdown-menu').close();
+                },
+                _updateSelectedSubKind: function (e) {
+                    this.set('subKind', e);
+                    this.subKind.name.en = this.subKind.name.en.replace(/^./, this.subKind.name.en[0].toUpperCase());
+                    this.subKind.name.fr = this.subKind.name.fr.replace(/^./, this.subKind.name.fr[0].toUpperCase());
+                    this.mission._subType = this.subKind;
+                    this.$$('#right-part').init();
                 },
                 _createEmptyMission: function () {
                     this.set('mission', new Object({
                         title: '',
-                        _type: this.kind ? this.kind._id : '',
+                        _type: this.kind ? this.kind : null,
                         level: 1,
                         reward: 0,
                         descritpion: '',
@@ -684,10 +715,11 @@
                     app.socket.emit('postulate-mission', { mission: this.mission, lang : app.lang || 'fr' } );
                 },
                 _selectLevel: function (e) {
-                    this.mission.level = e.target.id;
+                    this.mission.level = parseInt(e.target.id) - 1;
                     this.$$('#levels-dropdown-menu').close();
-                    this.$$('#level-image').style.backgroundImage = 'url(../../images/levels/' + e.target.innerText.toLowerCase() + '.jpg)';
+                    this._setLevel();
                     this.levelLabel = e.target.innerText;
+                    this.$$('#right-part').init();
                 },
                 _clear: function () {
                     this._createEmptyMission();
@@ -704,7 +736,6 @@
                             this.disabled = false;
                             this._clear();
                             this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
-                            this.$$('#avatar').style.backgroundImage = app.user.avatar;
                             this.$$('#apply-button').select(0);
                             break;
                         }
@@ -738,23 +769,25 @@
                     switch (this.mission.level) {
                         default:
                         case 0:
-                            image = 'Easy';
+                            image = 'easy';
                             break;
                         case 1:
-                            image = 'Simple';
+                            image = 'simple';
                             break;
                         case 2:
-                            image = 'Normal';
+                            image = 'normal';
                             break;
                         case 3:
-                            image = 'Advanced';
+                            image = 'advanced';
                             break;
                         case 4:
-                            image = 'Difficult';
+                            image = 'difficult';
                             break;
                     }
-                    this.$$('#level-image').style.backgroundImage = 'url("../../images/levels/' + image.toLowerCase() + '.jpg")';
-                    this.levelLabel = image;
+                    this.$$('#level-image').style.backgroundImage = 'url("/images/levels/' + image + '.png")';
+                    this.$$('#level-background').style.background = this.kind ? this.kind.color : '#cccccc';
+                    if(this._translations)
+                        this.levelLabel = this._translations.texts[image];
                 }
             });
         })();

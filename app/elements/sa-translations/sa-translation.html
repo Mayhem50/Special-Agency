@@ -1,0 +1,46 @@
+﻿
+<dom-module id="sa-translation">
+    <style>
+        :host {
+        }
+    </style>
+    <template>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-translation',
+
+                properties: {
+                    translations: {
+                        type: Object,
+                        notify: true
+                    },
+                    element: String,
+                    _lang: String
+                },
+                attached: function () {
+                    if (app.translations) {
+                        this._getTranslations();
+                    }
+
+                    app.addEventListener('change-language', function (e) {
+                        this._getTranslations();
+                    }.bind(this));
+
+                    app.addEventListener('load-language', function (e) {
+                        this._getTranslations();
+                    }.bind(this));
+                },
+                _getTranslations: function () {
+                    this.set('translations', app.translations.find(function (data) {
+                        return data.element == this.element && data.lang == app.lang;
+                    }.bind(this)));
+                }
+            });
+        })();
+
+    </script>
+</dom-module>
+

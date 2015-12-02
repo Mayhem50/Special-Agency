@@ -2,14 +2,15 @@
 
 module.exports = mongoose.model(
     'Mission', {
-        _typeTitle : { type: mongoose.Schema.Types.ObjectId, ref: 'Mission-Type' },
-        _type : { type: mongoose.Schema.Types.ObjectId, ref: 'Mission-Type' },
         _owner : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         _agent : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        _type : { type: mongoose.Schema.Types.ObjectId, ref: 'Mission-Type' },
+        _subType : { type: mongoose.Schema.Types.ObjectId, ref: 'Mission-Type' },
         title: String,
         level : Number,
         reward : Number,
         descritpion : String,
+        shortDescritpion : String,
         status : { type : Number, min : 0, max : 10 },
         creationDate : { type : Date, default: Date.now },
         wishDates : [{ type : String }],

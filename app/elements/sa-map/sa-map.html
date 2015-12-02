@@ -93,9 +93,10 @@
                         type: Array,
                         value:[]
                     },
-                    circle: Object
+                    circle: Object,
+                    lang : String
                 },
-                ready: function () {
+                attached: function () {
                     this.getLocation();
                 },
                 mapApiLoaded: function (e) {

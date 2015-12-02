@@ -43,6 +43,20 @@ module.exports = function () {
         });
     });
     
+    router.get('/kinds/:id', function (req, res) {
+        console.log('Get sub kinds');
+        Kind.find({ '_parent' : req.params.id, "isTop": "false" }, function (err, kinds) {
+            if (err) { throw err; }
+            
+            return res.json({
+                result: kinds,
+                method: 'GET',
+                success : true,
+                route: "kinds"
+            });
+        });
+    });
+    
     router.put('/kinds', jwtauth, function (req, res) {
         console.log('Bulk update kinds');
         res.end();

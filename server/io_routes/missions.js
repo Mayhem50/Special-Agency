@@ -12,7 +12,7 @@ module.exports = function (io, socket) {
         var mission = new Mission(data);
         mission._owner = socket.user._id;
         
-        Kind.findOne({ '_id' : data._type }, function (err, kind) {
+        Kind.findOne({ '_id' : data._type._id }, function (err, kind) {
             if (err) {
                 console.log('Error unknown type: ' + err);
                 throw err;

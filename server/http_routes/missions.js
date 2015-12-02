@@ -37,7 +37,7 @@ module.exports = function () {
     
     router.get('/missions', function (req, res) {
         console.log('Get all missions not finished');
-        Mission.find({}).populate('_type _title').exec(function (err, missions) {
+        Mission.find({}).populate('_type _subType').exec(function (err, missions) {
             if (err) { return res.sendStatus(500); }
                         
             return res.json({

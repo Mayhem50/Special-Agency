@@ -94,6 +94,7 @@
     <Content Include="app\elements\sa-toolbar\sa-toolbar-filter.html" />
     <Content Include="app\elements\sa-toolbar\sa-toolbar-logged.html" />
     <Content Include="app\elements\sa-toolbar\sa-toolbar-not-logged.html" />
+    <Content Include="app\elements\sa-translations\sa-translation.html" />
     <Content Include="app\elements\sa-xhr\sa-xhr.html" />
     <Content Include="app\favicon.ico" />
     <Content Include="app\images\google-plus.jpg" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <Folder Include="app\" />
     <Folder Include="app\elements\" />
+    <Folder Include="app\elements\sa-translations\" />
     <Folder Include="app\elements\sa-xhr\" />
     <Folder Include="app\elements\sa-date-picker\" />
     <Folder Include="app\elements\sa-map\" />

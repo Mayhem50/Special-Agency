@@ -4,14 +4,14 @@
     <style>
         :host {
             color: #feffff;
-        }
-
-        .date {
             flex-direction: column;
             justify-content: center;
             align-items: stretch;
-            width: 15%;
-            margin: 0 5px;
+            width:42px;
+            margin:5px;
+        }
+
+        .date {
         }
 
         .month {
@@ -23,7 +23,6 @@
             border-radius: 3px 3px 0 0;
             font-weight: 100;
             font-stretch: ultra-condensed;
-            width:45px;
         }
 
         .day {
@@ -36,50 +35,12 @@
             border-radius: 0 0 3px 3px;
             font-weight: 100;
             font-stretch: ultra-condensed;
-            width: 41px;
-        }
-
-        @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) {
-            .date {
-                flex-direction: column;
-                justify-content: center;
-                align-items: stretch;
-                width: 20%;
-                margin: 0 3px;
-            }
-
-            .month {
-                background-color: #3d3d3d;
-                flex: 1 0 auto;
-                text-align: center;
-                color: #ffffff;
-                padding: 0px;
-                border-radius: 1px 1px 0 0;
-                font-weight: 100;
-                font-stretch: ultra-condensed;
-                width:32px;
-            }
-
-            .day {
-                background-color: #ffffff;
-                flex: 3 0 auto;
-                text-align: center;
-                color: #3d3d3d;
-                font-size: 12px;
-                padding: 0px 1px;
-                border-radius: 0 0 1px 1px;
-                font-weight: 100;
-                font-stretch: ultra-condensed;
-                width: 30px;
-            }
         }
     </style>
 
     <template>
-        <div class="date">
             <div class="month"><span>[[month]]</span></div>
             <div class="day"><span>[[day]]</span></div>
-        </div>
     </template>
 
     <script>

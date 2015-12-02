@@ -89,6 +89,12 @@
                 </paper-scroll-header-panel>
             </paper-drawer-panel>
         </iron-container>
+
+        <sa-xhr id="xhr"
+                auto
+                url="/translation"
+                result="{{translations}}"
+                on-result="onGetTranslations"></sa-xhr>
     </template>
     <!-- build:js scripts/app.js -->
     <script src="/scripts/client-app.js"></script>

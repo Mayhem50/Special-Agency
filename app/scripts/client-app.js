@@ -26,8 +26,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
     
     // See http://github.com/Polymer/polymer/issues/1381
-    window.addEventListener('WebComponentsReady', function () {
-    // imports are loaded and elements have been registered
+    window.addEventListener('WebComponentsReady', function (e) {
+        console.log(e);
     });
     
     // Main area's paper-scroll-header-panel custom condensing transformation of
@@ -134,6 +134,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         
         updateMenuBar();
         app.drawer_route = 0;
+        app.lang = navigator.language;      
     });
     
     addEventListener('unload', function (event) {
@@ -169,5 +170,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app.socket = io.connect('http://192.168.11.136:3000', {
         query: 'token=' + window.sessionStorage.token
     });
+
+    app.changeLanguage = function (lang){
+        app.lang = 'en';       
+        var e = new Event('change-language');
+        app.dispatchEvent(e);
+    }
+
+    app.onGetTranslations = function (e){        
+        var e = new Event('load-language');
+        app.dispatchEvent(e);
+    }
 })(document);
 

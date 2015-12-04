@@ -112,6 +112,7 @@
         #level-part {
             display: flex;
             flex-direction: column;
+            width:64px;
         }
 
         #level {
@@ -133,7 +134,7 @@
 
     <template>
 
-        <paper-card id="[[cardName]]" on-mouseover="_mouseOver" on-mouseout="_mouseOut">
+        <paper-card id="[[cardName]]" on-mouseenter="_mouseOver" on-mouseleave="_mouseOut">
             <div class="header">
                 <div class="gain">
                     <div>[[_translations.texts.earn_up_to]]</div>
@@ -191,15 +192,14 @@
                         value: true
                     },
                     index: Number,
-                    hide: {
-                        type: Boolean,
-                        value: true
-                    },
+                    hide: true,
                     levelLabel: String,
                     _translations: {
                         type: Object,
                         observer: 'init'
-                    }
+                    },
+                    showLevel: false,
+                    acceptEvent:false
                 },
                 ready: function () {
                     this.init();
@@ -229,6 +229,13 @@
 
                     this._computeLevel();
                     this.$$('sa-dates').refresh();
+
+                    if (this.showLevel) {
+                        this.$$('#image-collapse').show();
+                    }
+                    else {
+                        this.$$('#image-collapse').hide();
+                    }
                 },
                 _deleteMission: function (e) {
                     this.fire('delete-mission', { mission: this.mission });
@@ -264,20 +271,22 @@
                         this.levelLabel = this._translations.texts[image];
                 },
                 _mouseOver: function (e) {
+                    if (!this.acceptEvent) { return; }
+
                     var div = this.querySelector('paper-card');
                     if (!div) { return; }
 
                     div.elevation = 5;
                     this.$$('#image-collapse').show();
-                    //console.log('in');
                 },
                 _mouseOut: function (e) {
+                    if (!this.acceptEvent) { return; }
+
                     var div = this.querySelector('paper-card');
                     if (!div) { return; }
 
                     div.elevation = 1;
                     this.$$('#image-collapse').hide();
-                    //console.log('out');
                 }
             });
         })();

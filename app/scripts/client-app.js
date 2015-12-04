@@ -107,7 +107,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
     };
     
-    addEventListener('resize', updateMenuBar);
+    addEventListener('resize', function (e) {
+        console.log(e);
+    });
 
     addEventListener('load', function (event) {
         if (window.localStorage['remember'] == "true") {

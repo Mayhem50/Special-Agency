@@ -201,9 +201,6 @@
                         observer: 'init'
                     }
                 },
-                _transHandleChange: function (e) {
-                    console.log(e);
-                },
                 ready: function () {
                     this.init();
                 },
@@ -231,6 +228,7 @@
                     }
 
                     this._computeLevel();
+                    this.$$('sa-dates').refresh();
                 },
                 _deleteMission: function (e) {
                     this.fire('delete-mission', { mission: this.mission });
@@ -271,7 +269,7 @@
 
                     div.elevation = 5;
                     this.$$('#image-collapse').show();
-                    console.log('in');
+                    //console.log('in');
                 },
                 _mouseOut: function (e) {
                     var div = this.querySelector('paper-card');
@@ -279,7 +277,7 @@
 
                     div.elevation = 1;
                     this.$$('#image-collapse').hide();
-                    console.log('out');
+                    //console.log('out');
                 }
             });
         })();

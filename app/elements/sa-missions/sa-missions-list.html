@@ -1,9 +1,13 @@
 ﻿<link rel="import" href="sa-mission-card.html" />
 <link rel="import" href="../sa-xhr/sa-xhr.html" />
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html" />
+
 <dom-module id="sa-missions-list">
     <style>
         :host {
-            display: block;
+            display: flex;
+            flex-direction:column;
+            align-items:center;
         }
 
         .grid {
@@ -18,6 +22,12 @@
             min-width: 300px;
             max-width: 300px;
             margin: 10px 10px;
+        }
+
+        paper-spinner{
+            width:5vh;
+            height:5vh;
+            margin-top: 30vh;
         }
     </style>
 
@@ -34,11 +44,13 @@
                 </sa-mission-card>
             </template>
         </div>
+        <paper-spinner active="[[_isLoading]]"></paper-spinner>
 
         <sa-xhr id="xhr"
                 url="/missions"
                 method="get"
-                result="{{_missions}}"></sa-xhr>
+                result="{{_missions}}"
+                is-loading="{{_isLoading}}"></sa-xhr>
     </template>
 
     <script>
@@ -129,7 +141,10 @@
                                 ret &= item._owner == app.user._id;
                                 break;
                             case 'agent':
-                                ret &= item._owner != app.user._id;
+                                if (app.user)
+                                    ret &= item._owner != app.user._id;
+                                else
+                                    ret &= true;
                                 break;
                             default:
                                 ret &= true;

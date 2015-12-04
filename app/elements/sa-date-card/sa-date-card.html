@@ -1,5 +1,7 @@
 ﻿<link rel="import" href="../../../../bower_components/paper-card/paper-card.html">
 
+<link rel="import" href="../sa-translations/sa-translation.html" />
+
 <dom-module id="sa-date-card">
     <style>
         :host {
@@ -11,10 +13,7 @@
             margin:5px;
         }
 
-        .date {
-        }
-
-        .month {
+        #month {
             background-color: #3d3d3d;
             flex: 1 0 auto;
             text-align: center;
@@ -25,7 +24,7 @@
             font-stretch: ultra-condensed;
         }
 
-        .day {
+        #day {
             background-color: #ffffff;
             flex: 3 0 auto;
             text-align: center;
@@ -39,8 +38,11 @@
     </style>
 
     <template>
-            <div class="month"><span>[[month]]</span></div>
-            <div class="day"><span>[[day]]</span></div>
+            <div id="month"><span>[[month]]</span></div>
+            <div id="day"><span>[[day]]</span></div>
+
+        <sa-translation element="sa-date-card"
+                        translations="{{_translations}}"></sa-translation>
     </template>
 
     <script>
@@ -51,47 +53,34 @@
                 properties: {
                     date: {
                         type: String,
-                        observer: '_dateChanged'
+                        observer: '_hasChanged'
                     },
                     day: String,
-                    month: String
+                    month: String,
+                    _translations: {
+                        type: Object,
+                        observer: '_hasChanged'
+                    }
                 },
                 ready: function () {
                     this._getString();
                 },
-                _dateChanged:function(e) {
+                _hasChanged: function (e) {
                     this._getString();
                 },
                 _getString: function () {
                     var date = new Date(this.date);
-                    this.day = date.getUTCDate() + 1;
+                    var now = new Date(Date.now());
 
-                    switch (date.getUTCMonth()) {
-                        case 0: this.month = "Jan.";
-                            break;
-                        case 1: this.month = "Feb.";
-                            break;
-                        case 2: this.month = "Mar.";
-                            break;
-                        case 3: this.month = "Apr.";
-                            break;
-                        case 4: this.month = "May";
-                            break;
-                        case 5: this.month = "Jun.";
-                            break;
-                        case 6: this.month = "Jui.";
-                            break;
-                        case 7: this.month = "Aug.";
-                            break;
-                        case 8: this.month = "Sep.";
-                            break;
-                        case 9: this.month = "Oct.";
-                            break;
-                        case 10: this.month = "Nov.";
-                            break;
-                        case 11: this.month = "Dec.";
-                            break;
+                    this.day = date.getUTCDate() + 1;
+                    
+                    if (this._translations) {
+                        var month = date.toLocaleString('en', { month: 'long' }).toLowerCase();
+                        this.month = this._translations.texts[month];
                     }
+                },
+                hilight: function () {
+                    this.$$('#month').style.backgroundColor = '#cd0000';
                 }
             });
         })();
@@ -102,22 +91,24 @@
     <style>
         :host {
             color: #feffff;
+            width:42px;
+            margin:5px;
         }
 
         .date {
-            flex-direction: column;
             justify-content: center;
-            align-items: stretch;
-            width: 15%;
-            background-color: #3d3d3d;
+            background-color: rgba(61, 61, 61, 0.80);
             color: #ffffff;
+            display: flex;
+            align-items: center;
+            border-radius: 5px;
+            height: 46px;
+            padding-bottom: 7px;
         }
     </style>
 
     <template>
-        <div class="date">
-
-        </div>
+        <div class="date">...</div>
     </template>
 
     <script>

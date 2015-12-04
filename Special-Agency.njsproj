@@ -79,6 +79,11 @@
     <Content Include="app\elements\sa-login\sa-login.html" />
     <Content Include="app\elements\sa-kinds\sa-kinds-list.html" />
     <Content Include="app\elements\sa-map\sa-map.html" />
+    <Content Include="app\elements\sa-messages\sa-chat-box.html" />
+    <Content Include="app\elements\sa-messages\sa-chat-list-item.html" />
+    <Content Include="app\elements\sa-messages\sa-chats-list.html" />
+    <Content Include="app\elements\sa-template.html" />
+    <Content Include="app\elements\sa-messages\sa-messages.html" />
     <Content Include="app\elements\sa-missions\sa-mission-card.html" />
     <Content Include="app\elements\sa-missions\sa-mission-edit.html" />
     <Content Include="app\elements\sa-missions\sa-mission-creation-card.html" />
@@ -100,11 +105,6 @@
     <Content Include="app\images\google-plus.jpg" />
     <Content Include="app\images\gradient-1.png" />
     <Content Include="app\images\gradient-2_300x300.png" />
-    <Content Include="app\images\levels\advanced.jpg" />
-    <Content Include="app\images\levels\difficult.jpg" />
-    <Content Include="app\images\levels\easy.jpg" />
-    <Content Include="app\images\levels\normal.jpg" />
-    <Content Include="app\images\levels\simple.jpg" />
     <Content Include="app\images\logo\Img-02.png" />
     <Content Include="app\images\logo\Img-03 2.png" />
     <Content Include="app\images\logo\Img-03.png" />
@@ -152,6 +152,7 @@
   <ItemGroup>
     <Folder Include="app\" />
     <Folder Include="app\elements\" />
+    <Folder Include="app\elements\sa-messages\" />
     <Folder Include="app\elements\sa-translations\" />
     <Folder Include="app\elements\sa-xhr\" />
     <Folder Include="app\elements\sa-date-picker\" />

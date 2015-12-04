@@ -25,28 +25,29 @@ module.exports = function () {
         });
     });
     
-    router.get('/chats:data', function (req, res) {
-        Chat.find({ '_mission' : req.params.data.mission, '_sponsor' : req.params.data.user }, function (err, chats) {
-            if (err) { return res.sendStatus(500); }
-            
-            if (!conversations) {
-                Chat.find({ '_mission' : req.params.data.mission, '_agent' : req.params.data.user }, function (err, chats) {
-                    if (err) { return res.sendStatus(500); }
-
-                    return res.json({
-                        'chats': chats,
-                        method: 'POST',
-                        success : true
-                    });
+    router.get('/chats/:role/:id', jwtauth, function (req, res) {
+        if (req.params.role == 'sponsor') {
+            Chat.find({ '_sponsor' : req.params.id }).populate('_mission').populate('_agent').exec(function (err, chats) {
+                if (err) { return res.sendStatus(500); }                
+                if (!chats) { return res.sendStatus(500); }
+                return res.json({
+                    result: chats,
+                    method: 'GET',
+                    success : true
                 });
-            }
-            
-            return res.json({
-                'chats': chats,
-                method: 'POST',
-                success : true
             });
-        });
+        }
+        if (req.params.role == 'agent') {
+            Chat.find({ '_agent' : req.params.id }).populate('_mission').populate('_sponsor').exec(function (err, chats) {
+                if (err) { return res.sendStatus(500); }                
+                if (!chats) { return res.sendStatus(500); }
+                return res.json({
+                    result: chats,
+                    method: 'GET',
+                    success : true
+                });
+            });
+        }
     });
     
     return router;

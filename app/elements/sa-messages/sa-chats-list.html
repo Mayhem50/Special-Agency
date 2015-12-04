@@ -1,0 +1,71 @@
+﻿
+<link rel="import" href="../sa-xhr/sa-xhr.html" />
+<link rel="import" href="sa-chat-list-item.html" />
+
+<dom-module id="sa-chats-list">
+    <style>
+        :host {
+        }
+    </style>
+    <template>
+        <div id="header">
+
+        </div>
+        <div id="content">
+            <template is="dom-repeat" items="[[_showPage(index)]]">
+                <sa-chat-list-item></sa-chat-list-item>
+            </template>
+        </div>
+        <div id="footer">
+
+        </div>
+
+        <sa-xhr id="xhr"
+                url="[[_xhrUrl]]"
+                result="{{_chats}}"
+                on-result="_receiveChats"></sa-xhr>
+    </template>
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-chats-list',
+
+                properties: {
+                    _chats: Array,
+                    _currentPage: Number,
+                    _xhrUrl: String,
+                    forWho: String
+                },
+                ready: function () {
+                    app.socket.on('new-chat', function (data) {
+                        console.log('new message');
+                        if ((this.forWho == 'agent' && data._agent == app.user._id) ||
+                            (this.forWho == 'sponsor' && data._sponsor == app.user._id)) {
+                            this.push('_chats', data);
+                            this._showPage(this._currentPage);
+                        }
+                    }.bind(this));
+                },
+                attached: function () {
+                    if (this.forWho == 'agent') {
+                        this._xhrUrl = '/chats/agent/' + app.user._id;
+                    }
+                    else if (this.forWho == 'sponsor') {
+                        this._xhrUrl = '/chats/sponsor/' + app.user._id;
+                    }
+                    this.$.xhr.request();
+                },
+                _showPage: function (page) {
+                    return this._chats.filter(function (element, index, array) {
+                        return true;
+                    });
+                },
+                _receiveChats: function (e) {
+                    this._showPage(this._currentPage);
+                }
+            });
+        })();
+
+    </script>
+</dom-module>
+

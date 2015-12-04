@@ -19,12 +19,17 @@ module.exports = function (passport) {
             req.login(user, function (err) {
                 if (err) return next(err);
                 
-                user.password = '';
+                user.password = null;
                 var token = jwt.encode(user._id, 'xbJ9Phit');
+                var result = {
+                    'user' : user,
+                    'token' : token,
+                    id : user._id
+                }
+
                 return res.json({
-                    result: user,
+                    'result': result,
                     method : 'POST',
-                    token: token,
                     success: true
                 });
             });
@@ -65,15 +70,18 @@ module.exports = function (passport) {
                 req.login(user, function (err) {
                     if (err) return next(err);
                     
-                    var token = jwt.encode(user._id, 'xbJ9Phit');
+                    var token = jwt.encode(user._id, 'xbJ9Phit');                    
+                    user.password = null;
                     
-                    user.password = '';
+                    var result = {
+                        'user' : user,
+                        'token' : token,
+                        id : user._id
+                    }
 
                     return res.json( {
                         method : 'POST',
-                        token: token,
-                        id: user._id,
-                        'user': user,
+                        'result': result,
                         success: true
                     });
                 });

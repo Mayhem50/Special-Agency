@@ -11,6 +11,7 @@
                    url="[[url]]"
                    content-type="application/json"
                    handle-as="json"
+                   loading="{{isLoading}}"
                    body="[[body]]"
                    params="[[params]]"
                    method="[[method]]"
@@ -39,6 +40,10 @@
                     auto: {
                         type: Boolean,
                         value: false
+                    },
+                    isLoading : {
+                        type: Boolean,
+                        notify: true
                     },
                     _xhrResponse: Object
                 },

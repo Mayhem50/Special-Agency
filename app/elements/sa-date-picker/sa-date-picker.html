@@ -1,4 +1,6 @@
 
+<link rel="import" href="../sa-translations/sa-translation.html" />
+
 <dom-module id="sa-date-picker">
     <style>
         :host {
@@ -33,6 +35,7 @@
 
                 [header] > div.month-display,
                 [header] > div.year-display {
+                    margin: 0 15px;
                     @apply(--sa-datepicker-header-display);
                 }
 
@@ -250,6 +253,9 @@
                 </template>
             </div>
         </div>
+        <sa-translation element="sa-date-picker"
+                        translations="{{_translations}}"></sa-translation>
+
     </template>
 </dom-module>
 <script>
@@ -347,6 +353,10 @@
                 type: Boolean,
                 value: false
             },
+            _translations: {
+                type: Object,
+                observer: '_translationsChanged'
+            }
         },
 
         observers: [
@@ -375,7 +385,12 @@
         detached: function () {
             this.$.calendar.removeEventListener('click', this._selectionHandler.bind(this));
         },
-
+        _translationsChanged: function (e) {
+            var date = new Date(this.showDate.year, this.showDate.month);
+            var month = date.toLocaleString('en', { month: 'long' }).toLowerCase();
+            this.currentMonth = this._translations.texts[month];
+            this._genTable(this.showDate.year, this.showDate.month);
+        },
         // Element Behavior
 
         /**
@@ -480,8 +495,8 @@
             this.set('showDate.year', this.showDate.month <= 0 ? this.showDate.year + 1 : this.showDate.year);
 
             this.notifyPath('date.year', this.showDate.year);
-
-            this.currentMonth = this.monthLabels[this.showDate.month];
+            
+            this.currentMonth = this._getMonthLabel();
             this._genTable(this.showDate.year, this.showDate.month);
         },
 
@@ -512,8 +527,8 @@
             this.set('showDate.year', this.showDate.month == 11 ? this.showDate.year - 1 : this.showDate.year);
 
             this.notifyPath('date.year', this.showDate.year);
-
-            this.currentMonth = this.monthLabels[this.showDate.month];
+            
+            this.currentMonth = this._getMonthLabel();
             this._genTable(this.showDate.year, this.showDate.month);
         },
 
@@ -544,8 +559,8 @@
             this.showDate.year = date.getFullYear();
 
             this.notifyPath('date.year', this.showDate.year);
-
-            this.currentMonth = this.monthLabels[this.showDate.month];
+            
+            this.currentMonth = this._getMonthLabel();
             this._genTable(this.showDate.year, this.showDate.month);
         },
 
@@ -557,8 +572,8 @@
             this.showDate.year = this.date.year;
 
             this.notifyPath('date.year', this.showDate.year);
-
-            this.currentMonth = this.monthLabels[this.showDate.month];
+            
+            this.currentMonth = this._getMonthLabel();
             this._genTable(this.showDate.year, this.showDate.month);
         },
 
@@ -601,7 +616,7 @@
 
             this.showDate.month = e.model.index;
             this.notifyPath('date.year', this.showDate.year);
-            this.currentMonth = this.monthLabels[this.showDate.month];
+            this.currentMonth = this._getMonthLabel();
             this._genTable(this.showDate.year, this.showDate.month);
         },
 
@@ -680,8 +695,18 @@
                 year: year
             });
 
-            this.currentMonth = this.monthLabels[this.showDate.month];
+            this.currentMonth = this._getMonthLabel();
             this._genTable(this.showDate.year, this.showDate.month);
+        },
+        _getMonthLabel:function(){
+            if (this._translations) {
+                var date = new Date(this.showDate.year, this.showDate.month);
+                var month = date.toLocaleString('en', { month: 'long' }).toLowerCase();
+                return this._translations.texts[month];
+            }
+            else {
+                return this.monthLabels[this.showDate.month];
+            }
         },
 
         /**
@@ -689,10 +714,25 @@
         * @param year
         * @param month
         */
+        _getDaysLabels:function(){
+            if (this._translations) {
+                return [
+                    this._translations.texts.sunday,
+                    this._translations.texts.monday,
+                    this._translations.texts.tuesday,
+                    this._translations.texts.wednesday,
+                    this._translations.texts.thursday,
+                    this._translations.texts.friday,
+                    this._translations.texts.saturday];
+            }
+            else {
+                return this.dayLabels;
+            }
+        },
         _genTable: function (year, month) {
             var table = document.createElement('table');
             var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-            var lDays = this.dayLabels;
+            var lDays = this._getDaysLabels();
             var calEl = Polymer.dom(this.$.calendar);
             var firstDay = new Date(year, month, 1);
             var startingDay = firstDay.getDay();
@@ -714,6 +754,7 @@
 
             var html = '<thead><tr>';
             for (var i = 1; i <= 7; i++) {
+                var _date = new Date();
                 html += '<th>';
                 html += lDays[i < 7 ? i : 0];
                 html += '</th>';

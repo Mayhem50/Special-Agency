@@ -25,7 +25,7 @@
     </style>
     <template>
         <template id="dates" is="dom-repeat" items="[[dates]]" filter="filter" sort="_sortDates">
-            <sa-date-card date="[[item]]"></sa-date-card>
+            <sa-date-card id$="[[_setId(index)]]" date="[[item]]"></sa-date-card>
         </template>
         <sa-empty-date></sa-empty-date>
     </template>
@@ -36,35 +36,48 @@
                 is: 'sa-dates',
 
                 properties: {
-                    _showDates: {
-                        type: Array,
-                        value: [],
-                        notify: true
-                    },
                     dates: {
                         type: Array,
-                        value: [],
-                        notify: true,
+                        value: []
                     },
                     limit: {
                         type: Number,
                         value: 4
                     }
                 },
+                _setId: function(index){
+                    return 'sa-date-card-' + index;
+                },
                 filter: function (item) {
-                    if (this.dates.indexOf(item) < this.limit) {
+                    this.$$('sa-empty-date').style.display = 'none';
+                    var index = this.dates.indexOf(item);
+                    if (index < this.limit - 1) {
+                        //var date = new Date(item);
+                        //var now = new Date(Date.now());
+                        //var diff = (date.getTime() - now.getTime()) / (24 * 3600 * 1000);
+
+                        //if (diff < 5 && diff > 0) {
+                        //    //this.$$('#sa-date-card-' + index).hilight();
+                        //}
+
+
                         return true;
                     }
-                    
-                    return false;
+                    else {
+                        this.$$('sa-empty-date').style.display = null;
+                        return false;
+                    }
+
+                    return false;                    
                 },
                 _sortDates:function(a,b) {
                     var A = new Date(a);
                     var B = new Date(b);
 
-                    return A > B;
+                    return A - B;
                 },
                 refresh: function () {
+                    this.$$('sa-empty-date').style.display = 'none';
                     this.$.dates.render();
                 }
             });

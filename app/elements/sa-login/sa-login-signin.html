@@ -1,4 +1,7 @@
 ﻿
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html" />
+<link rel="import" href="../sa-xhr/sa-xhr.html" />
+
 <dom-module id="sa-login-signin">
     <style>
         :host {
@@ -87,15 +90,15 @@
         <div class="button">
             <paper-button on-click="_signin" raised>Sign In</paper-button>
         </div>
+        <paper-spinner active="[[_isLoading]]"></paper-spinner>
 
-        <iron-ajax id="login-ajax"
-                   url="/users/login"
-                   params="{{_infos}}"
-                   handle-as="json"
-                   method="POST"
-                   on-response="_handleResponse"
-                   last-response="{{_response}}">
-        </iron-ajax>
+        <sa-xhr id="xhr"
+                url="/users/login"
+                body="{{_infos}}"
+                method="POST"
+                on-result="_handleResponse"
+                result="{{_response}}"
+                is-loading="{{_isLoading}}"></sa-xhr>
 
     </template>
 
@@ -117,37 +120,34 @@
                     }
                 },
                 _signin: function (event) {
-                    this._infos = {
+                    this.signin({
                         email: this._email,
                         password: this._password
-                    };
-                    this.querySelector('iron-ajax').generateRequest();
+                    });
                 },
-                signin: function (infos, signup) {
-                    this._infos = infos;                    
-                    this.querySelector('iron-ajax').generateRequest();
+                signin: function (infos) {
+                    this._infos = infos;
+                    this.$.xhr.request();
                 },
                 _handleResponse: function () {
-                    if (typeof this._response == "undefined" || this._response == null) {
+                    if (!this._response) {
                         return;
                     }
 
-                    if (this._response.success && this._response.method === 'POST') {
-                        if (this._remember === true) {
-                            window.localStorage.token = this._response.token;
-                            window.localStorage.remember = true;
-                            window.localStorage.setItem('email', this._infos._email);
-                            window.localStorage.setItem('id', this._response.id);
-                            window.localStorage.setItem('user', JSON.stringify(this._response.user));
-                        }
-
-                        window.sessionStorage.token = this._response.token;
-                        window.sessionStorage.setItem('email', this._infos._email);
-                        window.sessionStorage.setItem('id', this._response.id);
-                        window.sessionStorage.setItem('user', JSON.stringify(this._response.user));
-                        
-                        app.onLogIn();
+                    if (this._remember === true) {
+                        window.localStorage.token = this._response.token;
+                        window.localStorage.remember = true;
+                        window.localStorage.setItem('email', this._infos._email);
+                        window.localStorage.setItem('id', this._response.id);
+                        window.localStorage.setItem('user', JSON.stringify(this._response.user));
                     }
+
+                    window.sessionStorage.token = this._response.token;
+                    window.sessionStorage.setItem('email', this._infos._email);
+                    window.sessionStorage.setItem('id', this._response.id);
+                    window.sessionStorage.setItem('user', JSON.stringify(this._response.user));
+
+                    app.onLogIn();
                 }
             });
         })();

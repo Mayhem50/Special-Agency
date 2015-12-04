@@ -1,0 +1,33 @@
+﻿
+<link rel="import" href="sa-chats-list.html" />
+<link rel="import" href="sa-chat-box.html" />
+<link rel="import" href="../sa-missions/sa-mission-card.html" />
+<link rel="import" href="../sa-xhr/sa-xhr.html" />
+
+<dom-module id="sa-messages">
+    <style>
+        :host {
+        }
+    </style>
+    <template>
+        <div id="messages-list">
+            <sa-chats-list id="agent-messages"></sa-chats-list>
+            <sa-chats-list id="sponsor-messages"></sa-chats-list>
+        </div>
+        <sa-chat-box></sa-chat-box>
+        <sa-mission-card mission="[[chat.mission]]"></sa-mission-card>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-messages',
+
+                properties: {
+                }
+            });
+        })();
+
+    </script>
+</dom-module>
+

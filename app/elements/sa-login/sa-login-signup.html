@@ -1,4 +1,5 @@
 ﻿
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html" />
 <link rel="import" href="../sa-xhr/sa-xhr.html" />
 
 <dom-module id="sa-login-signup">
@@ -105,6 +106,9 @@
             <paper-button on-click="_signup" raised>Sign Up</paper-button>
         </div>
 
+        <paper-spinner active="[[_isLoading]]"></paper-spinner>
+
+
         <iron-ajax id="check-availability-ajax"
                    url="/checkAvailability/email"
                    params="[[_params]]"
@@ -119,7 +123,8 @@
                 body="[[_params]]"
                 url="/users"
                 result="{{user}}"
-                on-result="_onResult"></sa-xhr>
+                on-result="_onResult"
+                is-loading="{{_isLoading}}"></sa-xhr>
 
 </template>
 

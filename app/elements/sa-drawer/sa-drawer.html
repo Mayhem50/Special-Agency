@@ -3,25 +3,23 @@
 <dom-module id="sa-drawer">
     <style>
         :host {
-            display: block;
-        }
-
-        .container{
             display:flex;
             flex-direction:column;
             align-items:center;
             background-color:#2b2b2b;
+            height:100%;
+            overflow:hidden;
         }
 
         .not-logged-container{            
             display:flex;
             flex-direction:column;
-            height:77vh;
+            height:100%;
         }
 
         #avatar-container{
-            width:220px;
-            height:220px;
+            width:100%;
+            flex-grow:1;
             background-image:url('../../images/gradient-2_300x300.png');
             background-repeat:no-repeat;
             display:flex;
@@ -45,13 +43,16 @@
         #toggle-button{
             text-transform:none;
             background-color:#9b2531;
-            width:99%;
-            border-radius:0px;
+            width:85%;
+            border-radius:5px;
         }
         
         .content{
             width:100%;
-            background-color:#2b2b2b;
+            background-color:#2b2b2b;            
+            flex-grow:62;
+            display:flex;
+            justify-content:center;
         }
 
         .signin{
@@ -63,7 +64,7 @@
         }
 
         .dummy{
-            height:52.3vh;
+            height:56.4vh;
         }
         
         .dummy2{
@@ -80,8 +81,8 @@
             display:flex;
             flex-direction:column;
             justify-content:space-between;
-            height:77vh;
             align-items:center;
+            width:100%;
         }
 
         #sing-out-button{
@@ -91,17 +92,22 @@
             border-radius:0px;
             color:#cccccc;
         }
+
+        iron-pages{
+            display:flex;
+            justify-content:center;
+            width:100%;
+        }
     </style>
 
     <template>
-        <div class="container">
             <div id="avatar-container">
                 <div id="avatar"></div>
             </div>
             <div class="content">
                 <iron-pages id="drawer-page" selected="[[isLogged]]">
 
-                    <section class="not-logged-container">
+                    <div class="not-logged-container">
                         <iron-collapse id="signin-collapse">
                             <div class="signin">
                                 <sa-login-signin user="{{user}}"></sa-login-signin>
@@ -117,8 +123,8 @@
                                 <div class="dummy2"><span>&nbsp;</span></div>
                             </iron-collapse>
                         </div>
-                    </section>
-                    <section class="is-logged">
+                    </div>
+                    <div class="is-logged">
                         <paper-tabs selected="{{tabSelect}}">
                             <paper-tab>Agent</paper-tab>
                             <paper-tab>Sponsor</paper-tab>
@@ -137,11 +143,10 @@
                         </iron-pages>
 
                         <paper-button id="sing-out-button" on-tap="_logOut">Log Out</paper-button>
-                    </section>
+                    </div>
 
                 </iron-pages>
             </div>
-        </div>
     </template>
 
     <script>

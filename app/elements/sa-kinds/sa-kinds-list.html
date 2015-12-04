@@ -1,5 +1,6 @@
 ﻿<link rel="import" href="sa-kind-card.html" />
 <link rel="import" href="../sa-xhr/sa-xhr.html" />
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html" />
 
 <dom-module id="sa-kinds-list">
     <style>
@@ -32,6 +33,12 @@
             max-width: 940px;
             margin: 10px 10px;
         }
+
+        paper-spinner{
+            width:5vh;
+            height:5vh;
+            margin-top: 30vh;
+        }
     </style>
 
     <template>
@@ -44,11 +51,13 @@
             </template>
         </div>
 
+        <paper-spinner active="[[_isLoading]]"></paper-spinner>
 
         <sa-xhr id="xhr"
                 url="/kinds"
                 method="get"
-                result="{{_kinds}}"></sa-xhr>
+                result="{{_kinds}}"
+                is-loading="{{_isLoading}}"></sa-xhr>
     </template>
 
     <script>

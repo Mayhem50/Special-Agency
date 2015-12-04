@@ -542,7 +542,7 @@
                     </div>
                     <div id="left-row-1-cell-3">
                         <div class="cell-title">{{_translations.texts.available_dates}}</div>
-                        <sa-date-picker id="date" disabled="[[disabled]]" dates="{{mission.wishDates}}">
+                        <sa-date-picker id="date" disabled="[[disabled]]" dates="{{mission.wishDates}}" on-date-selected="_onDateChanged">
                             <iron-icon prev-month icon="chevron-left"></iron-icon>
                             <iron-icon next-month icon="chevron-right"></iron-icon>
                         </sa-date-picker>
@@ -630,7 +630,9 @@
                         type: String,
                         value: 'Easy'
                     },
-                    mission: Object,
+                    mission: {
+                        type: Object,
+                    },
                     kinds: {
                         type: Object,
                         observer: '_kindsChanged'
@@ -645,6 +647,10 @@
                         observer: '_subKindsChanged'
                     },
                     subKind: Object
+                },
+                _onDateChanged: function (e) {
+                    console.log(e);
+                    this.$$('#right-part').init();
                 },
                 ready: function () {
                     this._createEmptyMission();
@@ -712,7 +718,7 @@
                     this.fire('close-infos');
                 },
                 _postuleMission:function(){
-                    app.socket.emit('postulate-mission', { mission: this.mission, lang : app.lang || 'fr' } );
+                    app.socket.emit('new-chat', { mission: this.mission} );
                 },
                 _selectLevel: function (e) {
                     this.mission.level = parseInt(e.target.id) - 1;

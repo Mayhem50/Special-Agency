@@ -9,6 +9,12 @@ module.exports = function (io, socket) {
     socket.on('add-mission', function (data) {
         console.log('add mission');
         
+        data.wishDates.sort(function (a, b) {
+            var A = new Date(a);
+            var B = new Date(b);
+            
+            return A - B;
+        });
         var mission = new Mission(data);
         mission._owner = socket.user._id;
         

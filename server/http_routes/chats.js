@@ -27,7 +27,7 @@ module.exports = function () {
     
     router.get('/chats/:role/:id', jwtauth, function (req, res) {
         if (req.params.role == 'sponsor') {
-            Chat.find({ '_sponsor' : req.params.id }).populate('_mission').populate('_agent').exec(function (err, chats) {
+            Chat.find({ '_sponsor' : req.params.id }).populate('_mission _agent').exec(function (err, chats) {
                 if (err) { return res.sendStatus(500); }                
                 if (!chats) { return res.sendStatus(500); }
                 return res.json({
@@ -38,7 +38,7 @@ module.exports = function () {
             });
         }
         if (req.params.role == 'agent') {
-            Chat.find({ '_agent' : req.params.id }).populate('_mission').populate('_sponsor').exec(function (err, chats) {
+            Chat.find({ '_agent' : req.params.id }).populate('_mission _sponsor').exec(function (err, chats) {
                 if (err) { return res.sendStatus(500); }                
                 if (!chats) { return res.sendStatus(500); }
                 return res.json({

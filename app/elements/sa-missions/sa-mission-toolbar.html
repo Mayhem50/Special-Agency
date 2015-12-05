@@ -1,0 +1,55 @@
+﻿
+<dom-module id="sa-mission-toolbar">
+    <style>
+        :host {
+            display: flex;
+            justify-content:center;
+            background-color:#383838;
+            padding:0 10vw;
+            --paper-tab: {
+                width: 8vw;
+                padding: 0;
+                color:#fff;
+                text-transform:uppercase;
+                font-weight:100;
+            }
+
+            --paper-tabs: {
+                height: 50px;
+                align-self: flex-end;
+            }
+
+            --paper-tabs-selection-bar: {
+                height: 6px;
+            }
+            
+            --paper-tabs-selection-bar-color: #fff;
+        }
+    </style>
+
+    <template>
+        <paper-tabs noink attr-for-selected="data-route" selected="{{filter}}">
+            <paper-tab data-route="missions">all</paper-tab>
+            <paper-tab data-route="kinds">categories</paper-tab>
+            <paper-tab data-route="made-for-me">made for me</paper-tab>
+            <paper-tab data-route="ending-soon">ending soon</paper-tab>
+            <paper-tab data-route="arround-me">arround me</paper-tab>
+        </paper-tabs>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-mission-toolbar',
+
+                properties: {
+                    filter: {
+                        type: String,
+                        value: 'missions',
+                        notify:true
+                    }
+                }
+            });
+        })();
+    </script>
+</dom-module>

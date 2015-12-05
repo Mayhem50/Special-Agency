@@ -19,7 +19,6 @@ module.exports = function (passport) {
             req.login(user, function (err) {
                 if (err) return next(err);
                 
-                user.password = null;
                 var token = jwt.encode(user._id, 'xbJ9Phit');
                 var result = {
                     'user' : user,

@@ -47,7 +47,7 @@
         border-bottom-right-radius:0;
         border-top-left-radius:5px;
         border-top-right-radius:5px;
-        padding:0;
+        padding: 6px 10px 0;
     }
     </style>
 
@@ -58,9 +58,7 @@
         </div>
         <paper-tabs noink attr-for-selected="data-route" selected="{{route}}">
             <paper-tab data-route="missions">Missions</paper-tab>
-            <paper-tab data-route="messages">Messages</paper-tab>
-            <paper-tab data-route="calendar">Calendar</paper-tab>
-            <paper-tab data-route="rdv">Upcomming RDV</paper-tab>
+            <paper-tab data-route="dashboard">Dashboard</paper-tab>
         </paper-tabs>
         <div>Support</div>
         <div id="button">
@@ -91,14 +89,18 @@
                     this.route = 'missions';
                 },
                 _onCreateMission: function (e) {
-                    this.createMission = true;
+                    this.createMission = !this.createMission;
                 },
                 _createMissionChanged: function (e) {
                     if (this.createMission) {
                         this.$.button.style.background = "#339933";
+                        this.$$('paper-button').style.background = '#cd0000';
+                        this.$$('paper-button').innerHTML = 'Cancel Mission';
                     }
                     else {
                         this.$.button.style.background = "rgba(0, 0, 0, 0)";
+                        this.$$('paper-button').style.background = '#339933';
+                        this.$$('paper-button').innerHTML = 'Create Mission';
                     }
                 }
             });

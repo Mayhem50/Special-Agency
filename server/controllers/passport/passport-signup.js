@@ -1,5 +1,6 @@
 ﻿var LocalStrategy = require('passport-local').Strategy;
 var User = require('../../models/user');
+var Credential = require('../../models/credential');
 var bCrypt = require('bcrypt-nodejs');
 var util = require('util');
 
@@ -30,24 +31,22 @@ module.exports = function (passport) {
         
         findOrCreateUser = function () {
             // find a user in Mongo with provided username
-            User.findOne({ 'username' : username }, function (err, user) {
+            Credential.findOne({ 'email' : username }, function (err, credential) {
                 // In case of any error, return using the done method
                 if (err) {
                     console.log('Error in SignUp: ' + err);
                     return done(err);
                 }
                 // already exists
-                if (user) {
+                if (credential) {
                     console.log('User already exists with username: ' + username);
-                    return done(null, false, user);
+                    return done(null, false, credential);
                 } else {
                     // if there is no user with that email
                     // create the user
                     var newUser = new User();
                     
                     // set the user's local credentials
-                    newUser.email = username;
-                    newUser.password = createHash(password);
                     newUser.firstName = req.query.firstName;
                     newUser.lastName = req.query.lastName;
                     newUser.gender = req.query.gender;
@@ -81,12 +80,24 @@ module.exports = function (passport) {
                     
                     // save the user
                     newUser.save(function (err) {
-                        if (err) {
-                            console.log('Error in Saving user: ' + err);
-                            throw err;
-                        }
-                        console.log('User Registration succesful');
-                        return done(null, newUser);
+                        var newCredential = new Credential({
+                            '_user' : newUser._id,
+                            email : username,
+                            password : createHash(password)
+                        });
+                        
+                        newCredential.save(function (err) {
+                            if (err) {
+                                console.log('Error in Saving user: ' + err);
+                                throw err;
+                            }
+                            if (err) {
+                                console.log('Error in Saving user: ' + err);
+                                throw err;
+                            }
+                            console.log('User Registration succesful');
+                            return done(null, newUser);
+                        });
                     });
                 }
             });

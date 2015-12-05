@@ -1,4 +1,6 @@
 ﻿<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../sa-login/sa-login-signin.html" />
+<link rel="import" href="../sa-login/sa-login-signup.html" />
 
 <dom-module id="sa-drawer">
     <style>
@@ -9,6 +11,29 @@
             background-color:#2b2b2b;
             height:100%;
             overflow:hidden;
+
+            --paper-tab:{
+                padding:0;
+                text-transform:uppercase;
+                color:#a6a6a6;
+            }
+            --paper-tabs:{
+                height:40px;
+                width:90%;
+                padding:3px 0 0;
+                background-color:#363636;
+            }
+            --paper-tabs-selection-bar:{
+                height:0px;
+            }
+            --paper-tab-content-unselected:{
+                background-color:#363636;
+            }
+            --paper-tab-content:{
+                background-color:#2b2b2b;
+                border-top-left-radius:5px;
+                border-top-right-radius:5px;
+            }
         }
 
         .not-logged-container{            
@@ -83,6 +108,7 @@
             justify-content:space-between;
             align-items:center;
             width:100%;
+            background-color:#363636;          
         }
 
         #sing-out-button{
@@ -98,6 +124,46 @@
             justify-content:center;
             width:100%;
         }
+
+        .tab{
+            background-color:#2b2b2b;
+            flex-grow:1;
+            padding: 5px;
+        }
+
+        #role{
+            flex-grow:2;
+        }
+
+        .slice{
+            background-color:#363636;
+            margin-top:2px;
+            height:35px;
+            color:#727272;
+            padding: 0 5px;
+            display:flex;
+            align-items:center;
+            cursor:pointer;
+        }
+
+        .first-slice{
+            border-top-left-radius:5px;
+            border-top-right-radius:5px;
+        }
+
+        .last-slice{
+            border-bottom-left-radius:5px;
+            border-bottom-right-radius:5px;
+        }
+
+        .id{
+            width:100%;
+            display:flex;
+            justify-content:center;
+            color:#454545;
+            margin:7px;
+        }
+
     </style>
 
     <template>
@@ -125,20 +191,25 @@
                         </div>
                     </div>
                     <div class="is-logged">
-                        <paper-tabs selected="{{tabSelect}}">
-                            <paper-tab>Agent</paper-tab>
-                            <paper-tab>Sponsor</paper-tab>
+                        <paper-tabs noink selected="{{role}}" attr-for-selected="data-role" on-iron-select="_onRoleChanged">
+                            <paper-tab data-role="agent">Agent</paper-tab>
+                            <paper-tab data-role="sponsor">Sponsor</paper-tab>
                         </paper-tabs>
-                        <iron-pages selected="{{tabSelect}}">
-                            <div class="agent">
-                                <div class="id"><span>SpecialAgent </span><span>[[agentID]]</span></div>
-                                <div class="first-slice">Messages</div>
-                                <div class="slice">Favorites Missions</div>
+                        <iron-pages id="role" selected="{{role}}" attr-for-selected="data-role">
+                            <div id="agent-tab" class="tab" data-role="agent">
+                                <div class="id"><span>Agent:&nbsp;</span><span>[[user.agentID]]</span></div>
+                                <div class="slice first-slice" on-click="goToAgentMessages">Messages</div>
+                                <div class="slice">Missions Accepted</div>
                                 <div class="slice">Missions Done</div>
-                                <div class="last-slice">Upcoming RDV</div>
+                                <div class="slice last-slice">Upcoming RDV</div>
                             </div>
-                            <div class="sponsor">
-
+                            <div id="sponsor-tab" class="tab" data-role="sponsor">
+                                <div class="id"><span>Sponsor:&nbsp;</span><span>[[user.agentID]]</span></div>
+                                <div class="slice first-slice" on-click="goToSponsorMessages">Messages</div>
+                                <div class="slice">Missions Draft</div>
+                                <div class="slice">Missions Post</div>
+                                <div class="slice">Missions Ended</div>
+                                <div class="slice last-slice">Upcoming RDV</div>
                             </div>
                         </iron-pages>
 
@@ -163,6 +234,10 @@
                     user: {
                         type: Object,
                         observer: '_userChanged'
+                    },
+                    role: {
+                        type: String,
+                        value: 'agent'
                     }
                 },
                 ready: function () {
@@ -209,6 +284,16 @@
                     clearToken();
                     app.onLogOut();
                     this._userChanged(null);
+                },
+                goToAgentMessages: function (e) {
+                    app.route = 'messages';
+                },
+                goToSponsorMessages: function (e) {
+                    app.route = 'messages';
+                },
+                _onRoleChanged: function (e) {
+                    app.role = this.role;
+                    app.fire('role-changed');
                 }
             });
         })();

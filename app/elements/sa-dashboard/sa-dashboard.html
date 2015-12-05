@@ -1,0 +1,37 @@
+﻿
+<link rel="import" href="sa-dashboard-toolbar.html" />
+<link rel="import" href="../sa-messages/sa-messages.html" />
+
+<dom-module id="sa-dashboard">
+    <style>
+        :host {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 0;
+            height: 100%;
+        }
+
+    </style>
+    <template>
+        <sa-dashboard-toolbar filter="{{route}}"></sa-dashboard-toolbar>
+        <iron-pages id="pages" attr-for-selected="data-page" selected="{{route}}">
+            <section data-page="messages">
+                <sa-messages></sa-messages>
+            </section>
+            <section data-page="agenda">
+            </section>
+        </iron-pages>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-dashboard',
+                properties: {
+                }
+            });
+        })();
+
+    </script>
+</dom-module>

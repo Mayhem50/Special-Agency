@@ -1,13 +1,12 @@
 ﻿
-<dom-module id="sa-secondary-toolbar-main">
+<dom-module id="sa-dashboard-toolbar">
     <style>
         :host {
             display: flex;
-            width: 100%;
-            align-items: center;
             background-color:#383838;
+            padding:0 26vw;
             --paper-tab: {
-                width: 120px;
+                width: 8vw;
                 padding: 0;
                 color:#fff;
                 text-transform:uppercase;
@@ -25,32 +24,24 @@
             
             --paper-tabs-selection-bar-color: #fff;
         }
-
-        .dummy{
-            flex-basis:454px;
-        }
     </style>
 
     <template>
-        <div class="dummy">&nbsp;</div>
         <paper-tabs noink attr-for-selected="data-route" selected="{{filter}}">
-            <paper-tab data-route="missions">all</paper-tab>
-            <paper-tab data-route="kinds">categories</paper-tab>
-            <paper-tab data-route="made-for-me">made for me</paper-tab>
-            <paper-tab data-route="ending-soon">ending soon</paper-tab>
-            <paper-tab data-route="arround-me">arround me</paper-tab>
+            <paper-tab data-route="messages">messages</paper-tab>
+            <paper-tab data-route="agenda">agenda</paper-tab>
         </paper-tabs>
     </template>
 
     <script>
         (function () {
             Polymer({
-                is: 'sa-secondary-toolbar-main',
+                is: 'sa-dashboard-toolbar',
 
                 properties: {
                     filter: {
                         type: String,
-                        value: 'missions',
+                        value: 'messages',
                         notify:true
                     }
                 }

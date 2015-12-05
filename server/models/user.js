@@ -2,7 +2,6 @@
 
 module.exports = mongoose.model(
     'User', {
-        email : { type : String, lowercase : true, required : true },
         firstName : String,
         lastName : String,
         gender : String,
@@ -14,11 +13,9 @@ module.exports = mongoose.model(
         },
         agentID : String,
         avatar : String,
-        password : String,
         rank: Number,
         birthDate : Date,
         missionsDone : Number,
-        googleID: { type: mongoose.Schema.Types.ObjectId, ref: 'Google-ID' },
         socket: String
     }
 );

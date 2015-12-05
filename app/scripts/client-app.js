@@ -77,6 +77,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         app.route = 'missions';
         app.isLogged = true;
         app.user = JSON.parse(window.sessionStorage['user']);
+
+        app.socket = io.connect('http://192.168.1.14:3000', {
+            query: 'token=' + window.sessionStorage.token
+        }).on('connect', function () {
+            e = new Event('socket-connected');
+            app.dispatchEvent(e);
+            console.log('socket connected');
+        }).on('disconnect', function () {
+            console.log('disconnected');
+        });
     };
     
     app.onLogOut = function (){
@@ -120,14 +130,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             app.isLogged = true;
             //document.getElementById('deconnexionToggle').show(); 
             
-            app.onLogIn();
-                        
-            app.socket.on('connect', function () {
-                console.log('authenticated');
-            }).on('disconnect', function () {
-                console.log('disconnected');
-            });
-        
+            app.onLogIn(); 
         }
         else {
             app.isLogged = false;
@@ -136,7 +139,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         
         updateMenuBar();
         app.drawer_route = 0;
-        app.lang = navigator.language;      
+        app.lang = navigator.language;             
     });
     
     addEventListener('unload', function (event) {
@@ -167,11 +170,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var splited = window.location.href.split('#!');
             window.history.replaceState(currentState, 'Special-Agency', splited[0]);
         }
-    });
-    
-    app.socket = io.connect('http://192.168.11.136:3000', {
-        query: 'token=' + window.sessionStorage.token
-    });
+    });    
 
     app.changeLanguage = function (lang){
         app.lang = 'en';       
@@ -181,6 +180,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     app.onGetTranslations = function (e){        
         var e = new Event('load-language');
+        app.dispatchEvent(e);
+        
+        e = new Event('load-end');
         app.dispatchEvent(e);
     }
 })(document);

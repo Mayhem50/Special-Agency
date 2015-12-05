@@ -10,28 +10,30 @@
 
         .grid {
             padding: 4px;
-            margin: 1px auto;
+            margin: 32px auto;
             width: 95.8%;
-            display: flex;
-            flex-wrap: wrap;
+            overflow-y: overlay;
+            max-height: 100vh;
         }
 
         .card {
-            min-width: 300px;
-            max-width: 300px;
-            margin: 10px 10px;
+            --sa-kind-card:{
+                min-width: 300px;
+                max-width: 300px;
+            }
         }
 
         .card-2 {
-            min-width: 620px;
-            max-width: 620px;
-            margin: 10px 10px;
+            --sa-kind-card:{
+                min-width: 624px;
+                max-width: 624px;
+            }
         }
 
         .card-3 {
             min-width: 940px;
             max-width: 940px;
-            margin: 10px 10px;
+            @apply(--sa-kind-card);
         }
 
         paper-spinner{
@@ -77,27 +79,29 @@
                             if (this[i][property] === value) return i;
                         }
                         return -1;
-                    };
-
-                    app.socket.on('add-kind', function (data) {
-                        console.log('add kind');
-                        this.push('_kinds', data);
-                    }.bind(this));
-
-                    app.socket.on('update-kind', function (data) {
-                        console.log('update kind');
-                        var index = this._kinds.indexOfObject('_id', data._id);
-                        this.splice('_kinds', index, 1);
-                        this.push('_kinds', data);
-                    }.bind(this));
-
-                    app.socket.on('delete-kind', function (data) {
-                        console.log('delete kind');
-                        var index = this._kinds.indexOfObject('_id', data._id);
-                        this.splice('_kinds', index, 1);
-                    }.bind(this));
+                    };                    
                 },
                 attached: function () {
+                    app.addEventListener('socket-connected', function (e) {
+                        app.socket.on('add-kind', function (data) {
+                            console.log('add kind');
+                            this.push('_kinds', data);
+                        }.bind(this));
+
+                        app.socket.on('update-kind', function (data) {
+                            console.log('update kind');
+                            var index = this._kinds.indexOfObject('_id', data._id);
+                            this.splice('_kinds', index, 1);
+                            this.push('_kinds', data);
+                        }.bind(this));
+
+                        app.socket.on('delete-kind', function (data) {
+                            console.log('delete kind');
+                            var index = this._kinds.indexOfObject('_id', data._id);
+                            this.splice('_kinds', index, 1);
+                        }.bind(this));
+                    }.bind(this));
+
                     this.$.xhr.request();
                 },
                 _kindsChanged: function () {

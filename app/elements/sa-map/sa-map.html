@@ -100,7 +100,7 @@
                     this.getLocation();
                 },
                 mapApiLoaded: function (e) {
-                    this.autocomplete = new google.maps.places.Autocomplete(this.$.autocomplete);
+                    this.autocomplete = new google.maps.places.Autocomplete(this.$.autocomplete.inputElement);
                     google.maps.event.addListener(this.autocomplete, 'place_changed', function () {
                         var place = this.autocomplete.getPlace();
 

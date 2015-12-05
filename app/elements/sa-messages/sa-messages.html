@@ -1,29 +1,57 @@
 ﻿
-<link rel="import" href="sa-chats-list.html" />
-<link rel="import" href="sa-chat-box.html" />
+<link rel="import" href="../sa-chats/sa-chats-list.html" />
+<link rel="import" href="../sa-chats/sa-chat-box.html" />
 <link rel="import" href="../sa-missions/sa-mission-card.html" />
 <link rel="import" href="../sa-xhr/sa-xhr.html" />
 
 <dom-module id="sa-messages">
     <style>
         :host {
+            display:flex;
+            margin-top: 15px;
+            justify-content:space-around;
+            --sa-mission-card:{
+                margin:0;
+            }
+        }
+
+        #messages-list{
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+        }
+
+        sa-chat-box{
         }
     </style>
     <template>
         <div id="messages-list">
-            <sa-chats-list id="agent-messages"></sa-chats-list>
-            <sa-chats-list id="sponsor-messages"></sa-chats-list>
+            <sa-chats-list id="agent-messages" for-who="agent"></sa-chats-list>
+            <sa-chats-list id="sponsor-messages" for-who="sponsor"></sa-chats-list>
         </div>
         <sa-chat-box></sa-chat-box>
-        <sa-mission-card mission="[[chat.mission]]"></sa-mission-card>
+        <sa-mission-card mission="[[chat.mission]]"
+                         hide
+                         show-level></sa-mission-card>
     </template>
 
     <script>
         (function () {
             Polymer({
                 is: 'sa-messages',
-
                 properties: {
+                },
+                ready: function (e) {
+                    app.addEventListener('role-changed', function (e) {
+                        if (app.role == 'sponsor') {
+                            this.$$('#agent-messages').setAttribute('style', 'display:none !important;');
+                            this.$$('#sponsor-messages').setAttribute('style', 'display:normal;');
+                        }
+                        else {
+                            this.$$('#agent-messages').setAttribute('style', 'display:normal;');
+                            this.$$('#sponsor-messages').setAttribute('style', 'display:none !important;');
+                        }
+                    }.bind(this));
                 }
             });
         })();

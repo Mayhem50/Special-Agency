@@ -51,6 +51,7 @@
     <Compile Include="server\http_routes\types.js" />
     <Compile Include="server\io_routes\chats.js" />
     <Compile Include="server\io_routes\missions.js" />
+    <Compile Include="server\models\credential.js" />
     <Compile Include="server\models\default_strings.js" />
     <Compile Include="server\models\message.js" />
     <Compile Include="server\models\translation.js" />
@@ -65,6 +66,7 @@
     <Compile Include="server\http_routes\missions.js" />
     <Compile Include="server\http_routes\users.js" />
     <Compile Include="server\controllers\server.js" />
+    <Content Include="app\elements\sa-dashboard\sa-dashboard.html" />
     <Content Include="app\elements\sa-date-picker\sa-date-picker.html" />
     <Content Include="app\elements\elements.html" />
     <Content Include="app\elements\routing.html" />
@@ -79,9 +81,10 @@
     <Content Include="app\elements\sa-login\sa-login.html" />
     <Content Include="app\elements\sa-kinds\sa-kinds-list.html" />
     <Content Include="app\elements\sa-map\sa-map.html" />
-    <Content Include="app\elements\sa-messages\sa-chat-box.html" />
-    <Content Include="app\elements\sa-messages\sa-chat-list-item.html" />
-    <Content Include="app\elements\sa-messages\sa-chats-list.html" />
+    <Content Include="app\elements\sa-chats\sa-chat-box.html" />
+    <Content Include="app\elements\sa-chats\sa-chat-list-item.html" />
+    <Content Include="app\elements\sa-chats\sa-chats-list.html" />
+    <Content Include="app\elements\sa-dashboard\sa-dashboard-toolbar.html" />
     <Content Include="app\elements\sa-template.html" />
     <Content Include="app\elements\sa-messages\sa-messages.html" />
     <Content Include="app\elements\sa-missions\sa-mission-card.html" />
@@ -94,9 +97,9 @@
     <Content Include="app\elements\sa-profile\sa-profile.html" />
     <Content Include="app\elements\sa-level\sa-level.html" />
     <Content Include="app\elements\sa-rank\sa-rank.html" />
-    <Content Include="app\elements\sa-toolbar\sa-secondary-toolbar-main.html" />
-    <Content Include="app\elements\sa-toolbar\sa-secondary-toolbar-second.html" />
-    <Content Include="app\elements\sa-toolbar\sa-toolbar-filter.html" />
+    <Content Include="app\elements\sa-missions\sa-mission-toolbar.html" />
+    <Content Include="app\elements\sa-kinds\sa-kind-toolbar.html" />
+    <Content Include="app\elements\sa-missions\sa-mission-filter-toolbar.html" />
     <Content Include="app\elements\sa-toolbar\sa-toolbar-logged.html" />
     <Content Include="app\elements\sa-toolbar\sa-toolbar-not-logged.html" />
     <Content Include="app\elements\sa-translations\sa-translation.html" />
@@ -152,6 +155,8 @@
   <ItemGroup>
     <Folder Include="app\" />
     <Folder Include="app\elements\" />
+    <Folder Include="app\elements\sa-chats\" />
+    <Folder Include="app\elements\sa-dashboard\" />
     <Folder Include="app\elements\sa-messages\" />
     <Folder Include="app\elements\sa-translations\" />
     <Folder Include="app\elements\sa-xhr\" />

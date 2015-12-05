@@ -1,0 +1,143 @@
+﻿
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html" />
+<link rel="import" href="../sa-xhr/sa-xhr.html" />
+<link rel="import" href="sa-chat-list-item.html" />
+
+<dom-module id="sa-chats-list">
+    <style>
+        :host {
+            width: 600px;
+            border-radius: 7px;
+            display: flex;
+            flex-direction: column;
+            height: 795px;
+            justify-content:space-between;
+        }
+
+        #header {
+            height: 50px;
+            display:flex;
+            background-color:#3a3a3a;
+            color:#7c7c7c;
+            border-top-left-radius:5px;
+            border-top-right-radius:5px;
+        }
+
+        #header-icon{
+            width:50px;
+        }
+
+        #header-text{
+            flex-grow:2;
+        }
+
+        #header-date{
+            width:100px;
+        }
+
+        #content {
+            flex-grow: 2;
+            display:flex;
+            flex-direction: column;
+            background-color:rgba(48, 48, 48, 0.40);
+        }
+
+        #footer {
+            height: 50px;
+            background-color:#efefef;
+            color:#7c7c7c;
+            border-bottom-left-radius:5px;
+            border-bottom-right-radius:5px;
+        }
+    </style>
+    <template>
+        <div id="header">
+            <div id="header-icon">
+                &nbsp;
+            </div>
+            <div id="header-text">
+                &nbsp;
+            </div>
+            <div id="header-date">
+                &nbsp;
+            </div>
+        </div>
+        <div id="content">
+            <template is="dom-repeat" items="[[_showPage(index)]]">
+                <sa-chat-list-item></sa-chat-list-item>
+            </template>
+            <paper-spinner active="[[_isLoading]]"></paper-spinner>
+        </div>
+        <div id="footer">
+
+        </div>
+
+        <sa-xhr id="xhr"
+                url="[[_xhrUrl]]"
+                params="[[_params]]"
+                result="{{_chats}}"
+                on-result="_receiveChats"
+                is-loading="{{_isLoading}}"></sa-xhr>
+    </template>
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-chats-list',
+
+                properties: {
+                    _chats: {
+                        type: Array,
+                        value:[]
+                    },
+                    _currentPage: Number,
+                    _xhrUrl: String,
+                    forWho: String,
+                    params : Object
+                },
+                ready: function () {                    
+                },
+                attached: function () {
+                    if (!app.user) { return; }
+
+                    if (this.forWho == 'agent') {
+                        this._xhrUrl = '/chats/agent/' + app.user._id;
+                    }
+                    else if (this.forWho == 'sponsor') {
+                        this._xhrUrl = '/chats/sponsor/' + app.user._id;
+                    }
+
+                    this._params = {
+                        access_token: window.sessionStorage.token
+                    }
+
+                    app.addEventListener('socket-connected', function (e) {
+                        app.socket.on('new-chat', function (data) {
+                            if (this.forWho == 'agent' && data._agent == app.user._id){
+                                console.log('new message from sponsor');
+                                this.push('_chats', data);
+                                this._showPage(this._currentPage);
+                            }
+                            else if (this.forWho == 'sponsor' && data._sponsor == app.user._id) {
+                                console.log('new message from agent');
+                                this.push('_chats', data);
+                                this._showPage(this._currentPage);
+                            }
+                        }.bind(this));
+                    }.bind(this));
+
+                    this.$.xhr.request();
+                },
+                _showPage: function (page) {
+                    //return this._chats.filter(function (element, index, array) {
+                    //    return true;
+                    //});
+                },
+                _receiveChats: function (e) {
+                    this._showPage(this._currentPage);
+                }
+            });
+        })();
+
+    </script>
+</dom-module>
+

@@ -11,10 +11,12 @@
 
         paper-card {
             align-self: center;
-            width: 100%;
             border-radius: 7px;
             cursor: pointer;
             margin: 5px;
+            min-width: 300px;
+            max-width: 300px;
+            @apply(--sa-mission-card);
         }
 
         .header {
@@ -82,6 +84,7 @@
             align-items: center;
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
+            cursor:default;
         }
 
         paper-button {
@@ -90,6 +93,7 @@
             align-items: center;
             font-size: 12px;
             color: #999999;
+            padding:0 0.57em;
         }
 
             paper-button iron-icon {
@@ -187,27 +191,41 @@
                         type: Object,
                         observer: 'init'
                     },
-                    _hiddenElement: {
-                        type: Boolean,
-                        value: true
-                    },
                     index: Number,
-                    hide: true,
                     levelLabel: String,
                     _translations: {
                         type: Object,
                         observer: 'init'
                     },
-                    showLevel: false,
-                    acceptEvent:false
+                    showLevel: {
+                        type: Boolean,
+                        value: false
+                    },
+                    acceptEvent: {
+                        type: Boolean,
+                        value: false
+                    },
+                    hide: {
+                        type: Boolean,
+                        value: true
+                    },
                 },
                 ready: function () {
+                },
+                attached:function(){
                     this.init();
                 },
                 handleChange: function (e) {
                     this.init();
                 },
                 init: function () {
+                    if (this.hide) {
+                        this.$.command.style.display = 'none';
+                    }
+                    else {
+                        this.$.command.style.display = 'flex';
+                    }
+
                     if (!this.mission || !this.mission._type) { return; }
 
                     this.cardName = 'card-mission-' + this.mission._type.css + '-' + this.index;
@@ -218,14 +236,7 @@
 
                     this.$$(id).style.backgroundImage = 'url(/images/kinds/' + this.mission._type.image.path + ')';
                     this.$$(id).style.backgroundPosition = this.mission._type.image.xOffset + ' ' + this.mission._type.image.yOffset;
-                    this.$$(id).style.backgroundSize = this.mission._type.image.size;
-
-                    if (this.hide) {
-                        this.$.command.style.display = 'none';
-                    }
-                    else {
-                        this.$.command.style.display = 'flex';
-                    }
+                    this.$$(id).style.backgroundSize = this.mission._type.image.size;                    
 
                     this._computeLevel();
                     this.$$('sa-dates').refresh();

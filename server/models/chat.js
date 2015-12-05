@@ -6,5 +6,6 @@ module.exports = mongoose.model(
         _agent : { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
         _sponsor : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         date: { type : Date, default: Date.now },
+        haveUnread: {type: Boolean, default: true}
     }
 );

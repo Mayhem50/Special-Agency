@@ -1,11 +1,11 @@
 ﻿
-<dom-module id="sa-toolbar-filter">
+<dom-module id="sa-mission-filter-toolbar">
     <style>
         :host {
             display: flex;
             width: 100%;
             align-items: center;
-            height: 50px;
+            height: 38px;
             margin: 0;
             background-color: #4a4a4a;
             justify-content:space-between;
@@ -66,7 +66,7 @@
     <script>
         (function () {
             Polymer({
-                is: 'sa-toolbar-filter',
+                is: 'sa-mission-filter-toolbar',
 
                 properties: {
                     kind: {
@@ -84,13 +84,13 @@
                 },
                 _sortChanged: function (e) {
                     this._switchColorButtons(e);
-                    this.fire('sort-changed', { type: e.target.id });
+                    this.fire('sort-changed', { type: e.target.id, kind: this.kind });
                 },
                 _filterChanged: function (e) {
                     if (this._toggleButtonsColor(e))
-                        this.fire('filter-add', { type: e.target.id });
+                        this.fire('filter-add', { type: e.target.id, kind: this.kind });
                     else
-                        this.fire('filter-remove', { type: e.target.id });
+                        this.fire('filter-remove', { type: e.target.id, kind: this.kind });
                 },
                 _toggleButtonsColor: function (e) {
                     if (e.target.className.includes('button-unselected') || !e.target.className.includes('button-selected')) {

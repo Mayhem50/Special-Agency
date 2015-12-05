@@ -15,6 +15,7 @@ module.exports = function (io, socket) {
             
             return A - B;
         });
+
         var mission = new Mission(data);
         mission._owner = socket.user._id;
         
@@ -27,16 +28,15 @@ module.exports = function (io, socket) {
             mission._type = kind;
             kind.count++;
             kind.save();
+            mission.save(function (err) {
+                if (err) {
+                    console.log('Error in Saving mission: ' + err);
+                    throw err;
+                }
+                io.emit('add-mission', mission);
+            });            
         });
         
-        mission.save(function (err) {
-            if (err) {
-                console.log('Error in Saving mission: ' + err);
-                throw err;
-            }
-        });
-        
-        io.emit('add-mission', mission);
             //socket.broadcast.emit('add-mission', mission);
     });
     

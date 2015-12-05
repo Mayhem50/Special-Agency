@@ -13,7 +13,13 @@
 <dom-module id="sa-mission-infos">
     <style>
         :host {
-        }       
+            display:flex;
+            margin-top: 15px;
+            justify-content:space-around;
+            --sa-mission-card:{
+                margin:0;
+            }
+        }              
 
         .cell-title{
             height:40px;
@@ -27,13 +33,6 @@
         paper-card{
             border-radius:7px;
             background-color:rgba(101, 101, 101, 0.47);
-        }
-
-        #container {
-            display:flex;
-            width:95%;
-            margin: 15px auto;
-            justify-content:space-around;
         }
 
         #buttons{
@@ -451,40 +450,6 @@
             };
         }
 
-        #right-part{
-            width:300px;
-            align-self:stretch;
-        }
-
-        #right-title{
-            height:40px;
-            background-color:rgba(56, 56, 56, 0.92);
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            color:#989898;
-            border-top-left-radius:5px;
-            border-top-right-radius:5px;
-        }
-
-        #right-header{
-            height:260px;
-            display:flex;
-            flex-direction:column;
-            background-image: url('../../images/gradient-2_300x300.png');
-            background-size:cover;
-            justify-content:center;
-            align-items:center;
-        }
-
-        #avatar{
-            height:155px;
-            width:155px;
-            background-size:contain;
-            border-radius:50%;
-            background-repeat:no-repeat;
-        }
-
         #level-background{
             display:flex;
             align-items:center;
@@ -493,7 +458,6 @@
 
     </style>
     <template>
-        <div id="container">
             <paper-card id="left-part">
                 <div id="left-row-1">
                     <div id="left-row-1-cell-1">
@@ -591,12 +555,7 @@
                 </div>
             </paper-card>
 
-            <sa-mission-card id="right-part"
-                             class="card"
-                             mission="[[mission]]"
-                             hide
-                             show-level="true"></sa-mission-card>
-            </div>
+            <sa-mission-card id="right-part" mission="[[mission]]" show-level></sa-mission-card>
 
         <sa-translation id="translation"
                         element="sa-mission-infos"
@@ -662,7 +621,6 @@
                     }
                 },
                 _kindsChanged: function (e) {
-                    this.kind = this.kinds[0];
                     this.$.kindsList.render();
                 },
                 _selectKind: function (e) {
@@ -719,7 +677,10 @@
                     this.fire('close-infos');
                 },
                 _postuleMission:function(){
-                    app.socket.emit('new-chat', { mission: this.mission} );
+                    app.socket.emit('new-chat', {
+                        mission: this.mission,
+                        lang: app.lang
+                    });
                 },
                 _selectLevel: function (e) {
                     this.mission.level = parseInt(e.target.id) - 1;
@@ -740,6 +701,9 @@
 
                     switch (this.action) {
                         case 'creation': {
+                            if (this.kinds) {
+                                this.kind = this.kinds[0];
+                            }
                             this.disabled = false;
                             this._clear();
                             this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
@@ -771,6 +735,8 @@
                     }
                 },
                 _setLevel: function () {
+                    if (!this.mission) { return; }
+
                     var image;
 
                     switch (this.mission.level) {

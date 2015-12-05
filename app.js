@@ -43,6 +43,7 @@ app.use(http_missions);
 app.use(http_helpers);
 app.use(http_kinds);
 app.use(http_translation);
+app.use(http_chats);
 
 //app.use(csrf());
 

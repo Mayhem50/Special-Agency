@@ -21,11 +21,8 @@ module.exports = function (server) {
         User.findOneAndUpdate({ '_id' : socket.user }, { 'socket' : socket.id }, { upsert: true }, function (err, user) {
             if (err) { throw err; }
         });
-
-        socket.on('connect', function (data) {
-            console.log(data);
-            socket.emit('connect', 'hello world');            
-        });
+        
+        socket.emit('connect', 'hello world'); 
         
         var io_missions = require('../io_routes/missions')(io, socket);
         var io_chats = require('../io_routes/chats')(io, socket);

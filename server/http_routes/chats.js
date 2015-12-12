@@ -2,6 +2,7 @@
 var jwtauth = require('../controllers/jwtauth');
 var Chat = require('../models/chat');
 var Mission = require('../models/mission');
+var Kind = require('../models/mission-type');
 
 var router = express.Router();
 
@@ -25,29 +26,58 @@ module.exports = function () {
         });
     });
     
-    router.get('/chats/:role/:id', jwtauth, function (req, res) {
-        if (req.params.role == 'sponsor') {
-            Chat.find({ '_sponsor' : req.params.id }).populate('_mission _agent').exec(function (err, chats) {
-                if (err) { return res.sendStatus(500); }                
-                if (!chats) { return res.sendStatus(500); }
+    router.get('/chats/:id', jwtauth, function (req, res) {
+        Chat.find({ $or : [{ '_sponsor' : req.params.id }, { '_agent' : req.params.id }] }).populate('_mission _messages _agent _sponsor').exec(function (err, chats) {
+            if (err) { return res.sendStatus(500); }
+            if (!chats || chats.length == 0) {
                 return res.json({
                     result: chats,
                     method: 'GET',
                     success : true
                 });
+            }
+            chats.forEach(function (chat, index) {
+                chat._messages.forEach(function (message) {
+                    if (!message.isRead) {
+                        ++chat.unreads;
+                    }
+                });
+                
+                Mission.populate(chat._mission, { path: '_type' }, function (err, type) {
+                    if (err) { return res.sendStatus(500); }
+                    
+                    if (index == chats.length - 1) {
+                        return res.json({
+                            result: chats,
+                            method: 'GET',
+                            success : true
+                        });
+                    }
+                });
             });
-        }
-        if (req.params.role == 'agent') {
-            Chat.find({ '_agent' : req.params.id }).populate('_mission _sponsor').exec(function (err, chats) {
-                if (err) { return res.sendStatus(500); }                
-                if (!chats) { return res.sendStatus(500); }
+        });
+    });
+    
+    router.get('/chats/:mission/:id', jwtauth, function (req, res) {
+        Chat.findOne({ '_mission' : req.params.mission, '_agent' : req.params.id }).populate('_mission _messages _agent _sponsor').exec(function (err, chat) {
+            if (err) { return res.sendStatus(500); }
+            if (!chat) { return res.sendStatus(500); }
+
+            chat._messages.forEach(function (message) {
+                if (!message.isRead) {
+                    ++chat.unreads;
+                }
+            });
+            
+            Mission.populate(chat._mission, { path: '_type' }, function (err, type) {
+                if (err) { return res.sendStatus(500); }
                 return res.json({
-                    result: chats,
+                    result: chat,
                     method: 'GET',
                     success : true
                 });
             });
-        }
+        });
     });
     
     return router;

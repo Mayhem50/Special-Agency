@@ -77,11 +77,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         app.route = 'missions';
         app.isLogged = true;
         app.user = JSON.parse(window.sessionStorage['user']);
-
-        app.socket = io.connect('http://192.168.1.14:3000', {
-            query: 'token=' + window.sessionStorage.token
+        
+        app.socket = io.connect('http://192.168.1.14:3000',{
+        //app.socket = io.connect('http://192.168.11.136:3000', {
+            query: 'token=' + window.sessionStorage.token,
+            forceNew: true
         }).on('connect', function () {
-            e = new Event('socket-connected');
+            var e = new Event('socket-connected');
             app.dispatchEvent(e);
             console.log('socket connected');
         }).on('disconnect', function () {
@@ -185,5 +187,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         e = new Event('load-end');
         app.dispatchEvent(e);
     }
+    
 })(document);
 

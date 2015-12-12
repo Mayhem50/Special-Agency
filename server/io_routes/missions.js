@@ -17,7 +17,7 @@ module.exports = function (io, socket) {
         });
 
         var mission = new Mission(data);
-        mission._owner = socket.user._id;
+        mission._owner = socket.user;
         
         Kind.findOne({ '_id' : data._type._id }, function (err, kind) {
             if (err) {

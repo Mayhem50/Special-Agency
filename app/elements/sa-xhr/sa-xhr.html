@@ -27,12 +27,22 @@
                 is: 'sa-xhr',
 
                 properties: {
+                    token : {
+                        type : Boolean,
+                        value : false
+                    },
                     result: {
                         type: Object,
                         notify: true
                     },
-                    body: Object,
-                    params: Object,
+                    body: {
+                        type: Object,
+                        value: {}
+                    },
+                    params: {
+                        type: Object,
+                        value: {}
+                    },
                     url: String,
                     method: {
                         type: String,
@@ -62,6 +72,9 @@
                     }
                 },
                 request: function () {
+                    if (this.token) {
+                        this.params.access_token = window.sessionStorage.token;
+                    }
                     this.$.xhr.generateRequest();
                 }
             });

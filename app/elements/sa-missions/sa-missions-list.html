@@ -77,15 +77,15 @@
                 properties: {
                     _missions: {
                         type: Object,
-                        observer: '_needRender'
+                        observer: 'needRender'
                     },
                     filter: {
                         type: Object,
-                        observer: '_needRender'
+                        observer: 'needRender'
                     },
                     sort: {
                         type: Object,
-                        observer: '_needRender'
+                        observer: 'needRender'
                     },
                     kind: {
                         type: Object,
@@ -141,9 +141,11 @@
                     }
 
                     this.filterAdd('kind');
-                    this._needRender(e);
+                    this.needRender(e);
                 },
                 _onBeginConsultation: function (e) {
+                    if (e.target.nodeName.toLowerCase() == 'iron-icon') { return; }
+
                     this.fire('show-mission', { mission: e.model.item });
                 },
                 _filterMissions: function (item) {
@@ -182,12 +184,12 @@
                             case 'posted':
                             case 'sponsor':
                                 this.hide = false;
-                                ret &= item._owner == app.user._id;
+                                ret &= item._owner._id == app.user._id;
                                 break;
                             case 'accepted':
                             case 'agent':
                                 if (app.user)
-                                    ret &= item._owner != app.user._id;
+                                    ret &= item._owner._id != app.user._id;
                                 else
                                     ret &= true;
                                 break;
@@ -226,9 +228,7 @@
                             return a.level < b.level;
                     }
                 },
-                _needRender: function (e) {
-                    if (!e) { return; }
-
+                needRender: function (e) {
                     this.$.list.render();
                 },
                 _onFilterAdd: function (e) {
@@ -270,6 +270,12 @@
                     }
 
                     this.kind = e.detail.kind;
+                },
+                _onDeleteMission: function (e) {
+                    app.socket.emit('delete-mission', e.detail.mission);
+                },
+                _onBeginEdition: function (e) {
+                    this.fire('edit-mission', { mission: e.detail.mission });
                 }
             });
         })();

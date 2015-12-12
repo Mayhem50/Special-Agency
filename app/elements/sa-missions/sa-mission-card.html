@@ -207,7 +207,8 @@
                     },
                     hide: {
                         type: Boolean,
-                        value: true
+                        value: true,
+                        observer: '_hideChanged'
                     },
                 },
                 ready: function () {
@@ -219,12 +220,6 @@
                     this.init();
                 },
                 init: function () {
-                    if (this.hide) {
-                        this.$.command.style.display = 'none';
-                    }
-                    else {
-                        this.$.command.style.display = 'flex';
-                    }
 
                     if (!this.mission || !this.mission._type) { return; }
 
@@ -298,6 +293,14 @@
 
                     div.elevation = 1;
                     this.$$('#image-collapse').hide();
+                },
+                _hideChanged: function (e) {
+                    if (this.hide) {
+                        this.$.command.style.display = 'none';
+                    }
+                    else {
+                        this.$.command.style.display = 'flex';
+                    }
                 }
             });
         })();

@@ -1,0 +1,342 @@
+﻿<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html" />
+<link rel="import" href="../sa-xhr/sa-xhr.html" />
+
+<dom-module id="sa-chat-box">
+    <style>
+        :host {
+            height: 795px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            @apply(--sa-chat-box);
+        }
+
+        paper-textarea{   
+            background-color:#ffffff;
+            --paper-input-container-input-color: #cccccc;
+
+            --paper-input-container-input:{
+                color:#454545;
+                font-size:12px;
+                height: 85px;
+            };
+
+            --paper-input-suffix:{
+                font-size:32px;
+                line-height:normal;
+            };
+
+            --paper-input-container:{
+                margin:10px 7px 3px;
+                background-color: rgb(247, 247, 247);
+                border-radius: 5px;
+                border:2px solid #dbdbdb;
+                flex-grow: 1;
+                height: 85px;
+            };
+
+            --paper-input-container-underline: {
+                height: 0;
+            };
+
+            --paper-input-container-underline-focus: {
+                height: 0;
+            };
+
+            --paper-input-container-underline-disabled: {
+                border-color:rgba(114, 114, 114, 0);
+                height: 0;
+            };
+        }
+
+        #header {
+            border-top-left-radius:5px;
+            border-top-right-radius:5px;
+            flex-grow: 4;
+            flex-grow: 1;
+            background-image: url('../../images/gradient-2_300x300.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+        }
+
+        #avatar {
+            width: 75px;
+            height: 75px;
+            background-repeat: no-repeat;
+            border-radius: 50%;
+            background-size: contain;
+        }
+
+        #content {
+            flex-grow: 15;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-bottom:7px;
+        }
+
+            #content paper-input {
+                align-self: flex-end;
+            }
+
+        #footer {
+            background-color: #ffffff;
+            display: flex;
+            justify-content:flex-end;
+            border-bottom-left-radius:5px;
+            border-bottom-right-radius:5px;
+        }
+
+        .element {
+            width: 60%;
+            margin: 5px 0;
+            padding: 7px;
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            color: #9b9b9b;
+            padding: 5px;
+            display:flex;
+        }
+
+        .my-element {
+            align-self: flex-end;
+        }
+
+        .my-message {
+            border-radius: 5px;
+            background-color: #efefef;
+            justify-content:space-between;
+        }
+
+        .other-element {
+            align-self: flex-start;
+        }
+
+        .other-message {
+        }
+
+        .date {
+            background-color: #666666;
+            margin-bottom: 3px;
+            padding: 2px 7px;
+            color: #ffffff;
+        }
+
+        .my-date {
+            align-self: flex-end;
+        }
+
+        .other-date {
+            align-self: flex-start;
+        }
+
+        .avatar{
+            min-width: 30px;
+            height: 30px;
+            background-size: contain;
+            border-radius: 50%;
+            margin: 9px;
+        }
+
+        .my-avatar{
+            order:5;
+        }
+
+        .other-avatar{
+            order:0;
+        }
+
+        .message-content{
+
+        }
+
+        paper-button{
+            align-self:flex-end;
+        }
+    </style>
+    <template>
+        <div id="header">
+            <div id="avatar"></div>
+        </div>
+        <div id="content">
+            <template id="chat" is="dom-repeat" items="[[_messages]]">
+                <div class$="{{_computeSideClass(item)}}">
+                    <div class$="{{_computeDateClass(item)}}">{{_computeDate(item)}}</div>
+                    <div class$="{{_computeMessageClass(item)}}">
+                        <div class$="{{_computeAvatarClass(item)}}" style$="{{_computeStyle(item)}}">&nbsp;</div>
+                        <div class="message-content">[[item.message]]</div>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <paper-textarea value="{{_message::input}}" always-float-label="false" no-label-float="true"></paper-textarea>
+        <div id="footer">
+            <paper-button on-tap="_sendMessage" disabled="[[disableButton]]">
+                <span>Send</span>
+                <iron-icon icon="send"></iron-icon>
+            </paper-button>
+        </div>
+
+        <sa-xhr id="xhr"
+                url="[[_xhrUrl]]"
+                result="{{chat}}"></sa-xhr>
+    </template>
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-chat-box',
+
+                properties: {
+                    chat: {
+                        type: Object,
+                        observer: '_chatChanged'
+                    },
+                    mission: {
+                        type: Object,
+                        observer: '_missionChanged'
+                    },
+                    _message: {
+                        type: String,
+                        value: '',
+                        observer:'_messageCheck'
+                    },
+                    _messages: Object,
+                    disableButton : false
+                },
+                attached: function () {
+                    app.addEventListener('socket-connected', function (e) {
+                        app.socket.on('new-chat', function (data) {
+                            if (this.mission && this.mission._id == data._mission._id) {
+                                this.chat = data;
+                            }
+                        }.bind(this));
+
+                        app.socket.on('new-message', function (data) {
+                            if (!this.chat) { return; }
+
+                            if (this.chat._id == data._chat) {
+                                this.chat._messages.push(data);
+                                this.push('_messages', data);
+                                this.async(function(){this._scrollDown()}.bind(this));
+                            }
+                        }.bind(this));
+                    }.bind(this));
+                },
+                _missionChanged:function(e){
+                    if (this.mission && this.mission._owner) {
+                        this._updateUI(this.mission._owner.avatar);
+                    }
+                },
+                _sendMessage: function () {
+                    var message = {
+                        message: this._message,
+                        sender: app.user,
+                        receiver: (app.role == 'agent') ? this.mission._owner : this.chat._agent._id,
+                        mission: this.mission
+                    }
+                    app.socket.emit('send-message', message);
+                    this._message = '';
+                },
+                _chatChanged: function (e) {
+                    this.$.header.style.backgroundImage = this._randomGradient();
+
+                    if (this.chat) {
+                        this._messages = this.chat._messages;
+                        if (app.role == 'sponsor') {
+                            this._updateUI(this.chat._agent.avatar);
+                        }
+                        else if (app.role == 'agent') {
+                            this._updateUI(this.chat._sponsor.avatar);
+                        }
+                    }
+                    else {
+                        this._messages = [];
+                    }
+
+                    this.$.chat.render();
+                    this._scrollDown();
+                },
+                _updateUI: function (avatar) {
+                    this.$.avatar.style.backgroundImage = avatar;
+                },
+                _computeSideClass: function (item) {
+                    return this._applyIsMine(item, 'element');
+                },
+                _computeMessageClass: function (item) {
+                    return this._applyIsMine(item, 'message');
+                },
+                _computeDateClass: function (item) {
+                    var str = this._applyIsMine(item, 'date');
+                    return this._applyIsMine(item, 'date');
+                },
+                _randomGradient: function () {
+                    var number = Math.floor(Math.random() * (8));
+                    return "url('../../images/gradient-" + number + "_300x300.png')";
+                },
+                _computeDate: function (item) {
+                    var date = new Date(item.date);
+                    return date.toLocaleDateString();
+                },
+                _computeStyle: function (item) {
+                    if (app.role == 'agent') {
+                        if (app.user._id == item._sender) {
+                            return 'background-image: ' + this.chat._agent.avatar + ';';
+                        }
+                        else {
+                            return 'background-image: ' + this.chat._sponsor.avatar + ';';
+                        }
+                    }
+                    else if (app.role == 'sponsor') {
+                        if (app.user._id == item._receiver) {
+                            return 'background-image: ' + this.chat._agent.avatar + ';';
+                        }
+                        else {
+                            return 'background-image: ' + this.chat._sponsor.avatar + ';';
+                        }
+                    }
+                },
+                _computeAvatarClass: function (item) {
+                    return this._applyIsMine(item, 'avatar');
+                },
+                _scrollDown: function () {
+                    this.$.content.scrollTop = this.$.content.scrollHeight;
+                },
+                _applyIsMine: function (item, value) {
+                    if (app.role == 'agent') {
+                        if (app.user._id == item._sender) {
+                            return value + ' my-' + value;
+                        }
+                        else {
+                            return value + ' other-' + value;
+                        }
+                    }
+                    else if (app.role == 'sponsor') {
+                        if (app.user._id == item._receiver) {
+                            return value + ' my-' + value;
+                        }
+                        else {
+                            return value + ' other-' + value;
+                        }
+                    }
+                },
+                _messageCheck: function (e) {
+                    if (this._message != '') {
+                        this.disableButton = false;
+                    }
+                    else {
+                        this.disableButton = true;
+                    }
+                }
+            });
+        })();
+
+    </script>
+</dom-module>

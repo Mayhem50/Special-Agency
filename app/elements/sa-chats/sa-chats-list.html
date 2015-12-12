@@ -11,43 +11,58 @@
             display: flex;
             flex-direction: column;
             height: 795px;
-            justify-content:space-between;
+            justify-content: space-between;
+            @apply(--sa-chats-list);
         }
 
         #header {
             height: 50px;
+            display: flex;
+            background-color: #3a3a3a;
+            color: #7c7c7c;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            padding-right:5px;
+        }
+
+        #header-icon {
+            width: 40px;
+        }
+
+        #header-agent{
             display:flex;
-            background-color:#3a3a3a;
-            color:#7c7c7c;
-            border-top-left-radius:5px;
-            border-top-right-radius:5px;
-        }
-
-        #header-icon{
-            width:50px;
-        }
-
-        #header-text{
+            justify-content:center;
+            align-items:center;
             flex-grow:2;
         }
 
-        #header-date{
-            width:100px;
+        #header-text {
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-grow: 15;
+        }
+
+        #header-date {
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-grow:3;
         }
 
         #content {
             flex-grow: 2;
-            display:flex;
+            display: flex;
             flex-direction: column;
-            background-color:rgba(48, 48, 48, 0.40);
+            background-color: rgba(48, 48, 48, 0.40);
         }
 
         #footer {
             height: 50px;
-            background-color:#efefef;
-            color:#7c7c7c;
-            border-bottom-left-radius:5px;
-            border-bottom-right-radius:5px;
+            background-color: #efefef;
+            color: #7c7c7c;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
         }
     </style>
     <template>
@@ -55,16 +70,19 @@
             <div id="header-icon">
                 &nbsp;
             </div>
+            <div id="header-agent">
+                Names
+            </div>
             <div id="header-text">
-                &nbsp;
+                Messages
             </div>
             <div id="header-date">
-                &nbsp;
+                Dates
             </div>
         </div>
         <div id="content">
-            <template is="dom-repeat" items="[[_showPage(index)]]">
-                <sa-chat-list-item></sa-chat-list-item>
+            <template id="list" is="dom-repeat" items="[[_chats]]" filter="_filterChat" observers="unreads">
+                <sa-chat-list-item chat="[[item]]" on-click="_getChat"></sa-chat-list-item>
             </template>
             <paper-spinner active="[[_isLoading]]"></paper-spinner>
         </div>
@@ -74,10 +92,10 @@
 
         <sa-xhr id="xhr"
                 url="[[_xhrUrl]]"
-                params="[[_params]]"
                 result="{{_chats}}"
                 on-result="_receiveChats"
-                is-loading="{{_isLoading}}"></sa-xhr>
+                is-loading="{{_isLoading}}"
+                token></sa-xhr>
     </template>
     <script>
         (function () {
@@ -87,53 +105,87 @@
                 properties: {
                     _chats: {
                         type: Array,
-                        value:[]
+                        value: []
                     },
                     _currentPage: Number,
                     _xhrUrl: String,
-                    forWho: String,
-                    params : Object
+                    params: Object,
+                    mission: {
+                        type: Object,
+                        observer: '_needRender'
+                    },
+                    userRole: {
+                        type: String,
+                        observer:'_needRender',
+                        value: 'agent'
+                    }
                 },
-                ready: function () {                    
+                ready: function () {
+                    Array.prototype.indexOfObject = function (property, value) {
+                        for (var i = 0, len = this.length; i < len; i++) {
+                            if (this[i][property] === value) return i;
+                        }
+                        return -1;
+                    };
                 },
                 attached: function () {
                     if (!app.user) { return; }
 
-                    if (this.forWho == 'agent') {
-                        this._xhrUrl = '/chats/agent/' + app.user._id;
-                    }
-                    else if (this.forWho == 'sponsor') {
-                        this._xhrUrl = '/chats/sponsor/' + app.user._id;
-                    }
-
-                    this._params = {
-                        access_token: window.sessionStorage.token
-                    }
+                    this._xhrUrl = '/chats/' + app.user._id;
 
                     app.addEventListener('socket-connected', function (e) {
                         app.socket.on('new-chat', function (data) {
-                            if (this.forWho == 'agent' && data._agent == app.user._id){
-                                console.log('new message from sponsor');
-                                this.push('_chats', data);
-                                this._showPage(this._currentPage);
-                            }
-                            else if (this.forWho == 'sponsor' && data._sponsor == app.user._id) {
-                                console.log('new message from agent');
-                                this.push('_chats', data);
-                                this._showPage(this._currentPage);
-                            }
+                            if (this._chats.indexOfObject('_id', data._id) != -1) { return; }
+
+                            this.push('_chats', data);
+                            app.chats.push(data);
+                        }.bind(this));
+
+                        app.socket.on('new-message', function (data) {
+                            var idx = this._chats.indexOfObject('_id', data._chat);
+                            if (idx < 0) { return; }
+                            this._chats[idx]._messages.push(data);
+                            app.chats[idx]._messages.push(data);
                         }.bind(this));
                     }.bind(this));
 
                     this.$.xhr.request();
                 },
                 _showPage: function (page) {
-                    //return this._chats.filter(function (element, index, array) {
-                    //    return true;
-                    //});
+                    return this._chats;
                 },
                 _receiveChats: function (e) {
-                    this._showPage(this._currentPage);
+                    app.chats = this._chats;
+                },
+                _filterChat: function (item) {
+                    var ret = true;
+
+                    if (this.mission) {
+                        ret &= item._mission._id == this.mission._id;
+                    }
+                    if (app.role == 'agent') {
+                        ret &= item._agent._id == app.user._id;
+                    }
+                    else if (app.role == 'sponsor') {
+                        ret &= item._sponsor._id == app.user._id;
+                    }
+
+                    return ret;
+                },
+                _needRender: function (e) {
+                    this.$.list.render();
+                },
+                _getChat: function (e) {
+                    var idx = this._chats.indexOfObject('_id', e.model.item._id);
+
+                    if (idx > -1) {
+                        var chat = this._chats[idx];
+                        chat.unreads = 0;
+                        this._chats.splice(idx, 1);
+                        this._chats.push(chat);
+                        e.currentTarget.updateChat(chat);
+                    }
+                    this.fire('chat-selected', { chat: e.model.item });
                 }
             });
         })();

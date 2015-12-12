@@ -13,6 +13,9 @@
             --sa-mission-card:{
                 margin:0;
             }
+            --sa-chat-box:{
+                width:600px;
+            }
         }
 
         #messages-list{
@@ -26,11 +29,10 @@
     </style>
     <template>
         <div id="messages-list">
-            <sa-chats-list id="agent-messages" for-who="agent"></sa-chats-list>
-            <sa-chats-list id="sponsor-messages" for-who="sponsor"></sa-chats-list>
+            <sa-chats-list id="chats" user-role="[[role]]" on-chat-selected="_updateChat"></sa-chats-list>
         </div>
-        <sa-chat-box></sa-chat-box>
-        <sa-mission-card mission="[[chat.mission]]"
+        <sa-chat-box chat="[[_currentChat]]" mission="[[_currentChat._mission]]"></sa-chat-box>
+        <sa-mission-card mission="[[_currentChat._mission]]"
                          hide
                          show-level></sa-mission-card>
     </template>
@@ -40,18 +42,23 @@
             Polymer({
                 is: 'sa-messages',
                 properties: {
+                    role: {
+                        type: String,
+                        value: 'agent'
+                    },
+                    _currentChat:Object
                 },
                 ready: function (e) {
                     app.addEventListener('role-changed', function (e) {
-                        if (app.role == 'sponsor') {
-                            this.$$('#agent-messages').setAttribute('style', 'display:none !important;');
-                            this.$$('#sponsor-messages').setAttribute('style', 'display:normal;');
-                        }
-                        else {
-                            this.$$('#agent-messages').setAttribute('style', 'display:normal;');
-                            this.$$('#sponsor-messages').setAttribute('style', 'display:none !important;');
-                        }
+                        this.role = app.role;
                     }.bind(this));
+
+                    app.addEventListener('route-changed', function (e) {
+                        this._currentChat = app.currentChat;
+                    }.bind(this));
+                },
+                _updateChat: function (e) {
+                    this._currentChat = e.detail.chat;
                 }
             });
         })();

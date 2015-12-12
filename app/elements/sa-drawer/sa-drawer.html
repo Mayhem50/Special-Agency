@@ -45,7 +45,6 @@
         #avatar-container{
             width:100%;
             flex-grow:1;
-            background-image:url('../../images/gradient-2_300x300.png');
             background-repeat:no-repeat;
             display:flex;
             justify-content:center;
@@ -244,7 +243,11 @@
                     this._userChanged(null);
                     this.$$('#signin-collapse').show();
                     this.$$('#signup-collapse').hide();
-
+                    this.$$('#avatar-container').style.backgroundImage = this._randomGradient();
+                    },
+                _randomGradient: function () {
+                    var number = Math.floor(Math.random() * (8));
+                    return "url('../../images/gradient-" + number + "_300x300.png')";
                 },
                 _onSignup:function(e){
                     this.querySelector('sa-login-signin').signin({
@@ -286,10 +289,10 @@
                     this._userChanged(null);
                 },
                 goToAgentMessages: function (e) {
-                    app.route = 'messages';
+                    app.route = 'dashboard';
                 },
                 goToSponsorMessages: function (e) {
-                    app.route = 'messages';
+                    app.route = 'dashboard';
                 },
                 _onRoleChanged: function (e) {
                     app.role = this.role;

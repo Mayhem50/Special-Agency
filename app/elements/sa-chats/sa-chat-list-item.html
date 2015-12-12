@@ -1,20 +1,160 @@
 ﻿
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html" />
+<link rel="import" href="../sa-xhr/sa-xhr.html" />
+
 <dom-module id="sa-chat-list-item">
     <style>
         :host {
             width:100%;
-            background-color:aqua;
+            margin:1px 0;
+        }
+
+        #content{
+            height:45px;
+            padding-right: 5px;
+            display:flex;
+            align-items:stretch;
+        }
+
+        #icon{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background-size:cover;
+        }
+
+        #avatar{
+            width:40px;
+            height:40px;
+            background-size:contain;
+            border-radius:50%;
+        }
+
+        #interlocutor{  
+            flex-grow:1;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        #text{
+            flex-grow:15;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            text-overflow:ellipsis;
+        }
+
+        #date{
+            flex-grow:1;
+            display:flex;
+            justify-content:center;
+            align-items:center;
         }
     </style>
     <template>
+        <div id="content" on-mouseenter="_onMouseEnter" on-mouseleave="_onMouseLeave">
+            <div id="icon">
+                <div id="avatar"></div>
+            </div>
+            <div id="interlocutor">
+            </div>
+            <div id="text">
+            </div>
+            <div id="date">
+            </div>
+            <!--<paper-spinner active="[[_isLoading]]"></paper-spinner>
 
+        <sa-xhr id="xhr"
+                url="[[_url]]"
+                token
+                is-loading="{{_isLoading}}"></sa-xhr>-->
+        </div>
     </template>
     <script>
         (function () {
             Polymer({
                 is: 'sa-chat-list-item',
-
+                
                 properties: {
+                    chat: {
+                        type: Object,
+                        observer : '_chatChanged'
+                    }
+                },
+                attached:function(){
+                    app.addEventListener('socket-connected', function (e) {
+                        app.socket.on('chat-read', function (data) {
+                            if (this.chat._id == data._id) {
+                                this.chat.unreads = 0;
+                                this._setBackground();
+                            }
+                        }.bind(this));
+                    }.bind(this));
+
+                    this.$.icon.style.backgroundImage = this._randomGradient();
+                },
+                _chatChanged: function (e) {
+                    //this._url = '/messages/' + this.chat._id;
+                    //this.$.xhr.request();
+                    if (!this.chat) {
+                        return;
+                    }
+
+                    this.style.background = this.chat._mission._type.color;
+                    if (app.role == 'agent') {
+                        this.$.avatar.style.backgroundImage = this.chat._sponsor.avatar;
+                        this.$.interlocutor.innerHTML = this.chat._sponsor.agentID;
+                    }
+                    else if (app.role == 'sponsor') {
+                        this.$.avatar.style.backgroundImage = this.chat._agent.avatar;
+                        this.$.interlocutor.innerHTML = this.chat._agent.agentID;
+                    }
+
+                    this._setLastMessage();
+                    this._setBackground();
+
+                    if (this.chat._messages || this.chat._messages.length == 0) { return; }
+
+                    var date = new Date(this.chat._messages[this.chat._messages.length - 1].date);
+                    this.$.date.innerHTML = date.toLocaleDateString();
+
+                },
+                _setLastMessage: function () {
+                    this.chat._messages.forEach(function(element){                        
+                        if (app.user._id == element._receiver) {
+                            this.$.text.innerHTML = element.message.substring(0,15);
+                        }
+                    }.bind(this));
+                },
+                _randomGradient: function () {
+                    var number = Math.floor(Math.random() * (8));
+                    return "url('../../images/gradient-" + number + "_300x300.png')";
+                },
+                _setBackground: function () {
+                    var color;
+                    if (this.chat.unreads > 0) {
+                        color = '#c3c3c3';
+                    }
+                    else {
+                        color = '#efefef';
+                    }
+                    this.$.interlocutor.style.backgroundColor = color;
+                    this.$.text.style.backgroundColor = color;
+                    this.$.date.style.backgroundColor = color;
+                },
+                updateChat: function (chat) {
+                    this.chat = null;
+                    this.chat = chat;
+                    app.socket.emit('chat-read', this.chat);
+                },
+                _onMouseEnter: function (e) {
+                    this.$.interlocutor.style.backgroundColor = this.chat._mission._type.color;
+                    this.$.text.style.backgroundColor = this.chat._mission._type.color;
+                    this.$.date.style.backgroundColor = this.chat._mission._type.color;
+                },
+                _onMouseLeave: function (e) {
+                    this._setBackground();
                 }
             });
         })();

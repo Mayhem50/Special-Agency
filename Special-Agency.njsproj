@@ -54,6 +54,7 @@
     <Compile Include="server\models\credential.js" />
     <Compile Include="server\models\default_strings.js" />
     <Compile Include="server\models\message.js" />
+    <Compile Include="server\models\socket.js" />
     <Compile Include="server\models\translation.js" />
     <Compile Include="server\models\google-id.js" />
     <Compile Include="server\http_routes\kinds.js" />
@@ -66,6 +67,7 @@
     <Compile Include="server\http_routes\missions.js" />
     <Compile Include="server\http_routes\users.js" />
     <Compile Include="server\controllers\server.js" />
+    <Content Include="app\elements\sa-chats\sa-chat-box .html" />
     <Content Include="app\elements\sa-dashboard\sa-dashboard.html" />
     <Content Include="app\elements\sa-date-picker\sa-date-picker.html" />
     <Content Include="app\elements\elements.html" />
@@ -81,7 +83,6 @@
     <Content Include="app\elements\sa-login\sa-login.html" />
     <Content Include="app\elements\sa-kinds\sa-kinds-list.html" />
     <Content Include="app\elements\sa-map\sa-map.html" />
-    <Content Include="app\elements\sa-chats\sa-chat-box.html" />
     <Content Include="app\elements\sa-chats\sa-chat-list-item.html" />
     <Content Include="app\elements\sa-chats\sa-chats-list.html" />
     <Content Include="app\elements\sa-dashboard\sa-dashboard-toolbar.html" />

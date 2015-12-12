@@ -8,6 +8,9 @@
 <link rel="import" href="../sa-translations/sa-translation.html" />
 <link rel="import" href="../sa-missions/sa-mission-card.html" />
 
+<link rel="import" href="../sa-chats/sa-chat-box .html" />
+<link rel="import" href="../sa-chats/sa-chats-list.html" />
+
 <link rel="import" href="../sa-xhr/sa-xhr.html" />
 
 <dom-module id="sa-mission-infos">
@@ -456,6 +459,11 @@
             height:32px;
         }
 
+        sa-chats-list{
+            width:300px;
+
+        }
+
     </style>
     <template>
             <paper-card id="left-part">
@@ -548,6 +556,8 @@
                                 <iron-pages id="apply-button" selected="0">
                                     <paper-button on-tap="_addMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span></paper-button>
                                     <paper-button on-tap="_postuleMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.postulate_mission}}</span></paper-button>
+                                    <paper-button on-tap="_updateMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span></paper-button>
+                                    <div></div>
                                 </iron-pages>
                             </div>
                         </div>
@@ -555,7 +565,11 @@
                 </div>
             </paper-card>
 
+        <iron-pages id="right-pages" selected="0">
             <sa-mission-card id="right-part" mission="[[mission]]" show-level></sa-mission-card>
+            <sa-chat-box mission="[[mission]]" chat="[[chat]]"></sa-chat-box>
+            <sa-chats-list mission="[[mission]]" on-chat-selected="_showChat"></sa-chats-list>
+        </iron-pages>
 
         <sa-translation id="translation"
                         element="sa-mission-infos"
@@ -606,13 +620,20 @@
                         type: Object,
                         observer: '_subKindsChanged'
                     },
-                    subKind: Object
+                    subKind: Object,
+                    chat: Object
                 },
                 _onDateChanged: function (e) {
                     console.log(e);
                     this.$$('#right-part').init();
                 },
                 ready: function () {
+                    Array.prototype.indexOfObject = function (property, value) {
+                        for (var i = 0, len = this.length; i < len; i++) {
+                            if (this[i][property] === value) return i;
+                        }
+                        return -1;
+                    };
                     this._createEmptyMission();
                 },
                 _kindChanged: function (e) {
@@ -677,9 +698,12 @@
                     this.fire('close-infos');
                 },
                 _postuleMission:function(){
-                    app.socket.emit('new-chat', {
+                    app.socket.emit('send-message', {
                         mission: this.mission,
-                        lang: app.lang
+                        //lang: app.lang
+                        sender: app.user,
+                        receiver: this.mission._owner,
+                        message: 'test mess'
                     });
                 },
                 _selectLevel: function (e) {
@@ -708,17 +732,19 @@
                             this._clear();
                             this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
                             this.$$('#apply-button').select(0);
+                            this.$$('#right-pages').select(0);
                             break;
                         }
                         case 'edition': {
+                            this.disabled = false;
                             this.kind = this.mission._type;
                             this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
-                            this.disabled = false;
                             this.$.map.clearMarkers();
                             this.$.map.clearCircle();
                             this.$.map.setLocation(this.mission.place.longitude, this.mission.place.latitude);
                             this.$.map.drawMarker(this.mission.place.longitude, this.mission.place.latitude, this.mission.place.address);
-                            this.$$('#apply-button').select(0);
+                            this.$$('#apply-button').select(2);
+                            this.$$('#right-pages').select(0);
                             break;
                         }
                         case 'consultation': {
@@ -729,7 +755,17 @@
                             this.$.map.clearCircle();
                             this.$.map.setLocation(this.mission.place.longitude, this.mission.place.latitude);
                             this.$.map.drawMarker(this.mission.place.longitude, this.mission.place.latitude, this.mission.place.address);
-                            this.$$('#apply-button').select(1);
+                            if (app.user._id == this.mission._owner._id) {
+                                this.$$('#right-pages').select(2);
+                                this.$$('#apply-button').select(3);
+                            }
+                            else {
+                                this.chat = app.chats.find(function (element) {
+                                    return element._agent._id == app.user._id && element._mission._id == this.mission._id;
+                                }.bind(this));
+                                this.$$('#right-pages').select(1);
+                                this.$$('#apply-button').select(1);
+                            }
                             break;
                         }
                     }
@@ -761,6 +797,16 @@
                     this.$$('#level-background').style.background = this.kind ? this.kind.color : '#cccccc';
                     if(this._translations)
                         this.levelLabel = this._translations.texts[image];
+                },
+                _showChat: function (e) {
+                    app.currentChat = e.detail.chat;
+                    app.notifyPath("route", "dashboard");
+                },
+                _updateMission: function (e) {
+                    this.mission._type = this.kind;
+                    app.socket.emit('update-mission', this.mission);
+                    this._createEmptyMission();
+                    this.fire('close-infos');
                 }
             });
         })();

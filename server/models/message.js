@@ -3,8 +3,10 @@
 module.exports = mongoose.model(
     'Message', {
         _chat : { type: mongoose.Schema.Types.ObjectId, required : true, ref: 'Chat' },
+        _sender: { type: mongoose.Schema.Types.ObjectId, required : true, ref: 'User' },
+        _receiver: { type: mongoose.Schema.Types.ObjectId, required : true, ref: 'User' },
         date : { type : Date, default: Date.now },
-        content : { type: String },
-        read: { type: Boolean, default: false }
+        message : { type: String },
+        isRead: { type: Boolean, default: false }
     }
 );

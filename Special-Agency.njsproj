@@ -34,6 +34,7 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="app\scripts\client-app.js" />
+    <Compile Include="app\scripts\helpers.js" />
     <Compile Include="app\scripts\jquery-1.11.3.js" />
     <Compile Include="app\sw-import.js" />
     <Compile Include="gulpfile.js" />
@@ -47,27 +48,34 @@
     <Compile Include="server\controllers\passport\passport-signup.js" />
     <Compile Include="server\controllers\session.js" />
     <Compile Include="server\http_routes\chats.js" />
+    <Compile Include="server\http_routes\draft-missions.js" />
+    <Compile Include="server\http_routes\accepted-missions.js" />
+    <Compile Include="server\http_routes\favorite-missions.js" />
     <Compile Include="server\http_routes\translations.js" />
     <Compile Include="server\http_routes\types.js" />
     <Compile Include="server\io_routes\chats.js" />
+    <Compile Include="server\io_routes\favorite-missions.js" />
+    <Compile Include="server\io_routes\draft-missions.js" />
     <Compile Include="server\io_routes\missions.js" />
     <Compile Include="server\models\credential.js" />
     <Compile Include="server\models\default_strings.js" />
-    <Compile Include="server\models\message.js" />
+    <Compile Include="server\models\helpers.js" />
     <Compile Include="server\models\socket.js" />
     <Compile Include="server\models\translation.js" />
     <Compile Include="server\models\google-id.js" />
     <Compile Include="server\http_routes\kinds.js" />
     <Compile Include="server\models\chat.js" />
-    <Compile Include="server\models\mission-type.js" />
+    <Compile Include="server\models\kind.js" />
     <Compile Include="server\models\mission.js" />
+    <Compile Include="server\models\favorite-mission.js" />
+    <Compile Include="server\models\draft-mission.js" />
     <Compile Include="server\models\user.js" />
     <Compile Include="server\http_routes\helpers.js" />
     <Compile Include="server\http_routes\index.js" />
     <Compile Include="server\http_routes\missions.js" />
     <Compile Include="server\http_routes\users.js" />
     <Compile Include="server\controllers\server.js" />
-    <Content Include="app\elements\sa-chats\sa-chat-box .html" />
+    <Content Include="app\elements\sa-chats\sa-chat-box.html" />
     <Content Include="app\elements\sa-dashboard\sa-dashboard.html" />
     <Content Include="app\elements\sa-date-picker\sa-date-picker.html" />
     <Content Include="app\elements\elements.html" />
@@ -86,6 +94,7 @@
     <Content Include="app\elements\sa-chats\sa-chat-list-item.html" />
     <Content Include="app\elements\sa-chats\sa-chats-list.html" />
     <Content Include="app\elements\sa-dashboard\sa-dashboard-toolbar.html" />
+    <Content Include="app\elements\sa-model\sa-model.html" />
     <Content Include="app\elements\sa-template.html" />
     <Content Include="app\elements\sa-messages\sa-messages.html" />
     <Content Include="app\elements\sa-missions\sa-mission-card.html" />
@@ -156,6 +165,7 @@
   <ItemGroup>
     <Folder Include="app\" />
     <Folder Include="app\elements\" />
+    <Folder Include="app\elements\sa-model\" />
     <Folder Include="app\elements\sa-chats\" />
     <Folder Include="app\elements\sa-dashboard\" />
     <Folder Include="app\elements\sa-messages\" />

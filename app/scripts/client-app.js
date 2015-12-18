@@ -27,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     
     // See http://github.com/Polymer/polymer/issues/1381
     window.addEventListener('WebComponentsReady', function (e) {
-        console.log(e);
+
     });
     
     // Main area's paper-scroll-header-panel custom condensing transformation of
@@ -78,8 +78,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         app.isLogged = true;
         app.user = JSON.parse(window.sessionStorage['user']);
         
-        app.socket = io.connect('http://192.168.1.14:3000',{
-        //app.socket = io.connect('http://192.168.11.136:3000', {
+        //app.socket = io.connect('http://192.168.1.14:3000',{
+        app.socket = io.connect('http://192.168.11.136:3000', {
             query: 'token=' + window.sessionStorage.token,
             forceNew: true
         }).on('connect', function () {
@@ -108,17 +108,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         app.missions_notify = !app.missions_notify;
     };
     
-    var updateMenuBar = function (event) {        
-        if ($(window).width() < 640) {
-            $('.main-collapse-button').hide();
-            $('#menu-button').show();
-        }
-        else {
-            $('.main-collapse-button').show();
-            $('#menu-button').hide();
-        }
-    };
-    
     addEventListener('resize', function (e) {
         console.log(e);
     });
@@ -138,8 +127,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             app.isLogged = false;
         //    document.getElementById('deconnexionToggle').hide();
         }
-        
-        updateMenuBar();
+
         app.drawer_route = 0;
         app.lang = navigator.language;             
     });
@@ -182,9 +170,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     app.onGetTranslations = function (e){        
         var e = new Event('load-language');
-        app.dispatchEvent(e);
-        
-        e = new Event('load-end');
         app.dispatchEvent(e);
     }
     

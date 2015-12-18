@@ -1,111 +1,105 @@
 ﻿var User = require('../models/user');
 var Mission = require('../models/mission');
-var Kind = require('../models/mission-type');
+var Kind = require('../models/kind');
 var Chat = require('../models/chat');
-var Message = require('../models/message');
 var Socket = require('../models/socket');
 var default_strings = require('../models/default_strings');
 
 module.exports = function (io, socket) {
-    socket.on('send-message', function (data) {
-        //data = {
-        //    sender : UserID,
-        //    receiver: UserID,
-        //    mission: Mission,
-        //    message: String,
-        //    chat: ChatID
-        //}     
-        
-        console.log('new message');
-        Chat.findOne({ '_mission': data.mission._id, '_sponsor' : data.mission._owner, '_agent' : { $in : [data.receiver, data.sender._id] } }, function (err, chat) {
-            if (err) { throw (err); }
+    socket.on('new-message', function (data) {
+        if (!data.chat) {
+            console.log('new chat');
             
-            if (!chat) {
-                chat = new Chat({
-                    _mission : data.mission,
-                    _sponsor: data.mission._owner,
-                    _agent: data.sender._id,
-                    _messages: [],
-                    unreads: 1
-                });
-                var message = new Message({
-                    message : data.message,
-                    _sender: data.sender._id,
-                    _receiver: data.receiver,
-                    _chat : chat._id
-                });
+            var chat = new Chat({
+                _mission : data.mission,
+                _sponsor: data.mission._sponsor,
+                _agent: data._sender,
+                messages: [{
+                        _sender: socket.user._id,
+                        _receiver : data.mission._sponsor._id,
+                        message : data.message,
+                        date: Date.now()
+                    }],
+                sponsorUnreads: 1
+            });
+            
+            chat.save(function (err) {
+                if (err) { throw (err); }
                 
-                chat._messages.push(message._id);
-                
-                chat.save(function (err) {
+                User.populate(chat, { path : '_agent _sponsor' }, function (err, chat) {
                     if (err) { throw (err); }
-                    
-                    
-                    
-                    message.save(function (err) {
-                        if (err) { throw (err); }                        
-                        
-                        User.populate(chat, { path: '_agent _sponsor' }, function (err, chat) {
-                            Message.populate(chat, { path: '_messages' }, function (err, chat) {
-                                Mission.populate(chat, { path: '_mission' }, function (err, chat) {
-                                    Kind.populate(chat._mission, { path: '_type' }, function (err, mission) {
-                                        Socket.findOne({ '_user' : data.receiver._id }, function (err, sock) {
-                                            if (sock)
-                                                io.to(sock.socket).emit('new-chat', chat);
-
-                                            socket.emit('new-chat', chat);
-                                        });
-                                    });
-                                });
+                    Mission.populate(chat, { path : '_mission' }, function (err, chat) {
+                        if (err) { throw (err); }
+                        Kind.populate(chat._mission, { path : '_type' }, function (err, mission) {
+                            if (err) { throw (err); }
+                            
+                            Socket.findOne({ _user : data._receiver._id }, function (err, _socket) {
+                                if (err) { throw (err); }
+                                if (_socket) {
+                                    io.to(_socket.socket).emit('new-chat', chat);
+                                }
+                                socket.emit('new-chat', chat);
                             });
                         });
                     });
-                        
                 });
-            }
-            else {
-                var message = new Message({
-                    message : data.message,
-                    _sender: data.sender._id,
-                    _receiver: data.receiver,
-                    _chat : chat._id
-                });
-                
-                message.save(function (err) {
-                    if (err) { throw (err); }
-                    chat._messages.push(message._id);
-                    ++chat.unreads;
+            });
+        }
+        else {
+            Chat.findOne({ _id : data.chat }, function (err, chat) {
+                if (err) { throw (err); }
+                if (chat) {
                     
-                    chat.save(function (err) {
-                        if (err) { throw (err) };
-                        
-                        Socket.findOne({ '_user' : data.receiver }, function (err, sock) {
-                            if(sock)
-                                io.to(sock.socket).emit('new-message', message);
+                    var res = {
+                        message : {
+                            _sender: socket.user._id,
+                            _receiver : data._receiver,
+                            message : data.message,
+                            date: Date.now()
+                        },
+                        chat : chat
+                    };
+                    chat.messages.push(res.message);
+                    
+                    if (socket.user.id == chat._sponsor._id) {
+                        ++chat.agentUnreads;
+                    }
+                    else {
+                        ++chat.sponsorUnreads;
+                    }
 
-                            socket.emit('new-message', message);
+                    chat.save(function (err) {
+                        if (err) { throw (err); }
+
+                        Socket.findOne({ _user : data._receiver }, function (err, _socket) {
+                            if (err) { throw (err); }
+                            if (_socket) {
+                                io.to(_socket.socket).emit('new-message', res);
+                            }
+                            socket.emit('new-message', res);
                         });
                     });
-                });
-            }
-        });
-    });
-    
-    socket.on('chat-read', function (data) {
-        Chat.findOneAndUpdate({ '_id' : data._id }, data, { upsert: true }).populate('_messages').exec(function (err, chat) {
-            if (err) { throw (err); }
-            console.log('chat updated');
-
-            chat._messages.forEach(function (element) {
-                Message.findOneAndUpdate({
-                    '_id': element._id
-                }, { 'isRead' : true }, { upsert : true }, function (err, message) {
-                    if (err) { throw (err); }
-                    console.log(message.message + ': ' + 'updated');
-                })
+                }
             });
+        }
+    });
+        
+    socket.on('read-chat', function (data) {
+        Chat.findOne({ '_id' : data._id }, function (err, chat) {
+            if (err) { throw (err); }
+            console.log('chat read');
+            
+            if (chat) {
+                if (socket.user._id.equals(chat._sponsor._id)) {
+                    chat.sponsorUnreads = 0;
+                }
+                else {
+                    chat.agentUnreads = 0;
+                }
 
-            socket.emit('chat-read', chat);
+                chat.save();                
+                socket.emit('read-chat', chat);
+            }          
         });
     });
 }

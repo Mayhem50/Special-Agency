@@ -1,8 +1,8 @@
 ﻿var User = require('../models/user');
 var Mission = require('../models/mission');
-var Kind = require('../models/mission-type');
+var Kind = require('../models/kind');
 var Chat = require('../models/chat');
-var Message = require('../models/message');
+var Socket = require('../models/socket');
 var default_strings = require('../models/default_strings');
 
 module.exports = function (io, socket) {
@@ -17,7 +17,7 @@ module.exports = function (io, socket) {
         });
 
         var mission = new Mission(data);
-        mission._owner = socket.user;
+        mission._sponsor = socket.user;
         
         Kind.findOne({ '_id' : data._type._id }, function (err, kind) {
             if (err) {
@@ -33,7 +33,12 @@ module.exports = function (io, socket) {
                     console.log('Error in Saving mission: ' + err);
                     throw err;
                 }
-                io.emit('add-mission', mission);
+                if (mission.status == 'draft') {
+                    socket.emit('add-mission', mission);
+                }
+                else {
+                    io.emit('add-mission', mission);
+                }
             });            
         });
         
@@ -46,7 +51,7 @@ module.exports = function (io, socket) {
         Mission.findOneAndUpdate({ '_id' : data._id }, data, { upsert: true }, function (err, mission) {
             if (err) { throw err; }
             io.emit('update-mission', data);
-        });        
+        });  
     });
     
     socket.on('accept-mission', function (data) {
@@ -56,34 +61,93 @@ module.exports = function (io, socket) {
     
     socket.on('postulate-mission', function (data) {
         console.log('postulate mission');
-        
-        var chat = new Chat({ _sponsor : data.mission._owner, _mission: data.mission._id, _agent : socket.user._id });
-        chat.save(function (err) {
-            if (err) { throw (err); }
+                
+        //Chat.findOne({ '_mission': data.mission._id, '_sponsor' : data.mission._sponsor, '_agent' : { $in : [data.receiver, data.sender._id] } }, function (err, chat) {
+        //    if (err) { throw (err); }
             
-            var message;
-            if (data.lang == 'fr') {
-                message = new Message({ _chat: chat._id, content : default_strings.fr.default_message });
-            }
-            else if (data.lang == 'en') {
-                message = new Message({ _chat: chat._id, content : default_strings.en.default_message });
-            }
-            
-            message.save(function (err) {
-                if (err) { throw (err); }
-            });
-            data.message = message;
-            
-            User.findOne({ _id: data._owner }, function (err, user) {
-                if (err) { throw (err); }
-                if (user) {
-                    var socket = io.sockets.sockets[user.socket];
-                    if(socket)
-                        socket.emit('postulate-mission', data);
-                }
-            });
-        });
+        //    if (!chat) {
+        //        chat = new Chat({
+        //            _mission : data.mission,
+        //            _sponsor: data.mission._sponsor,
+        //            _agent: data.sender._id,
+        //            messages: [],
+        //            unreads: 0
+        //        });
+        //        var message = new Message({
+        //            message : data.lang == 'fr' ? default_strings.fr.default_message : default_strings.en.default_message,
+        //            _sender: data.sender._id,
+        //            _receiver: data.receiver._id,
+        //            _chat : chat._id
+        //        });
+                
+        //        message.save();
+        //        chat.messages.push(message._id);
+                
+        //        chat.save(function (err) {
+        //            if (err) { throw (err); }
+                    
+        //            User.populate(chat, { path: '_agent _sponsor' }, function (err, chat) {
+        //                Message.populate(chat, { path: 'messages' }, function (err, chat) {
+        //                    Mission.findOneAndUpdate({ '_id' : chat._mission }, {status : 1, _agent : socket.user._id }, function (err, mission) {
+        //                        if (err) { throw (err); }
+        //                        if (!mission) { return; }
+                                
+        //                        Kind.populate(mission, { path: '_kind' }, function (err, mission) {
+        //                            if (err) { throw (err); }
 
+        //                            chat._mission = mission
+        //                            Socket.findOne({ '_user' : data.receiver._id }, function (err, sock) {
+        //                                var unreads = chat.unreads;
+                                        
+        //                                if (sock) {
+        //                                    ++chat.unreads;
+        //                                    io.to(sock.socket).emit('new-chat', chat);
+        //                                }
+        //                                chat.unreads = unreads;
+        //                                socket.emit('new-chat', chat);
+        //                            });
+        //                        });
+        //                    });
+        //                });
+        //            });
+        //        });
+        //    }
+        //    else {
+        //        var message = new Message({
+        //            message : data.lang == 'fr' ? default_strings.fr.default_message : default_strings.en.default_message,
+        //            _sender: data.sender._id,
+        //            _receiver: data.receiver,
+        //            _chat : chat._id
+        //        });
+                
+        //        message.save();
+                
+        //        chat.messages.push(message._id);
+                
+        //        if (data.sender._id != socket.user._id)
+        //            ++chat.unreads;
+                
+        //        chat.save(function (err) {
+        //            if (err) { throw (err) };
+
+        //            Mission.findOneAndUpdate({ '_id' : chat._mission }, { status : 1, _agent : socket.user._id }, function (err, mission) {
+        //                if (err) { throw (err); }
+        //                if (!mission) { return; }
+                        
+        //                Socket.findOne({ '_user' : data.receiver._id }, function (err, sock) {                            
+        //                    var unreads = chat.unreads;
+                            
+        //                    if (sock) {
+        //                        ++chat.unreads;
+        //                        io.to(sock.socket).emit('new-message', message);
+        //                    }
+        //                    chat.unreads = unreads;
+        //                    socket.emit('new-message', message);
+        //                });
+        //            });
+        //        });
+        //    }
+        //});
     });
     
     socket.on('delete-mission', function (data) {

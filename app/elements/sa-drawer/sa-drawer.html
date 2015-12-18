@@ -5,218 +5,242 @@
 <dom-module id="sa-drawer">
     <style>
         :host {
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            background-color:#2b2b2b;
-            height:100%;
-            overflow:hidden;
-
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #2b2b2b;
+            height: 100%;
+            overflow: hidden;
             --paper-tab:{
-                padding:0;
-                text-transform:uppercase;
-                color:#a6a6a6;
+                padding: 0;
+                text-transform: uppercase;
+                color: #a6a6a6;
             }
-            --paper-tabs:{
-                height:40px;
-                width:90%;
-                padding:3px 0 0;
-                background-color:#363636;
+
+            --paper-tabs: {
+                height: 40px;
+                width: 90%;
+                padding: 3px 0 0;
+                background-color: #363636;
             }
-            --paper-tabs-selection-bar:{
-                height:0px;
+
+            --paper-tabs-selection-bar: {
+                height: 0px;
             }
-            --paper-tab-content-unselected:{
-                background-color:#363636;
+
+            --paper-tab-content-unselected: {
+                background-color: #363636;
             }
-            --paper-tab-content:{
-                background-color:#2b2b2b;
-                border-top-left-radius:5px;
-                border-top-right-radius:5px;
+
+            --paper-tab-content: {
+                background-color: #2b2b2b;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
             }
         }
 
-        .not-logged-container{            
-            display:flex;
-            flex-direction:column;
-            height:100%;
+        .not-logged-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
-        #avatar-container{
-            width:100%;
-            flex-grow:1;
-            background-repeat:no-repeat;
-            display:flex;
-            justify-content:center;
-            align-items:center;
+        #avatar-container {
+            width: 100%;
+            flex-grow: 1;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        #avatar{            
-            width:155px;
-            height:155px;
-            background-repeat:no-repeat;
-            border-radius:50%;
+        #avatar {
+            width: 155px;
+            height: 155px;
+            background-repeat: no-repeat;
+            border-radius: 50%;
         }
 
-        .footer{
-            display:flex;
-            flex-direction:column;
-            align-items:center;
+        .footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        #toggle-button{
-            text-transform:none;
-            background-color:#9b2531;
-            width:85%;
-            border-radius:5px;
-        }
-        
-        .content{
-            width:100%;
-            background-color:#2b2b2b;            
-            flex-grow:62;
-            display:flex;
-            justify-content:center;
+        #toggle-button {
+            text-transform: none;
+            background-color: #9b2531;
+            width: 85%;
+            border-radius: 5px;
         }
 
-        .signin{
-            margin:auto;
+        .content {
+            width: 100%;
+            background-color: #2b2b2b;
+            flex-grow: 62;
+            display: flex;
+            justify-content: center;
         }
 
-        iron-collapse{
-            width:100%;
+        .signin {
+            margin: auto;
         }
 
-        .dummy{
-            height:56.4vh;
-        }
-        
-        .dummy2{
-            height:28vh;
+        iron-collapse {
+            width: 100%;
         }
 
-        #signin-collapse{
-            display:flex;
-            flex-direction:column;
-            justify-content:space-between;
+        .dummy {
+            height: 56.4vh;
         }
 
-        .is-logged{
-            display:flex;
-            flex-direction:column;
-            justify-content:space-between;
-            align-items:center;
-            width:100%;
-            background-color:#363636;          
+        .dummy2 {
+            height: 28vh;
         }
 
-        #sing-out-button{
-            text-transform:none;
-            background-color:#472a2e;
-            width:99%;
-            border-radius:0px;
-            color:#cccccc;
+        #signin-collapse {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        iron-pages{
-            display:flex;
-            justify-content:center;
-            width:100%;
+        .is-logged {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            background-color: #363636;
         }
 
-        .tab{
-            background-color:#2b2b2b;
-            flex-grow:1;
+        #sing-out-button {
+            text-transform: none;
+            background-color: #472a2e;
+            width: 99%;
+            border-radius: 0px;
+            color: #cccccc;
+        }
+
+        iron-pages {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .tab {
+            background-color: #2b2b2b;
+            flex-grow: 1;
             padding: 5px;
         }
 
-        #role{
-            flex-grow:2;
+        #role {
+            flex-grow: 2;
         }
 
-        .slice{
-            background-color:#363636;
-            margin-top:2px;
-            height:35px;
-            color:#727272;
+        .slice {
+            background-color: #363636;
+            margin-top: 2px;
+            height: 35px;
+            color: #727272;
             padding: 0 5px;
-            display:flex;
-            align-items:center;
-            cursor:pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
         }
 
-        .first-slice{
-            border-top-left-radius:5px;
-            border-top-right-radius:5px;
+        .first-slice {
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
         }
 
-        .last-slice{
-            border-bottom-left-radius:5px;
-            border-bottom-right-radius:5px;
+        .last-slice {
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
         }
 
-        .id{
-            width:100%;
-            display:flex;
-            justify-content:center;
-            color:#454545;
-            margin:7px;
+        .id {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            color: #454545;
+            margin: 7px;
         }
 
+        .badge {
+            background-color: rgba(190, 0, 0, 0.89);
+            border-radius: 50%;
+            color: #939393;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
 
     <template>
-            <div id="avatar-container">
-                <div id="avatar"></div>
-            </div>
-            <div class="content">
-                <iron-pages id="drawer-page" selected="[[isLogged]]">
+        <div id="avatar-container">
+            <div id="avatar"></div>
+        </div>
+        <div class="content">
+            <iron-pages id="drawer-page" selected="[[isLogged]]">
 
-                    <div class="not-logged-container">
-                        <iron-collapse id="signin-collapse">
-                            <div class="signin">
-                                <sa-login-signin user="{{user}}"></sa-login-signin>
-                                <div class="dummy"><span>&nbsp;</span></div>
-                            </div>
-                        </iron-collapse>
-                        <div class="footer">
-                            <paper-button id="toggle-button" on-tap="_toggleView">Sign Up</paper-button>
-                            <iron-collapse id="signup-collapse" on-transition-end="_openSignIn">
-                                <div class="signin">
-                                    <sa-login-signup user="{{user}}"></sa-login-signup>
-                                </div>
-                                <div class="dummy2"><span>&nbsp;</span></div>
-                            </iron-collapse>
+                <div class="not-logged-container">
+                    <iron-collapse id="signin-collapse">
+                        <div class="signin">
+                            <sa-login-signin user="{{user}}"></sa-login-signin>
+                            <div class="dummy"><span>&nbsp;</span></div>
                         </div>
-                    </div>
-                    <div class="is-logged">
-                        <paper-tabs noink selected="{{role}}" attr-for-selected="data-role" on-iron-select="_onRoleChanged">
-                            <paper-tab data-role="agent">Agent</paper-tab>
-                            <paper-tab data-role="sponsor">Sponsor</paper-tab>
-                        </paper-tabs>
-                        <iron-pages id="role" selected="{{role}}" attr-for-selected="data-role">
-                            <div id="agent-tab" class="tab" data-role="agent">
-                                <div class="id"><span>Agent:&nbsp;</span><span>[[user.agentID]]</span></div>
-                                <div class="slice first-slice" on-click="goToAgentMessages">Messages</div>
-                                <div class="slice">Missions Accepted</div>
-                                <div class="slice">Missions Done</div>
-                                <div class="slice last-slice">Upcoming RDV</div>
+                    </iron-collapse>
+                    <div class="footer">
+                        <paper-button id="toggle-button" on-tap="_toggleView">Sign Up</paper-button>
+                        <iron-collapse id="signup-collapse" on-transition-end="_openSignIn">
+                            <div class="signin">
+                                <sa-login-signup user="{{user}}"></sa-login-signup>
                             </div>
-                            <div id="sponsor-tab" class="tab" data-role="sponsor">
-                                <div class="id"><span>Sponsor:&nbsp;</span><span>[[user.agentID]]</span></div>
-                                <div class="slice first-slice" on-click="goToSponsorMessages">Messages</div>
-                                <div class="slice">Missions Draft</div>
-                                <div class="slice">Missions Post</div>
-                                <div class="slice">Missions Ended</div>
-                                <div class="slice last-slice">Upcoming RDV</div>
-                            </div>
-                        </iron-pages>
-
-                        <paper-button id="sing-out-button" on-tap="_logOut">Log Out</paper-button>
+                            <div class="dummy2"><span>&nbsp;</span></div>
+                        </iron-collapse>
                     </div>
+                </div>
+                <div class="is-logged">
+                    <paper-tabs noink selected="{{role}}" attr-for-selected="data-role" on-iron-select="_onRoleChanged">
+                        <paper-tab data-role="agent">Agent</paper-tab>
+                        <paper-tab data-role="sponsor">Sponsor</paper-tab>
+                    </paper-tabs>
+                    <iron-pages id="role" selected="{{role}}" attr-for-selected="data-role">
+                        <div id="agent-tab" class="tab" data-role="agent">
+                            <div class="id"><span>Agent:&nbsp;</span><span>[[user.agentID]]</span></div>
+                            <div id="agent-messages" class="slice first-slice" on-click="goToAgentMessages">
+                                <div>Messages</div>
+                                <div id="badge-agent-messages" class="badge">{{agentUnreads}}</div>
+                            </div>
+                            <div class="slice">Missions Accepted</div>
+                            <div class="slice">Missions Done</div>
+                            <div class="slice last-slice">Upcoming RDV</div>
+                        </div>
+                        <div id="sponsor-tab" class="tab" data-role="sponsor">
+                            <div class="id"><span>Sponsor:&nbsp;</span><span>[[user.agentID]]</span></div>
+                            <div id="sponsor-messages" class="slice first-slice" on-click="goToSponsorMessages">
+                                <div>Messages</div>
+                                <div id="badge-sponsor-messages" class="badge">{{sponsorUnreads}}</div>
+                            </div>
+                            <div class="slice">Missions Draft</div>
+                            <div class="slice">Missions Post</div>
+                            <div class="slice">Missions Ended</div>
+                            <div class="slice last-slice">Upcoming RDV</div>
+                        </div>
+                    </iron-pages>
 
-                </iron-pages>
-            </div>
+                    <paper-button id="sing-out-button" on-tap="_logOut">Log Out</paper-button>
+                </div>
+
+            </iron-pages>
+        </div>
     </template>
 
     <script>
@@ -228,7 +252,7 @@
                     isLogged: Boolean,
                     tabSelected: {
                         type: Number,
-                        value:0
+                        value: 0
                     },
                     user: {
                         type: Object,
@@ -237,19 +261,54 @@
                     role: {
                         type: String,
                         value: 'agent'
-                    }
+                    },
                 },
-                ready: function () {
+                observers: [
+        'chatsChanged(model.chats.*)'
+                ],
+                attached: function () {
                     this._userChanged(null);
                     this.$$('#signin-collapse').show();
                     this.$$('#signup-collapse').hide();
                     this.$$('#avatar-container').style.backgroundImage = this._randomGradient();
-                    },
+                },
+                chatsChanged: function (record) {
+                    console.log('drawer ' + record.path);
+                    if (record.path.includes('chats')) {
+                        var sponsorUnreads = 0;
+                        var agentUnreads = 0;
+
+                        for (var idx = 0; idx < this.model.chats.length; ++idx) {
+                            if (this.model.chats[idx]._sponsor._id == app.user._id) {
+                                sponsorUnreads += this.model.chats[idx].sponsorUnreads;
+                            }
+                            else if (this.model.chats[idx]._agent._id == app.user._id) {
+                                agentUnreads += this.model.chats[idx].agentUnreads;
+                            }
+                        }
+
+                        if (sponsorUnreads > 0) {
+                            this.$$('#badge-sponsor-messages').classList.remove('hidden');
+                            this.sponsorUnreads = sponsorUnreads;
+                        }
+                        else {
+                            this.$$('#badge-sponsor-messages').classList.add('hidden');
+                        }
+
+                        if (agentUnreads > 0) {
+                            this.$$('#badge-agent-messages').classList.remove('hidden');
+                            this.agentUnreads = agentUnreads;
+                        }
+                        else {
+                            this.$$('#badge-agent-messages').classList.add('hidden');
+                        }
+                    }
+                },
                 _randomGradient: function () {
                     var number = Math.floor(Math.random() * (8));
-                    return "url('../../images/gradient-" + number + "_300x300.png')";
+                    return "url('../../images/gradient-" + 7 + "_300x300.png')";
                 },
-                _onSignup:function(e){
+                _onSignup: function (e) {
                     this.querySelector('sa-login-signin').signin({
                         email: e.detail.email,
                         password: e.detail.password

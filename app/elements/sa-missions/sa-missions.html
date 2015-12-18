@@ -19,20 +19,25 @@
     <template>
             <iron-pages id="toolbar" selected="0">
                 <sa-mission-toolbar filter="{{_mainFilter}}"></sa-mission-toolbar>
-                <sa-kind-toolbar id="tabs" kind="[[_selectedKind]]" on-back-to-previous-page="_backToPreviousPage" create-mission="[[createMission]]"></sa-kind-toolbar>
+                <sa-kind-toolbar id="tabs" kind="{{_selectedKind}}" on-back-to-previous-page="_backToPreviousPage" create-mission="{{createMission}}"></sa-kind-toolbar>
             </iron-pages>
             <iron-pages id="pages" attr-for-selected="data-page" selected="missions">  
                 <section data-page="missions">
-                    <sa-missions-list kind="{{_selectedKind}}" on-show-mission="_onShowMission" on-edit-mission="_onEditMission"></sa-missions-list>
+                    <sa-missions-list missions="{{model.missions}}"
+                                      favorites="{{model.favoriteMissions}}"
+                                      kind="{{_selectedKind}}" 
+                                      on-show-mission="_onShowMission" 
+                                      on-edit-mission="_onEditMission"></sa-missions-list>
                 </section>
                 <section data-page="kinds">
-                    <sa-kinds-list on-show-missions="_onShowMissionsOfKind" on-get-kinds="_onGetKinds"></sa-kinds-list>
+                    <sa-kinds-list kinds="{{model.kinds}}" on-show-missions="_onShowMissionsOfKind"></sa-kinds-list>
                 </section>
                 <section data-page="infos" id="infos-section">
                     <sa-mission-infos id="infos"
                                       kind="{{_selectedKind}}"
-                                      kinds="[[_kinds]]"
-                                      action="[[_infosAction]]"
+                                      kinds="{{model.kinds}}"
+                                      chats="{{model.chats}}"
+                                      action="{{_infosAction}}"
                                       on-close-infos="_onCloseInfos"></sa-mission-infos>
                 </section>
             </iron-pages>
@@ -45,7 +50,6 @@
                 is: 'sa-missions',
 
                 properties: {
-                    _kinds: Object,
                     _mainFilter: {
                         type: String,
                         observer: '_mainFilterChange'
@@ -68,11 +72,15 @@
                     route: {
                         type: String,
                         observer: '_routeChanged'
-                    }
+                    },
+                    model: Object
+                },
+                attached: function () {
                 },
                 _routeChanged: function (e) {
                     if (app.route == 'missions' && app.isLogged) {
                         this._mainFilter = 'missions';
+                        this.clear = true;
                     }
                     else {
                         this.createMission = false;
@@ -95,9 +103,6 @@
                 _onEditMission:function(e){
                     this.$.infos.mission = e.detail.mission;
                     this._showPage('edition');
-                },
-                _onGetKinds: function(e){
-                    this.set('_kinds', e.detail.kinds);
                 },
                 _onShowMission:function(e){
                     this.$.infos.mission = e.detail.mission;

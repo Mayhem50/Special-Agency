@@ -1,6 +1,6 @@
 ﻿var express = require('express');
 var jwtauth = require('../controllers/jwtauth');
-var Kind = require('../models/./mission-type.js');
+var Kind = require('../models/kind.js');
 var Mission = require('../models/./mission.js');
 
 var router = express.Router();

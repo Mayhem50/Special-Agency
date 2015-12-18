@@ -81,21 +81,13 @@
             </div>
         </div>
         <div id="content">
-            <template id="list" is="dom-repeat" items="[[_chats]]" filter="_filterChat" observers="unreads">
-                <sa-chat-list-item chat="[[item]]" on-click="_getChat"></sa-chat-list-item>
+            <template id="list" is="dom-repeat" items="[[chats]]" filter="_filterChat" observers="unreads">
+                <sa-chat-list-item chat="[[item]]" on-click="_getChat" on-mouseenter="_onMouseEnter" on-mouseleave="_onMouseLeave"></sa-chat-list-item>
             </template>
-            <paper-spinner active="[[_isLoading]]"></paper-spinner>
         </div>
         <div id="footer">
 
         </div>
-
-        <sa-xhr id="xhr"
-                url="[[_xhrUrl]]"
-                result="{{_chats}}"
-                on-result="_receiveChats"
-                is-loading="{{_isLoading}}"
-                token></sa-xhr>
     </template>
     <script>
         (function () {
@@ -103,59 +95,52 @@
                 is: 'sa-chats-list',
 
                 properties: {
-                    _chats: {
-                        type: Array,
-                        value: []
+                    chats: Object,
+                    selectedChat: {
+                        type: Object,
+                        notify: true
                     },
-                    _currentPage: Number,
                     _xhrUrl: String,
                     params: Object,
                     mission: {
                         type: Object,
                         observer: '_needRender'
                     },
-                    userRole: {
-                        type: String,
-                        observer:'_needRender',
-                        value: 'agent'
+                    gradientIndex: {
+                        type: Number,
+                        notify: true
                     }
                 },
-                ready: function () {
-                    Array.prototype.indexOfObject = function (property, value) {
-                        for (var i = 0, len = this.length; i < len; i++) {
-                            if (this[i][property] === value) return i;
+                observers: [
+        'chatsChanged(chats.*)'
+                ],
+                chatsChanged: function (record) {
+                    console.log(record);
+                    if ((record.path.includes('agentUnreads') && app.role == 'agent') ||
+                        (record.path.includes('sponsorUnreads') && app.role == 'sponsor')) {
+                        var index = getIndexInArrayFromPath(record.path);
+                        var divs = this.querySelectorAll('sa-chat-list-item');
+
+                        for (var idx = 0; idx < divs.length; ++idx) {
+                            if (divs[idx].chat._id == this.chats[index]._id) {
+                                if (this.selectedChat && this.chats[index]._id == this.selectedChat._id && !this.mission) {
+                                    divs[idx].updateChat(this.chats[index]);
+                                    app.socket.emit('read-chat', this.chats[idx]);
+                                    divs[idx].activeBackground();
+                                }
+                                else {
+                                    divs[idx].chat = this.chats[index];
+                                    divs[idx].setBackground();
+                                }
+                            }                            
                         }
-                        return -1;
-                    };
+                    }
                 },
                 attached: function () {
-                    if (!app.user) { return; }
-
-                    this._xhrUrl = '/chats/' + app.user._id;
-
-                    app.addEventListener('socket-connected', function (e) {
-                        app.socket.on('new-chat', function (data) {
-                            if (this._chats.indexOfObject('_id', data._id) != -1) { return; }
-
-                            this.push('_chats', data);
-                            app.chats.push(data);
-                        }.bind(this));
-
-                        app.socket.on('new-message', function (data) {
-                            var idx = this._chats.indexOfObject('_id', data._chat);
-                            if (idx < 0) { return; }
-                            this._chats[idx]._messages.push(data);
-                            app.chats[idx]._messages.push(data);
-                        }.bind(this));
+                    app.addEventListener('role-changed', function (e) {
+                        this._needRender();
+                        this.selectedChat = null;
                     }.bind(this));
-
-                    this.$.xhr.request();
-                },
-                _showPage: function (page) {
-                    return this._chats;
-                },
-                _receiveChats: function (e) {
-                    app.chats = this._chats;
                 },
                 _filterChat: function (item) {
                     var ret = true;
@@ -176,16 +161,27 @@
                     this.$.list.render();
                 },
                 _getChat: function (e) {
-                    var idx = this._chats.indexOfObject('_id', e.model.item._id);
+                    var idx = this.chats.indexOfObject('_id', e.model.item._id);
 
                     if (idx > -1) {
-                        var chat = this._chats[idx];
-                        chat.unreads = 0;
-                        this._chats.splice(idx, 1);
-                        this._chats.push(chat);
-                        e.currentTarget.updateChat(chat);
+                        var divs = this.querySelectorAll('sa-chat-list-item');
+                        if (divs) {
+                            this.gradientIndex = divs[e.model.index].gradientIndex;
+                        }
+                        else {
+                            this.gradientIndex = 7;
+                        }
+                        this.set('selectedChat', this.chats[idx]);
+                        app.socket.emit('read-chat', this.chats[idx]);
+                        this.fire('chat-selected', { chat: this.chats[idx] });
                     }
-                    this.fire('chat-selected', { chat: e.model.item });
+                },
+                _onMouseEnter: function (e) {
+                    e.currentTarget.activeBackground();
+                },
+                _onMouseLeave: function (e) {
+                    if (this.selectedChat && this.selectedChat._id == e.currentTarget.chat._id) { return;}
+                    e.currentTarget.setBackground();
                 }
             });
         })();

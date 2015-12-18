@@ -1,7 +1,7 @@
 ﻿var express = require('express');
 var jwtauth = require('../controllers/jwtauth');
 var User = require('../models/user');
-var Type = require('../models/mission-type');
+var Type = require('../models/kind');
 var Mission = require('../models/mission');
 
 var router = express.Router();
@@ -12,7 +12,7 @@ module.exports = function () {
         console.log(req.query.mission);
         
         var mission = new Mission(req.body.mission);
-        mission._owner = req.user._id;
+        mission._sponsor = req.user._id;
         
         Type.findOne({ '_id' : mission._type }, function (err, Type) {
             if (err) { throw err; }
@@ -37,7 +37,7 @@ module.exports = function () {
     
     router.get('/missions', function (req, res) {
         console.log('Get all missions not finished');
-        Mission.find({}).populate('_type _subType _owner').exec(function (err, missions) {
+        Mission.find({ status : 'free' }).populate('_type _subType _sponsor').exec(function (err, missions) {
             if (err) { return res.sendStatus(500); }
                         
             return res.json({
@@ -63,7 +63,7 @@ module.exports = function () {
         console.log('Get all missions from owner');
         
         if (req.params.mode == 'agent') {
-            Mission.find( {'_owner' :{"$ne" : req.user._id } }, function (err, missions) {
+            Mission.find( {'_sponsor' :{"$ne" : req.user._id } }, function (err, missions) {
                 if (err) {
                     return res.sendStatus(500);
                 }
@@ -77,7 +77,7 @@ module.exports = function () {
             });
         }
         if (req.params.mode == 'sponsor') {
-            Mission.find({ '_owner' : req.user._id }, function (err, missions) {
+            Mission.find({ '_sponsor' : req.user._id }, function (err, missions) {
                 if (err) {
                     return res.sendStatus(500);
                 }
@@ -98,7 +98,7 @@ module.exports = function () {
         console.log('Get all missions from owner');
         
         if (req.params.mode == 'agent') {
-            Mission.find({ '_owner' : { "$ne" : req.user._id } }, function (err, missions) {
+            Mission.find({ '_sponsor' : { "$ne" : req.user._id } }, function (err, missions) {
                 if (err) {
                     return res.sendStatus(500);
                 }
@@ -112,7 +112,7 @@ module.exports = function () {
             });
         }
         else if (req.params.mode == 'sponsor') {
-            Mission.find({ '_owner' : req.user._id }, function (err, missions) {
+            Mission.find({ '_sponsor' : req.user._id }, function (err, missions) {
                 if (err) {
                     return res.sendStatus(500);
                 }

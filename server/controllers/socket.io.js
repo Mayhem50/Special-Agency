@@ -23,8 +23,17 @@ module.exports = function (server) {
             socket.emit('connect', 'socket update');
         });
         
-        
         var io_missions = require('../io_routes/missions')(io, socket);
         var io_chats = require('../io_routes/chats')(io, socket);
+        var io_draft_missions = require('../io_routes/draft-missions')(io, socket);
+        var io_favorite_missions = require('../io_routes/favorite-missions')(io, socket);
+    });
+
+    io.sockets.on('deconnection', function (socket) {
+        console.log('User leave: ' + socket.id);
+        
+        Socket.findOneAndRemove({ '_user' : socket.user._id }, function (err, sock) {
+            if (err) { throw err; }
+        });      
     });
 }

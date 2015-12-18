@@ -68,7 +68,7 @@
 
                     if (this._xhrResponse.success) {
                         this.result = this._xhrResponse.result;
-                        this.fire('result');
+                        this.fire('result', { result: this.result });
                     }
                 },
                 request: function () {

@@ -19,9 +19,9 @@ var Type = mongoose.Schema({
     isTop: Boolean,
     size: Number,
     count: Number,
-    _parent: { type: mongoose.Schema.ObjectId, ref: 'Mission-Type' },
+    _parent: { type: mongoose.Schema.ObjectId, ref: 'Kind' },
 });
 
 module.exports = mongoose.model(
-    'Mission-Type', Type
+    'Kind', Type
 );

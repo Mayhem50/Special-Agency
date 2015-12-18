@@ -29,7 +29,7 @@
     <!-- endbuild-->
     <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="/scripts/jquery-1.11.3.js"></script>
+    <script src="/scripts/helpers.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <!-- endbuild -->
     <!-- will be replaced with elements/elements.vulcanized.html -->
@@ -42,7 +42,7 @@
         <iron-container>
             <paper-drawer-panel class="fullbleed" drawer-width="220px" responsive-width="450px" id="paper-drawer-panel" selected="main">
                 <paper-scroll-header-panel drawer>
-                    <sa-drawer is-logged="[[isLogged]]" user="{{user}}"></sa-drawer>
+                    <sa-drawer is-logged="[[isLogged]]" user="{{user}}" model="{{model}}"></sa-drawer>
                 </paper-scroll-header-panel>
 
                 <paper-header-panel main fixed id="main">
@@ -59,10 +59,14 @@
                             <iron-pages id="page-content-selector" attr-for-selected="data-route" selected="{{route}}">
                                 <section data-route="home"></section>
                                 <section data-route="missions">
-                                    <sa-missions route="[[route]]" create-mission="{{createMission}}" clear="{{!isLogged}}" on-request-login="onRequestLogin"></sa-missions>
+                                    <sa-missions route="[[route]]" 
+                                                 create-mission="{{createMission}}" 
+                                                 clear="{{!isLogged}}" 
+                                                 model="{{model}}"
+                                                 on-request-login="onRequestLogin"></sa-missions>
                                 </section>
                                 <section data-route="dashboard">
-                                    <sa-dashboard></sa-dashboard>
+                                    <sa-dashboard model="{{model}}"></sa-dashboard>
                                 </section>
                                 <section data-route="rdv"></section>
                                 <section data-route="support"></section>
@@ -80,6 +84,8 @@
                 url="/translation"
                 result="{{translations}}"
                 on-result="onGetTranslations"></sa-xhr>
+
+        <sa-model id="model" model="{{model}}"></sa-model>
     </template>
     <!-- build:js scripts/app.js -->
     <script src="/scripts/client-app.js"></script>

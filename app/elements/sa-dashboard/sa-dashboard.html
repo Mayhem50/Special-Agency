@@ -17,7 +17,7 @@
         <sa-dashboard-toolbar filter="{{route}}"></sa-dashboard-toolbar>
         <iron-pages id="pages" attr-for-selected="data-page" selected="{{route}}">
             <section data-page="messages">
-                <sa-messages></sa-messages>
+                <sa-messages model="{{model}}"></sa-messages>
             </section>
             <section data-page="agenda">
             </section>

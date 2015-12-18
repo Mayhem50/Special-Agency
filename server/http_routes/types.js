@@ -1,6 +1,6 @@
 ﻿var express = require('express');
 var jwtauth = require('../controllers/jwtauth');
-var Type = require('../models/type');
+var Kind = require('../models/type');
 
 var router = express.Router();
 
@@ -9,7 +9,7 @@ module.exports = function () {
         console.log('Create a type');
         console.log(req.query.type);
         
-        var type = new Type(req.body.type);
+        var type = new Kind(req.body.type);
         
         type.save(function (err) {
             if (err) {
@@ -51,7 +51,7 @@ module.exports = function () {
     
     router.post('/types/:id', jwtauth, function (req, res) {
         console.log('Get all types from owner');
-        type.find({ '_owner' : req.params.id }, function (err, types) {
+        type.find({ '_sponsor' : req.params.id }, function (err, types) {
             if (err) {
                 return res.sendStatus(500);
             }
@@ -66,7 +66,7 @@ module.exports = function () {
     
     router.get('/types/:id', jwtauth, function (req, res) {
         console.log('Get subtypes from id');
-        type.find({ _parentType : req.params.id }, function (err, types) {
+        type.find({ _parentKind : req.params.id }, function (err, types) {
             if (err) { return res.sendStatus(500); }
             
             return res.json({

@@ -45,7 +45,7 @@
 
     <template>
         <div class="grid">
-            <template id="list" is="dom-repeat" items="[[_kinds]]">
+            <template id="list" is="dom-repeat" items="[[kinds]]">
                 <sa-kind-card class$="[[item.class]]"
                                       kind="[[item]]"
                                       on-tap="_showMissions">
@@ -54,12 +54,6 @@
         </div>
 
         <paper-spinner active="[[_isLoading]]"></paper-spinner>
-
-        <sa-xhr id="xhr"
-                url="/kinds"
-                method="get"
-                result="{{_kinds}}"
-                is-loading="{{_isLoading}}"></sa-xhr>
     </template>
 
     <script>
@@ -68,44 +62,17 @@
                 is: 'sa-kinds-list',
 
                 properties: {
-                    _kinds: {
+                    kinds: {
                         type: Object,
-                        observer: '_kindsChanged'
+                        observer: 'kindsChanged'
                     }
                 },
-                ready: function () {
-                    Array.prototype.indexOfObject = function (property, value) {
-                        for (var i = 0, len = this.length; i < len; i++) {
-                            if (this[i][property] === value) return i;
-                        }
-                        return -1;
-                    };                    
+                ready: function () {                   
                 },
                 attached: function () {
-                    app.addEventListener('socket-connected', function (e) {
-                        app.socket.on('add-kind', function (data) {
-                            console.log('add kind');
-                            this.push('_kinds', data);
-                        }.bind(this));
-
-                        app.socket.on('update-kind', function (data) {
-                            console.log('update kind');
-                            var index = this._kinds.indexOfObject('_id', data._id);
-                            this.splice('_kinds', index, 1);
-                            this.push('_kinds', data);
-                        }.bind(this));
-
-                        app.socket.on('delete-kind', function (data) {
-                            console.log('delete kind');
-                            var index = this._kinds.indexOfObject('_id', data._id);
-                            this.splice('_kinds', index, 1);
-                        }.bind(this));
-                    }.bind(this));
-
-                    this.$.xhr.request();
                 },
-                _kindsChanged: function () {
-                    this._kinds.forEach(function (element, index, array) {
+                kindsChanged: function () {
+                    this.kinds.forEach(function (element, index, array) {
                         if (element.size === 1) {
                             element.class = 'card';
                         }
@@ -117,7 +84,6 @@
                         }
                     });
                     this.$.list.render();
-                    this.fire('get-kinds', { kinds: this._kinds });
                 },
                 _showMissions: function (e) {
                     this.fire('show-missions', { kind: e.model.item });

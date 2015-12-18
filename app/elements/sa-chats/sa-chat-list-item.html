@@ -5,15 +5,12 @@
 <dom-module id="sa-chat-list-item">
     <style>
         :host {
-            width:100%;
-            margin:1px 0;
-        }
-
-        #content{
             height:45px;
             padding-right: 5px;
             display:flex;
             align-items:stretch;
+            cursor:pointer;
+            margin: 1px 0;
         }
 
         #icon{
@@ -53,7 +50,6 @@
         }
     </style>
     <template>
-        <div id="content" on-mouseenter="_onMouseEnter" on-mouseleave="_onMouseLeave">
             <div id="icon">
                 <div id="avatar"></div>
             </div>
@@ -69,7 +65,6 @@
                 url="[[_url]]"
                 token
                 is-loading="{{_isLoading}}"></sa-xhr>-->
-        </div>
     </template>
     <script>
         (function () {
@@ -80,14 +75,20 @@
                     chat: {
                         type: Object,
                         observer : '_chatChanged'
+                    },
+                    gradientIndex: {
+                        type: Number,
+                        notify: true
                     }
                 },
-                attached:function(){
+                attached: function () {
+                    this.gradientIndex = Math.floor(Math.random() * (8));
+
                     app.addEventListener('socket-connected', function (e) {
                         app.socket.on('chat-read', function (data) {
                             if (this.chat._id == data._id) {
                                 this.chat.unreads = 0;
-                                this._setBackground();
+                                this.setBackground();
                             }
                         }.bind(this));
                     }.bind(this));
@@ -95,11 +96,7 @@
                     this.$.icon.style.backgroundImage = this._randomGradient();
                 },
                 _chatChanged: function (e) {
-                    //this._url = '/messages/' + this.chat._id;
-                    //this.$.xhr.request();
-                    if (!this.chat) {
-                        return;
-                    }
+                    if (!this.chat) { return; }
 
                     this.style.background = this.chat._mission._type.color;
                     if (app.role == 'agent') {
@@ -111,33 +108,27 @@
                         this.$.interlocutor.innerHTML = this.chat._agent.agentID;
                     }
 
+                    this.setBackground();
+
+                    if (!this.chat.messages || this.chat.messages.length == 0) { return; }
                     this._setLastMessage();
-                    this._setBackground();
-
-                    if (this.chat._messages || this.chat._messages.length == 0) { return; }
-
-                    var date = new Date(this.chat._messages[this.chat._messages.length - 1].date);
+                    var date = new Date(this.chat.messages[this.chat.messages.length - 1].date);
                     this.$.date.innerHTML = date.toLocaleDateString();
 
                 },
                 _setLastMessage: function () {
-                    this.chat._messages.forEach(function(element){                        
-                        if (app.user._id == element._receiver) {
-                            this.$.text.innerHTML = element.message.substring(0,15);
-                        }
-                    }.bind(this));
+                    this.$.text.innerHTML = this.chat.messages[this.chat.messages.length - 1].message.substring(0, 15);                   
                 },
                 _randomGradient: function () {
-                    var number = Math.floor(Math.random() * (8));
-                    return "url('../../images/gradient-" + number + "_300x300.png')";
+                    return "url('../../images/gradient-" + this.gradientIndex + "_300x300.png')";
                 },
-                _setBackground: function () {
+                setBackground: function () {
                     var color;
-                    if (this.chat.unreads > 0) {
-                        color = '#c3c3c3';
+                    if ((this.chat.agentUnreads > 0 && app.role == 'agent') || (this.chat.sponsorUnreads > 0 && app.role == 'sponsor')) {
+                        color = '#efefef';
                     }
                     else {
-                        color = '#efefef';
+                        color = '#c3c3c3';
                     }
                     this.$.interlocutor.style.backgroundColor = color;
                     this.$.text.style.backgroundColor = color;
@@ -146,15 +137,11 @@
                 updateChat: function (chat) {
                     this.chat = null;
                     this.chat = chat;
-                    app.socket.emit('chat-read', this.chat);
                 },
-                _onMouseEnter: function (e) {
+                activeBackground: function () {
                     this.$.interlocutor.style.backgroundColor = this.chat._mission._type.color;
                     this.$.text.style.backgroundColor = this.chat._mission._type.color;
                     this.$.date.style.backgroundColor = this.chat._mission._type.color;
-                },
-                _onMouseLeave: function (e) {
-                    this._setBackground();
                 }
             });
         })();

@@ -8,7 +8,7 @@
 <link rel="import" href="../sa-translations/sa-translation.html" />
 <link rel="import" href="../sa-missions/sa-mission-card.html" />
 
-<link rel="import" href="../sa-chats/sa-chat-box .html" />
+<link rel="import" href="../sa-chats/sa-chat-box.html" />
 <link rel="import" href="../sa-chats/sa-chats-list.html" />
 
 <link rel="import" href="../sa-xhr/sa-xhr.html" />
@@ -550,11 +550,13 @@
                                 <paper-textarea disabled="[[disabled]]" always-float-label="false" no-label-float="true"></paper-textarea>
                             </div>
                             <div id="buttons">
-                                <div id="draft-part" on-click="test">
-                                    <paper-icon-button icon="save"></paper-icon-button><div>{{_translations.texts.save_draft}}</div>
-                                </div>
                                 <iron-pages id="apply-button" selected="0">
-                                    <paper-button on-tap="_addMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span></paper-button>
+                                    <div>
+                                        <div id="draft-part" on-click="test">
+                                            <paper-icon-button icon="save" on-tap="_saveAsDraft"></paper-icon-button><div>{{_translations.texts.save_draft}}</div>
+                                        </div>
+                                        <paper-button on-tap="_addMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span></paper-button>
+                                    </div>
                                     <paper-button on-tap="_postuleMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.postulate_mission}}</span></paper-button>
                                     <paper-button on-tap="_updateMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span></paper-button>
                                     <div></div>
@@ -567,8 +569,8 @@
 
         <iron-pages id="right-pages" selected="0">
             <sa-mission-card id="right-part" mission="[[mission]]" show-level></sa-mission-card>
-            <sa-chat-box mission="[[mission]]" chat="[[chat]]"></sa-chat-box>
-            <sa-chats-list mission="[[mission]]" on-chat-selected="_showChat"></sa-chats-list>
+            <sa-chat-box mission="[[mission]]" chats="{{chats}}"></sa-chat-box>
+            <sa-chats-list chats="{{chats}}" mission="[[mission]]" on-chat-selected="_showChat"></sa-chats-list>
         </iron-pages>
 
         <sa-translation id="translation"
@@ -620,20 +622,13 @@
                         type: Object,
                         observer: '_subKindsChanged'
                     },
-                    subKind: Object,
-                    chat: Object
+                    subKind: Object
                 },
                 _onDateChanged: function (e) {
                     console.log(e);
                     this.$$('#right-part').init();
                 },
                 ready: function () {
-                    Array.prototype.indexOfObject = function (property, value) {
-                        for (var i = 0, len = this.length; i < len; i++) {
-                            if (this[i][property] === value) return i;
-                        }
-                        return -1;
-                    };
                     this._createEmptyMission();
                 },
                 _kindChanged: function (e) {
@@ -680,7 +675,7 @@
                         level: 1,
                         reward: 0,
                         descritpion: '',
-                        status: 0,
+                        status: 'free',
                         creationDate: Date.now(),
                         wishDates: [],
                         place: {
@@ -697,13 +692,18 @@
                     this._createEmptyMission();
                     this.fire('close-infos');
                 },
+                _saveAsDraft:function(e){
+                    this.mission._type = this.kind;
+                    this.mission.status = 'draft'
+                    app.socket.emit('add-mission', this.mission);
+                    this._createEmptyMission();
+                },
                 _postuleMission:function(){
-                    app.socket.emit('send-message', {
+                    app.socket.emit('postulate-mission', {
                         mission: this.mission,
-                        //lang: app.lang
+                        lang: app.lang,
                         sender: app.user,
-                        receiver: this.mission._owner,
-                        message: 'test mess'
+                        receiver: this.mission._sponsor
                     });
                 },
                 _selectLevel: function (e) {
@@ -755,14 +755,11 @@
                             this.$.map.clearCircle();
                             this.$.map.setLocation(this.mission.place.longitude, this.mission.place.latitude);
                             this.$.map.drawMarker(this.mission.place.longitude, this.mission.place.latitude, this.mission.place.address);
-                            if (app.user._id == this.mission._owner._id) {
+                            if (app.user._id == this.mission._sponsor._id) {
                                 this.$$('#right-pages').select(2);
                                 this.$$('#apply-button').select(3);
                             }
-                            else {
-                                this.chat = app.chats.find(function (element) {
-                                    return element._agent._id == app.user._id && element._mission._id == this.mission._id;
-                                }.bind(this));
+                            else {                                
                                 this.$$('#right-pages').select(1);
                                 this.$$('#apply-button').select(1);
                             }

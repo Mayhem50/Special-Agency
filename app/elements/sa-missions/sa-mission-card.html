@@ -169,8 +169,8 @@
             </div>
 
             <div id="[[footer]]" class="footer ">
-                <paper-button on-tap="_addToFavorites"><iron-icon icon="favorite"></iron-icon><span>[[_translations.texts.add_to_favorites]]</span></paper-button>
-                <paper-button on-tap="_postulateMission"><iron-icon icon="check"></iron-icon><span>[[_translations.texts.accept]]</span></paper-button>
+                <paper-button id="favorite" on-tap="_addToFavorites"><iron-icon id="favorite-icon" icon="favorite"></iron-icon><span id="favorite-span">[[_translations.texts.add_to_favorites]]</span></paper-button>
+                <paper-button on-tap="_postulateMission"><iron-icon id="check" icon="check"></iron-icon><span>[[_translations.texts.accept]]</span></paper-button>
             </div>
 
         </paper-card>
@@ -210,6 +210,20 @@
                         value: true,
                         observer: '_hideChanged'
                     },
+                    favorites: []
+                },
+                observers: [
+        'favoriteMissionsChanged(favorites.*)'
+                ],
+                favoriteMissionsChanged:function(record){
+                    if (record.path.includes('splices') || record.path == 'favorites') {
+                        if (this.favorites && this.favorites.indexOfObject('_mission', this.mission._id) != -1) {
+                            this.$.favorite.style.color = '#cc0000';
+                        }
+                        else {
+                            this.$.favorite.style.color = this.$.check.style.color;
+                        }
+                    }
                 },
                 ready: function () {
                 },
@@ -219,7 +233,7 @@
                 handleChange: function (e) {
                     this.init();
                 },
-                init: function () {
+                init: function (e) {
 
                     if (!this.mission || !this.mission._type) { return; }
 
@@ -241,6 +255,10 @@
                     }
                     else {
                         this.$$('#image-collapse').hide();
+                    }
+
+                    if (this.favorites && this.favorites.indexOfObject('_mission', this.mission._id) != -1) {
+                        this.$.favorite.style.color = '#cc0000';
                     }
                 },
                 _deleteMission: function (e) {
@@ -300,6 +318,14 @@
                     }
                     else {
                         this.$.command.style.display = 'flex';
+                    }
+                },
+                _addToFavorites: function (e) {
+                    if (this.favorites && this.favorites.indexOfObject('_mission', this.mission._id) != -1) {
+                        app.socket.emit('delete-favorite-mission', { _mission: this.mission._id });
+                    }
+                    else {
+                        app.socket.emit('add-favorite-mission', { _mission: this.mission._id });
                     }
                 }
             });

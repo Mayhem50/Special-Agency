@@ -15,7 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 
 <link rel="import" href="sa-icons.html">
-<link rel="import" href="sa-view1.html">
+<link rel="import" href="sa-home.html">
 <link rel="import" href="sa-view2.html">
 
 <dom-module id="sa-app">
@@ -38,7 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         tail="{{subroute}}"></app-route>
 
     <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-      <sa-view1 name="view1"></sa-view1>
+      <sa-home name="home"></sa-home>
       <sa-view2 name="view2"></sa-view2>
     </iron-pages>
 
@@ -65,7 +65,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ],
 
       _routePageChanged: function(page) {
-        this.page = 'view1';
+        this.page = 'home';
       },
 
       _pageChanged: function(page) {

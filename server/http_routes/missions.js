@@ -27,7 +27,7 @@ module.exports = function () {
                 throw err;
             }
         });
-
+        
         res.json({
             method : 'POST',
             success: true,
@@ -39,7 +39,7 @@ module.exports = function () {
         console.log('Get all missions not finished');
         Mission.find({ status : 'free' }).populate('_type _subType _sponsor').exec(function (err, missions) {
             if (err) { return res.sendStatus(500); }
-                        
+            
             return res.json({
                 result: missions,
                 method: 'GET',
@@ -48,7 +48,7 @@ module.exports = function () {
             });
         });
     });
-        
+    
     router.put('/missions', jwtauth, function (req, res) {
         console.log('Bulk update missions');
         res.end();
@@ -63,7 +63,7 @@ module.exports = function () {
         console.log('Get all missions from owner');
         
         if (req.params.mode == 'agent') {
-            Mission.find( {'_sponsor' :{"$ne" : req.user._id } }, function (err, missions) {
+            Mission.find({ _agent : req.user._id }, function (err, missions) {
                 if (err) {
                     return res.sendStatus(500);
                 }
@@ -91,7 +91,7 @@ module.exports = function () {
             });
         }
         
-        res.end();                
+        res.end();
     });
     
     router.get('/missions/:mode', jwtauth, function (req, res) {
@@ -126,7 +126,7 @@ module.exports = function () {
             });
         }
         else if (req.params.mode == 'type') {
-            Mission.find({ '_type' : req.Type._id }).populate('_type').populate('_title').exec( function (err, missions) {
+            Mission.find({ '_type' : req.Type._id }).populate('_type').populate('_title').exec(function (err, missions) {
                 if (err) {
                     return res.sendStatus(500);
                 }
@@ -140,7 +140,7 @@ module.exports = function () {
             });
         }
         else
-            res.end(); 
+            res.end();
     });
     
     
@@ -153,7 +153,7 @@ module.exports = function () {
                 if (err) { return res.sendStatus(500); }
                 
                 if (!mission) { return res.sendStatus(500); }
-
+                
                 return res.json({
                     method: 'PUT',
                     success: true,
@@ -168,14 +168,14 @@ module.exports = function () {
                 
                 if (!mission) { return res.sendStatus(500); }
                 
-                return res.json( {
+                return res.json({
                     method: 'PUT',
                     success: true,
                     route: "missions"
                 });
             });
         }
-        else{
+        else {
             res.end();
         }
     });
@@ -183,13 +183,13 @@ module.exports = function () {
     router.delete('/missions/:id', jwtauth, function (req, res) {
         console.log('Delete mission: ' + req.params.id);
         
-        Mission.findOne({ '_id' : req.params.id }, function (err, mission){
+        Mission.findOne({ '_id' : req.params.id }, function (err, mission) {
             if (err) { return next(err); }
-
+            
             if (!mission) { return res.sendStatus(500); }
-
+            
             mission.remove();
-
+            
             return res.json({
                 success: true,
                 method: 'DELETE',

@@ -8,6 +8,7 @@ var Mission = mongoose.Schema({
     _sponsor : { type: mongoose.Schema.Types.ObjectId, ref: 'User', autopopulate : true },
     _type : { type: mongoose.Schema.Types.ObjectId, ref: 'Kind', autopopulate : true },
     _subType : { type: mongoose.Schema.Types.ObjectId, ref: 'Kind', autopopulate : true },
+    _agent : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     title: String,
     level : Number,
     reward : Number,
@@ -15,7 +16,10 @@ var Mission = mongoose.Schema({
     shortDescritpion : String,
     status : { type : String, default : 'free', required : true }, // 0. Free, 1. Accepted, 2. Ended, 3. Favorite, 10. Draft 
     creationDate : { type : Date, default: Date.now },
-    wishDates : [{ type : String }],
+    wishDates : [{
+            date : String,
+            laps: [{type : Boolean}]
+        }],
     finishDate : Date,
     proOnly: { type: Boolean, default: false, required: true },
     place : {

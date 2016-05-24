@@ -27,6 +27,7 @@ module.exports = function (server) {
         var io_chats = require('../io_routes/chats')(io, socket);
         var io_draft_missions = require('../io_routes/draft-missions')(io, socket);
         var io_favorite_missions = require('../io_routes/favorite-missions')(io, socket);
+        var io_favorite_missions = require('../io_routes/postulated-missions')(io, socket);
     });
 
     io.sockets.on('deconnection', function (socket) {

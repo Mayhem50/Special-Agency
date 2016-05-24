@@ -15,7 +15,8 @@
             cursor: pointer;
             margin: 5px;
             min-width: 300px;
-            max-width: 300px;
+            max-width: 300px;    
+            background-color: rgba(0,0,0,0);
             @apply(--sa-mission-card);
         }
 
@@ -24,9 +25,10 @@
             display: flex;
             justify-content: flex-start;
             flex-wrap: wrap;
-            background-color: rgba(4, 4, 4, 0.23);
+            background-color: rgba(4, 4, 4, 0.10);
             border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
+            border-top-right-radius: 5px;    
+            color: rgba(255,255,255,0.0);
         }
 
         .gain {
@@ -34,7 +36,6 @@
             background-color: rgba(76, 255, 0, 0.00);
             font-size: 20px;
             font-family: 'Segoe UI Symbol';
-            color: rgba(255, 255, 255, 0.85);
             margin: 5px auto auto 5px;
         }
 
@@ -43,14 +44,13 @@
             margin: 5px auto auto 25px;
             font-family: 'Segoe WP SemiLight';
             font-weight: 100;
-            color: #ffffff;
         }
 
         .dates {
             bottom: 10px;
             background-color: rgba(0, 255, 144, 0.00);
             align-self: flex-end;
-            width:100%;
+            width: 100%;
         }
 
         .title {
@@ -71,20 +71,21 @@
 
         .middle {
             height: 175px;
-            background-color: #ffffff;
+            background-color: rgba(4, 4, 4, 0.10);
             flex-direction: column;
             display: flex;
         }
 
         .footer {
             height: 42px;
-            background-color: #efefef;
+            background-color: rgba(4, 4, 4, 0.10);
             display: flex;
             justify-content: center;
             align-items: center;
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
-            cursor:default;
+            cursor: default;
+            color: rgba(255,255,255,0.0);
         }
 
         paper-button {
@@ -92,8 +93,7 @@
             display: flex;
             align-items: center;
             font-size: 12px;
-            color: #999999;
-            padding:0 0.57em;
+            padding: 0 0.57em;
         }
 
             paper-button iron-icon {
@@ -103,20 +103,20 @@
 
         #description {
             color: #b3b3b3;
-            margin:0 15px;
-            font-size:14px;
+            margin: 0 15px;
+            font-size: 14px;
         }
 
         #title {
             color: #676767;
-            margin-top:40px;
-            font-size:18px;
+            margin-top: 40px;
+            font-size: 18px;
         }
 
         #level-part {
             display: flex;
             flex-direction: column;
-            width:64px;
+            width: 64px;
         }
 
         #level {
@@ -129,7 +129,7 @@
             height: 30px;
         }
 
-        #middle-row1{
+        #middle-row1 {
             display: flex;
             justify-content: space-between;
             padding: 10px 15px;
@@ -144,10 +144,6 @@
                     <div>[[_translations.texts.earn_up_to]]</div>
                     <div class="reward"><span>[[mission.reward]]</span><span>€</span></div>
                 </div>
-                <div id="command" class="command">
-                    <paper-icon-button icon="delete" on-tap="_deleteMission"></paper-icon-button>
-                    <paper-icon-button icon="create" on-tap="_editMission"></paper-icon-button>
-                </div>
                 <div class="dates">
                     <sa-dates dates="[[mission.wishDates]]" limit="5"></sa-dates>
                 </div>
@@ -155,7 +151,7 @@
 
             <div id="[[middle]]" class="middle">
                 <div id="middle-row1">
-                    <div id="title">Painting Walls<!--[[mission._subType.name.en]]--></div>
+                    <div id="title">{{_computeKindName(subKind, lang)}}</div>
                     <div id="level-part">
                         <div id="level">[[levelLabel]]</div>
                         <iron-collapse id="image-collapse">
@@ -165,12 +161,22 @@
                         </iron-collapse>
                     </div>
                 </div>
-                <div id="description">lorem ipsum dolor sit amet consectetur adipiscing elit. aliquam rutrum fringilla dui viverra semper<!--[[mission.shortDescription]]--></div>
+                <div id="description">[[mission.shortDescription]]</div>
             </div>
 
             <div id="[[footer]]" class="footer ">
-                <paper-button id="favorite" on-tap="_addToFavorites"><iron-icon id="favorite-icon" icon="favorite"></iron-icon><span id="favorite-span">[[_translations.texts.add_to_favorites]]</span></paper-button>
-                <paper-button on-tap="_postulateMission"><iron-icon id="check" icon="check"></iron-icon><span>[[_translations.texts.accept]]</span></paper-button>
+                <iron-pages id="role-page" selected="1">
+                    <div id="sponsor-command" class="command">
+                        <paper-button id="delete" on-tap="_deleteMission"><iron-icon id="delete-icon" icon="delete"></iron-icon><span id="delete-span">[[_translations.texts.delete]]</span></paper-button>
+                        <paper-button id="edit" on-tap="_editMission"><iron-icon id="edit-icon" icon="create"></iron-icon><span id="postulate-span">[[_translations.texts.edit]]</span></paper-button>
+                    </div>
+
+                    <div id="agent-command" class="command">
+                        <paper-button id="favorite" on-tap="_addToFavorites"><iron-icon id="favorite-icon" icon="favorite"></iron-icon><span id="favorite-span">[[_translations.texts.add_to_favorites]]</span></paper-button>
+                        <paper-button id="postulate" on-tap="_postulateMission"><iron-icon id="postulated-icon" icon="check"></iron-icon><span id="postulate-span">[[_translations.texts.postulate]]</span></paper-button>
+                    </div>
+
+                </iron-pages>
             </div>
 
         </paper-card>
@@ -205,37 +211,71 @@
                         type: Boolean,
                         value: false
                     },
-                    hide: {
-                        type: Boolean,
-                        value: true,
-                        observer: '_hideChanged'
-                    },
-                    favorites: []
+                    favorites: [],
+                    postulateds: [],
+                    lang: String
                 },
                 observers: [
-        'favoriteMissionsChanged(favorites.*)'
+        'favoriteMissionsChanged(favorites.*)',
+        'postulatedMissionsChanged(postulateds.*)'
                 ],
-                favoriteMissionsChanged:function(record){
+                ready: function () {
+                    app.addEventListener('on-change-language', function (e) {
+                        this.lang = app.lang;
+                    }.bind(this));
+                },
+                favoriteMissionsChanged: function (record) {
+                    if (!this.mission) { return; }
                     if (record.path.includes('splices') || record.path == 'favorites') {
-                        if (this.favorites && this.favorites.indexOfObject('_mission', this.mission._id) != -1) {
-                            this.$.favorite.style.color = '#cc0000';
+                        this._setFavoriteColor();
+                    }
+                },
+                _computeKindName: function (subKind, lang) {
+                    if (this.kind) {
+                        if (this.lang == 'fr') {
+                            return this.mission._subType.name.fr;
                         }
-                        else {
-                            this.$.favorite.style.color = this.$.check.style.color;
+                        else if (this.lang == 'en') {
+                            return this.mission._subType.name.en;
                         }
                     }
                 },
-                ready: function () {
+                postulatedMissionsChanged: function (record) {
+                    if (!this.mission) { return; }
+                    if (record.path.includes('splices') || record.path == 'postulateds') {
+                        this._setPostulatedColor();
+                    }
                 },
-                attached:function(){
+                _setFavoriteColor: function () {
+                    if (this.favorites && this.favorites.indexOfObject('_mission', this.mission._id) != -1) {
+                        this.$.favorite.style.color = '#cc0000';
+                    }
+                    else {
+                        this.$.favorite.style.color = '#999999';
+                    }
+                },
+                _setPostulatedColor: function () {
+                    if (this.postulateds && this.postulateds.indexOfObject('_mission', this.mission._id) != -1) {
+                        this.$.postulate.style.color = '#00cc00';
+                    }
+                    else {
+                        this.$.postulate.style.color = '#999999';
+                    }
+                },
+                attached: function () {
+                    app.addEventListener('role-changed', function (e) {
+                        this._setRolePart();
+                    }.bind(this));
+
                     this.init();
                 },
                 handleChange: function (e) {
                     this.init();
                 },
                 init: function (e) {
-
-                    if (!this.mission || !this.mission._type) { return; }
+                    if (!this.mission || !this.mission._type) {
+                        return;
+                    }
 
                     this.cardName = 'card-mission-' + this.mission._type.css + '-' + this.index;
                     this.middle = this.cardName + '-middle';
@@ -245,7 +285,13 @@
 
                     this.$$(id).style.backgroundImage = 'url(/images/kinds/' + this.mission._type.image.path + ')';
                     this.$$(id).style.backgroundPosition = this.mission._type.image.xOffset + ' ' + this.mission._type.image.yOffset;
-                    this.$$(id).style.backgroundSize = this.mission._type.image.size;                    
+                    this.$$(id).style.backgroundSize = this.mission._type.image.size;
+
+                    this.$$('.middle').style.backgroundColor = '#efefef';
+                    this.$$('.footer').style.backgroundColor = '#efefef';
+
+                    this.$$('.header').style.color = '#eeeeee';
+                    this.$$('.footer').style.color = '#999999';
 
                     this._computeLevel();
                     this.$$('sa-dates').refresh();
@@ -257,12 +303,20 @@
                         this.$$('#image-collapse').hide();
                     }
 
-                    if (this.favorites && this.favorites.indexOfObject('_mission', this.mission._id) != -1) {
-                        this.$.favorite.style.color = '#cc0000';
-                    }
+                    this._setFavoriteColor();
+                    this._setPostulatedColor();
+                    this._setRolePart();
                 },
                 _deleteMission: function (e) {
                     this.fire('delete-mission', { mission: this.mission });
+                },
+                _setRolePart: function () {
+                    if (app.role == 'agent') {
+                        this.$$('#role-page').select(1);
+                    }
+                    else {
+                        this.$$('#role-page').select(0);
+                    }
                 },
                 _editMission: function (e) {
                     this.fire('edit-mission', { mission: this.mission });
@@ -312,14 +366,6 @@
                     div.elevation = 1;
                     this.$$('#image-collapse').hide();
                 },
-                _hideChanged: function (e) {
-                    if (this.hide) {
-                        this.$.command.style.display = 'none';
-                    }
-                    else {
-                        this.$.command.style.display = 'flex';
-                    }
-                },
                 _addToFavorites: function (e) {
                     if (this.favorites && this.favorites.indexOfObject('_mission', this.mission._id) != -1) {
                         app.socket.emit('delete-favorite-mission', { _mission: this.mission._id });
@@ -327,8 +373,51 @@
                     else {
                         app.socket.emit('add-favorite-mission', { _mission: this.mission._id });
                     }
+                },
+                _postulateMission: function (e) {
+                    if (this.postulateds && this.postulateds.indexOfObject('_mission', this.mission._id) == -1) {
+                        app.socket.emit('add-postulated-mission', { _mission: this.mission._id });
+                    }
                 }
             });
         })();
+    </script>
+</dom-module>
+
+
+<dom-module id="sa-mission-card-empty">
+    <style>
+        :host {
+        }
+
+        paper-card{            
+            align-self: center;
+            border-radius: 7px;
+            cursor: pointer;
+            margin: 5px;
+            min-width: 300px;
+            max-width: 300px;
+            @apply(--sa-mission-card);
+        }
+    </style>
+
+    <template>
+
+        <paper-card>
+
+        </paper-card>
+
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sa-mission-card-empty',
+
+                properties: {
+                }
+            });
+        })();
+
     </script>
 </dom-module>

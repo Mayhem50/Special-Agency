@@ -14,6 +14,7 @@ var Chat = mongoose.Schema({
             _receiver: { type: mongoose.Schema.Types.ObjectId, required : true, ref: 'User' },
             date : { type : Date, default: Date.now, required : true },
             message : { type: String },
+            tag: {type: String}
         }
     ],
     date: { type : Date, default: Date.now },

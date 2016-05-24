@@ -70,24 +70,22 @@
             <div id="header-icon">
                 &nbsp;
             </div>
-            <div id="header-agent">
-                Names
-            </div>
-            <div id="header-text">
-                Messages
-            </div>
-            <div id="header-date">
-                Dates
-            </div>
+            <div id="header-agent">{{_translations.texts.names}}</div>
+            <div id="header-text">{{_translations.texts.messages}}</div>
+            <div id="header-date">{{_translations.texts.dates}}</div>
         </div>
         <div id="content">
-            <template id="list" is="dom-repeat" items="[[chats]]" filter="_filterChat" observers="unreads">
+            <template id="list" is="dom-repeat" items="[[chats]]" sort="_sortChat" filter="_filterChat" observers="unreads">
                 <sa-chat-list-item chat="[[item]]" on-click="_getChat" on-mouseenter="_onMouseEnter" on-mouseleave="_onMouseLeave"></sa-chat-list-item>
             </template>
         </div>
         <div id="footer">
 
         </div>
+
+        <sa-translation id="translation"
+                        element="sa-chats-list"
+                        translations="{{_translations}}"></sa-translation>
     </template>
     <script>
         (function () {
@@ -109,7 +107,8 @@
                     gradientIndex: {
                         type: Number,
                         notify: true
-                    }
+                    },
+                    previousItem:Object
                 },
                 observers: [
         'chatsChanged(chats.*)'
@@ -125,7 +124,7 @@
                             if (divs[idx].chat._id == this.chats[index]._id) {
                                 if (this.selectedChat && this.chats[index]._id == this.selectedChat._id && !this.mission) {
                                     divs[idx].updateChat(this.chats[index]);
-                                    app.socket.emit('read-chat', this.chats[idx]);
+                                    this.async(function(){app.socket.emit('read-chat', this.chats[idx])}.bind(this), 150);
                                     divs[idx].activeBackground();
                                 }
                                 else {
@@ -141,6 +140,12 @@
                         this._needRender();
                         this.selectedChat = null;
                     }.bind(this));
+                },
+                _sortChat: function(A, B){
+                    var dateA = new Date(A.date);
+                    var dateB = new Date(B.date);
+
+                    return dateA > dateB;
                 },
                 _filterChat: function (item) {
                     var ret = true;
@@ -161,6 +166,10 @@
                     this.$.list.render();
                 },
                 _getChat: function (e) {
+                    if (this.previousItem) {
+                        this.previousItem.setBackground();
+                    }
+                    
                     var idx = this.chats.indexOfObject('_id', e.model.item._id);
 
                     if (idx > -1) {
@@ -175,6 +184,7 @@
                         app.socket.emit('read-chat', this.chats[idx]);
                         this.fire('chat-selected', { chat: this.chats[idx] });
                     }
+                    this.previousItem = e.currentTarget;
                 },
                 _onMouseEnter: function (e) {
                     e.currentTarget.activeBackground();

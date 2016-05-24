@@ -1,39 +1,39 @@
 ﻿var express = require('express');
 var jwtauth = require('../controllers/jwtauth');
-var Favorite = require('../models/favorite-mission.js');
+var Postulated = require('../models/postulated-mission.js');
 
 var router = express.Router();
 
 module.exports = function () {
-    router.post('/favorite-missions', jwtauth, function (req, res) {
-        console.log('Add a favorite mission');
+    router.post('/postulated-missions', jwtauth, function (req, res) {
+        console.log('Add a postulated mission');
         console.log(req.query.mission);
         
-        var favorite = new Favorite({
+        var postulated = new Postulated({
             _user : req.user._id,
             _mission : req.query.mission._id
         });
         
-        favorite.save(function (err) {
+        postulated.save(function (err) {
             if (err) { return res.sendStatus(500); }
             res.json({
                 method : 'POST',
                 success: true,
-                route: "favorite-missions"
+                route: "postulated-missions"
             });
         });        
     });
     
-    router.get('/favorite-missions', jwtauth, function (req, res) {
-        console.log('Get all favorite missions');
-        Favorite.find({ _user : req.user._id }, function (err, missions) {
+    router.get('/postulated-missions', jwtauth, function (req, res) {
+        console.log('Get all postulated missions');
+        Postulated.find({ _user : req.user._id }, function (err, missions) {
             if (err) { return res.sendStatus(500); }
             
             return res.json({
                 result: missions,
                 method: 'GET',
                 success : true,
-                route: "favorite-missions"
+                route: "postulated-missions"
             });
         });
     });

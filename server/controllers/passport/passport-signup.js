@@ -47,9 +47,9 @@ module.exports = function (passport) {
                     var newUser = new User();
                     
                     // set the user's local credentials
-                    newUser.firstName = req.query.firstName;
-                    newUser.lastName = req.query.lastName;
-                    newUser.gender = req.query.gender;
+                    newUser.firstName = req.body.firstName;
+                    newUser.lastName = req.body.lastName;
+                    newUser.gender = req.body.gender;
                     
                     if (typeof req.query.address !== 'undefined') {
                         newUser.address.number = req.query.address.number;
@@ -80,7 +80,7 @@ module.exports = function (passport) {
                     
                     // save the user
                     newUser.save(function (err) {
-                        var newCredential = new Credential({
+                        var newCredential = new Credential( {
                             '_user' : newUser._id,
                             email : username,
                             password : createHash(password)

@@ -1,1 +1,1 @@
-mongod --dbpath X:\DevGit\
+mongod --dbpath X:\GitPerso\MongoDB\SpecialAgency

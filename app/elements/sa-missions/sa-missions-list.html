@@ -57,6 +57,7 @@
                                  on-edit-mission="_onBeginEdition"
                                  hide="[[hide]]"
                                  favorites="{{favorites}}"
+                                 postulateds="{{postulateds}}"
                                  accept-event>
                 </sa-mission-card>
             </template>
@@ -97,6 +98,20 @@
                             this.filterAdd('agent');
                         }
                     }.bind(this));
+
+                    app.addEventListener('show-missions-filtered', function (e) {
+                        if (e.detail.activate) {
+                            this.filterAdd(e.detail.filter);
+                        }
+                        else {
+                            this.filterRemove(e.detail.filter);
+                        }
+
+                        e.detail.remove.forEach(function (filter) {
+                            this.filterRemove(filter);
+                        }.bind(this));
+
+                    }.bind(this));
                 },
                 _kindChanged: function (e) {
                     if (!this.kind) {
@@ -109,7 +124,10 @@
                 },
                 _onBeginConsultation: function (e) {
                     if (e.target.nodeName.toLowerCase() == 'iron-icon' || 
-                        e.target.id.includes('favorite')) { return; }
+                        e.target.id.includes('favorite') ||
+                        e.target.id.includes('postulate') ||
+                        e.target.id.includes('delete') ||
+                        e.target.id.includes('edit')) { return; }
 
                     this.fire('show-mission', { mission: e.model.item });
                 },
@@ -151,12 +169,35 @@
                                 this.hide = false;
                                 ret &= item._sponsor._id == app.user._id;
                                 break;
+                            case 'ended':
+                                if (app.user && item._agent) {
+                                    ret &= item._agent._id == app.user._id && item.status == 'ended';
+                                }
+                                break;
                             case 'accepted':
+                                if (app.user && item._agent) {
+                                    ret &= item._agent == app.user._id;
+                                }
+                                break;
                             case 'agent':
                                 if (app.user)
                                     ret &= item._sponsor._id != app.user._id;
                                 else
                                     ret &= true;
+                                break;
+                            case 'favorite':
+                                var favorite = this.favorites.find(function(favorite){
+                                    return favorite._user = app.user._id && item._id == favorite._mission;
+                                });
+                                if (favorite) { ret &= true; }
+                                else ret &= false;
+                                break;
+                            case 'postulated':
+                                var postulated = this.postulateds.find(function (postulated) {
+                                    return postulated._user = app.user._id && item._id == postulated._mission;
+                                });
+                                if (postulated) { ret &= true; }
+                                else ret &= false;
                                 break;
                             default:
                                 ret &= true;

@@ -100,12 +100,12 @@
         <paper-card id$="[[cardName]]" on-mouseenter="_mouseOver" on-mouseleave="_mouseOut">
             <div class="header" header>
                 <div class="header-content">
-                    <div class="header-title">Available Missions</div>
+                    <div class="header-title">{{_translations.texts.available_missions}}</div>
                     <div class="count">[[kind.count]]</div>
                     <iron-icon icon="search"></iron-icon>
                     <div class="infos">
-                        <div>Find Missions into</div>
-                        <div class="infos-colored">This category</div>
+                        <div>{{_translations.texts.find_mission}}</div>
+                        <div class="infos-colored">{{_translations.texts.this_category}}</div>
                     </div>
                 </div>
             </div>
@@ -115,11 +115,14 @@
             </div>-->
 
             <div id$="[[kind.css]]" class="footer" footer>
-                <div>{{kind.name.en}}</div>
+                <div>{{_computeKindName(kind, lang)}}</div>
             </div>
 
         </paper-card>
 
+        <sa-translation id="translation"
+                        element="sa-kind-card"
+                        translations="{{_translations}}"></sa-translation>
     </template>
 
     <script>
@@ -129,9 +132,15 @@
 
                 properties: {
                     kind: Object,
-                    observer: '_kindChanged'
+                    lang: String
                 },
-                ready:function(){
+                attached: function () {
+                    app.addEventListener('on-change-language', function (e) {
+                        this.lang = app.lang;
+                    }.bind(this));
+
+                    this.lang = app.lang;
+
                     this.cardName = 'card' + this.kind.css;
                     var divs = this.querySelectorAll('#' + this.kind.css);
                     if (divs == null) return;
@@ -150,6 +159,16 @@
                     card.style.backgroundImage = 'url(../../images/kinds/' + this.kind.image.path + ')';
                     card.style.backgroundPosition = this.kind.image.xOffset + ' ' + this.kind.image.yOffset;
                     card.style.backgroundSize = 'cover';//this.kind.image.scale;
+                },
+                _computeKindName: function(kind, lang){
+                    if (this.kind) {
+                        if (this.lang == 'fr') {
+                            return this.kind.name.fr;
+                        }
+                        else if (this.lang == 'en') {
+                            return this.kind.name.en;
+                        }
+                    }
                 },
                 _mouseOver: function (e) {
                     var div = this.querySelector('paper-card');

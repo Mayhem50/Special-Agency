@@ -13,6 +13,12 @@
                 method="get"
                 result="{{model.missions}}"></sa-xhr>
 
+        <sa-xhr id="missions"
+                url="/missions/agent"
+                method="get"
+                result="{{model.agentMissions}}"
+                token></sa-xhr>
+
         <sa-xhr id="kinds"
                 url="/kinds"
                 method="get"
@@ -35,6 +41,12 @@
                 method="get"
                 result="{{model.draftMissions}}"
                 token></sa-xhr>
+
+        <sa-xhr id="postulated-missions"
+                url="/postulated-missions"
+                method="get"
+                result="{{model.postulatedMissions}}"
+                token></sa-xhr>
     </template>
 
     <script>
@@ -47,20 +59,26 @@
                         type: Object,
                         value: function () {
                             return {                                
-                                missions : [],
+                                missions: [],
                                 kinds : [],
                                 chats: [],
                                 favoriteMissions: [],
-                                draftMissions: []
+                                draftMissions: [],
+                                postulatedMissions : []
                             }
                         },
                         notify : true
-                    }
+                    },
+                    agentMissions: {
+                        type: Array,
+                        value: [],
+                        observer: '_getAgentMissions'
+                    },
                 },
                 debug: function (e) {
                     console.log(e);
                 },
-                attached: function (e) {
+                request:function(){
                     if (app.user) {
                         this._chatsURL = '/chats/' + app.user._id;
                     }
@@ -68,9 +86,13 @@
                     var xhrs = this.querySelectorAll('sa-xhr');
                     if (xhrs) {
                         for (var idx = 0; idx < xhrs.length; ++idx) {
+                            if (xhrs[idx].id == 'chats' && !app.user) { continue;}
                             xhrs[idx].request();
                         }
                     }
+                },
+                attached: function (e) {
+                    this.request();
 
                     app.addEventListener('socket-connected', function (e) {
                         app.socket.on('new-chat', function (data) {
@@ -84,6 +106,8 @@
                             var index = this.model.chats.indexOfObject('_id', data.chat._id);
                             if (index == -1) { return; }
                             this.push('model.chats.' + index + '.messages', data.message);
+
+                            if (data.message._sender == app.user._id) { return;}
 
                             if (app.user._id == data.chat._sponsor._id) {
                                 this.set('model.chats.' + index + '.sponsorUnreads', this.model.chats[index].sponsorUnreads + 1);
@@ -126,6 +150,8 @@
                             var index = this.model.missions.indexOfObject('_id', data._id);
                             if (index == -1) { return; }
                             this.set('model.missions.' + index, data);
+
+                            if (data._agent) { this.notifyUsersWhenMissionAccepted(data); }
                         }.bind(this));
 
                         app.socket.on('delete-mission', function (data) {
@@ -180,7 +206,57 @@
                             if (index == -1) { return; }
                             this.splice('model.favoriteMissions', index, 1);
                         }.bind(this));
+
+                        app.socket.on('add-postulated-mission', function (data) {
+                            console.log('add postulated mission');
+                            var index = this.model.postulatedMissions.indexOfObject('_id', data._mission);
+                            if (index != -1) { return; }
+                            this.push('model.postulatedMissions', data);
+
+                            var chat = this.model.chats.find(function (chat) {
+                                return chat._mission._id == data._mission && app.user._id == chat._agent._id;
+                            });
+
+                            var missionIndex = this.model.missions.indexOfObject('_id', data._mission);
+
+                            var message = {
+                                message: app.lang == 'fr' ? "J'accepte votre mission" : 'I accept your mission',
+                                _sender: app.user._id,
+                                _receiver: this.model.missions[missionIndex]._sponsor,
+                                mission: this.model.missions[missionIndex],
+                                chat: chat ? chat._id : null,
+                                tag : 'postulate'
+                            }
+                            app.socket.emit('new-message', message);
+                        }.bind(this));
                     }.bind(this));
+                },
+                notifyUsersWhenMissionAccepted: function (mission) {
+                    this.model.chats.forEach(function (chat) {
+                        if (chat._mission._id == mission._id && chat._sponsor._id == app.user._id) {
+                            var message = {
+                                message: "",
+                                _sender: app.user._id,
+                                _receiver: chat._agent._id,
+                                mission: mission,
+                                chat: chat ? chat._id : null,
+                                tag: ''
+                            }
+                            if (chat._agent._id == mission._agent) {
+                                message.message = app.lang == 'fr' ? "Je vous engage" : 'I hire you';
+                                tag = 'accepted'
+                            }
+                            else {
+                                message.message = app.lang == 'fr' ? "La mission est pourvue par un autre agent" : 'The mission is provided by another agent';
+                                tag = 'rejected'
+                            }
+
+                            app.socket.emit('new-message', message);
+                        }
+                    }.bind(this));
+                },
+                _getAgentMissions: function (e) {
+                    this.push('model.missions', this.agentMissions);
                 }
             });
         })();

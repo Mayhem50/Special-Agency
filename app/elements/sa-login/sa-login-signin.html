@@ -81,16 +81,20 @@
     </style>
     <template>
         <div class="inputs">
-            <paper-input always-float-label="false" no-label-float="true" id="email" is="email" label="Email" name="email" value="{{_email::input}}"></paper-input>
-            <paper-input always-float-label="false" no-label-float="true" id="password" is="password" label="Password" type="password" name="password" value="{{_password::input}}"></paper-input>
+            <paper-input always-float-label="false" no-label-float="true" id="email" is="email" label="Email" name="{{_translations.texts.email}}" value="{{_email::input}}"></paper-input>
+            <paper-input always-float-label="false" no-label-float="true" id="password" is="password" label="{{_translations.texts.password}}" type="password" name="password" value="{{_password::input}}"></paper-input>
         </div>
         <div class="checkbox">
-            <paper-checkbox noink is="remember" label="Remember Me" checked="{{_remember}}">Remember Me</paper-checkbox>
+            <paper-checkbox noink is="remember" label="{{_translations.texts.remember_me}}" checked="{{_remember}}">Remember Me</paper-checkbox>
         </div>
         <div class="button">
-            <paper-button on-click="_signin" raised>Sign In</paper-button>
+            <paper-button on-click="_signin" raised>{{_translations.texts.signin}}</paper-button>
         </div>
         <paper-spinner active="[[_isLoading]]"></paper-spinner>
+
+        <sa-translation id="translation"
+                        element="sa-login-signin"
+                        translations="{{_translations}}"></sa-translation>
 
         <sa-xhr id="xhr"
                 url="/users/login"

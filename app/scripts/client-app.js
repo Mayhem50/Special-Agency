@@ -89,6 +89,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }).on('disconnect', function () {
             console.log('disconnected');
         });
+
+        var model = document.querySelector('#model');
+        if (model) {
+            model.request();
+        }
     };
     
     app.onLogOut = function (){

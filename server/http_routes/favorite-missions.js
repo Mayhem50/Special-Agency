@@ -8,20 +8,26 @@ module.exports = function () {
     router.post('/favorite-missions', jwtauth, function (req, res) {
         console.log('Add a favorite mission');
         console.log(req.query.mission);
-        
-        var favorite = new Favorite({
-            _user : req.user._id,
-            _mission : req.query.mission._id
-        });
-        
-        favorite.save(function (err) {
+
+        Favorite.findOne({ _mission : data._mission, _user : socket.user._id }, function (err, favorite) {
             if (err) { return res.sendStatus(500); }
-            res.json({
-                method : 'POST',
-                success: true,
-                route: "favorite-missions"
-            });
-        });        
+            if (!favorite) {
+                favorite = new Favorite({
+                    _user : socket.user._id,
+                    _mission : data._mission
+                });
+                
+                favorite.save(function (err) {
+                    if (err) { return res.sendStatus(500); }
+
+                    res.json({
+                        method : 'POST',
+                        success: true,
+                        route: "favorite-missions"
+                    });
+                });
+            }
+        });       
     });
     
     router.get('/favorite-missions', jwtauth, function (req, res) {

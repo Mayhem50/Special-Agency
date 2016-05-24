@@ -8,7 +8,7 @@
             align-items:center;
             
             --paper-tab:{
-                width:120px;
+                width:135px;
                 padding:0;
                 text-transform:uppercase;
             }
@@ -57,14 +57,18 @@
             <img src="../../images/logo/Img-03.png" />
         </div>
         <paper-tabs noink attr-for-selected="data-route" selected="{{route}}">
-            <paper-tab data-route="missions">Missions</paper-tab>
-            <paper-tab data-route="dashboard">Dashboard</paper-tab>
+            <paper-tab data-route="missions">{{_translations.texts.missions}}</paper-tab>
+            <paper-tab data-route="dashboard">{{_translations.texts.dashboard}}</paper-tab>
         </paper-tabs>
         <div>Support</div>
         <div id="button">
-            <paper-button on-tap="_onCreateMission">Create Mission</paper-button>
+            <paper-button on-tap="_onCreateMission">{{_translations.texts.create_mission}}</paper-button>
         </div>
         <paper-icon-button icon="search"></paper-icon-button>
+
+        <sa-translation id="translation"
+                        element="sa-toolbar-logged"
+                        translations="{{_translations}}"></sa-translation>
     </template>
 
     <script>
@@ -92,16 +96,18 @@
                     this.createMission = !this.createMission;
                 },
                 _createMissionChanged: function (e) {
+                    if (!this._translations) { return; }
+
                     if (this.createMission) {
                         this.$.button.style.background = "#339933";
                         this.$$('paper-button').style.background = '#cd0000';
-                        this.$$('paper-button').innerHTML = 'Cancel Mission';
+                        this.$$('paper-button').innerHTML = this._translations.texts.cancel_mission;
                         this.route = 'missions';
                     }
                     else {
                         this.$.button.style.background = "rgba(0, 0, 0, 0)";
                         this.$$('paper-button').style.background = '#339933';
-                        this.$$('paper-button').innerHTML = 'Create Mission';
+                        this.$$('paper-button').innerHTML = this._translations.texts.create_mission;
                     }
                 }
             });

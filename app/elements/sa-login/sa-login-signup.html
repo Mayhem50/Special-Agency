@@ -89,25 +89,29 @@
         </div>
 
         <div class="inputs">
-            <paper-input always-float-label="false" no-label-float="true" id="firstName" is="firstName" label="First Name" name="firstName" value="{{_firstName::input}}"></paper-input>
-            <paper-input always-float-label="false" no-label-float="true" id="lastName" is="lastName" label="Last Name" name="lastName" value="{{_lastName::input}}"></paper-input>
+            <paper-input always-float-label="false" no-label-float="true" id="firstName" is="firstName" label="{{_translations.texts.first_name}}" name="firstName" value="{{_firstName::input}}"></paper-input>
+            <paper-input always-float-label="false" no-label-float="true" id="lastName" is="lastName" label="{{_translations.texts.last_name}}" name="lastName" value="{{_lastName::input}}"></paper-input>
 
-            <paper-input always-float-label="false" no-label-float="true" id="email" is="email" label="Email" name="email" value="{{_email::input}}" error-message="{{_emailErrorMessage}}" on-keyup="_checkEmail"></paper-input>
+            <paper-input always-float-label="false" no-label-float="true" id="email" is="email" label="{{_translations.texts.email}}" name="email" value="{{_email::input}}" error-message="{{_emailErrorMessage}}" on-keyup="_checkEmail"></paper-input>
 
-            <paper-input always-float-label="false" no-label-float="true" id="password" is="password" label="Password" type="password" name="password" value="{{_password::input}}"></paper-input>
-            <paper-input always-float-label="false" no-label-float="true" id="passwordConfirm" is="passwordConfirm" type="password" label="Confirm Password" value="{{_passwordConfirm}}" error-message="Not same password"></paper-input>
+            <paper-input always-float-label="false" no-label-float="true" id="password" is="password" label="{{_translations.texts.password}}" type="password" name="password" value="{{_password::input}}"></paper-input>
+            <paper-input always-float-label="false" no-label-float="true" id="passwordConfirm" is="passwordConfirm" type="password" label="{{_translations.texts.confirm_password}}" value="{{_passwordConfirm}}" error-message="Not same password"></paper-input>
 
         </div>
         <div class="checkbox">
-            <paper-checkbox noink is="remember" label="Remember Me" checked="{{_remember}}">Remember Me</paper-checkbox>
+            <paper-checkbox noink is="remember" label="Remember Me" checked="{{_remember}}">{{_translations.texts.remember_me}}</paper-checkbox>
         </div>
 
         <div class="button">
-            <paper-button on-click="_signup" raised>Sign Up</paper-button>
+            <paper-button on-click="_signup" raised>{{_translations.texts.signup}}</paper-button>
         </div>
 
         <paper-spinner active="[[_isLoading]]"></paper-spinner>
 
+
+        <sa-translation id="translation"
+                        element="sa-login-signup"
+                        translations="{{_translations}}"></sa-translation>
 
         <iron-ajax id="check-availability-ajax"
                    url="/checkAvailability/email"
@@ -196,7 +200,9 @@
                     if (this._validateBeforeSend()) {
                         this._params = {
                             email: this._email,
-                            password: this._password
+                            password: this._password,
+                            firstName: this._firstName,
+                            lastName: this._lastName
                         }
                         this.$.xhr.request();
                     }

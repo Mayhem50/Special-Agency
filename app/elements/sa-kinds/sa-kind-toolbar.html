@@ -70,7 +70,7 @@
         <div id="toolbar-button" on-tap="_backToKinds"><iron-icon icon="chevron-left"></iron-icon></div>
         <div id="toolbar-image">&nbsp;</div>
         <div id="toolbar-text">
-            <span>[[kind.name.en]]</span>
+            <span>{{_computeKindName(kind, lang)}}</span>
         </div>
         <!--<div id="toolbar-content">
         </div>-->
@@ -101,6 +101,24 @@
                     _missions: {
                         type: Array,
                         value: []
+                    },
+                    lang : String
+                },
+                attached:function(){                    
+                    app.addEventListener('on-change-language', function (e) {
+                        this.lang = app.lang;
+                    }.bind(this));
+
+                    this.lang = app.lang;
+                },
+                _computeKindName: function (kind, lang) {
+                    if (this.kind) {
+                        if (this.lang == 'fr') {
+                            return this.kind.name.fr;
+                        }
+                        else if (this.lang == 'en') {
+                            return this.kind.name.en;
+                        }
                     }
                 },
                 _updateContent: function () {

@@ -61,8 +61,11 @@
         <google-maps-api on-api-load="mapApiLoaded" libraries="places"></google-maps-api>
         <google-map map="{{map}}" id="map" longitude="{{longitude}}" latitude="{{latitude}}" zoom="[[zoom]]" disable-default-ui></google-map>
 
-        <paper-input disabled="[[disabled]]" id="autocomplete" class="map-input" always-float-label="false" no-label-float="true"></paper-input>
+        <paper-input disabled="[[disabled]]" id="autocomplete" class="map-input" always-float-label="false" no-label-float="true" label="{{_translations.texts.input}}"></paper-input>
 
+        <sa-translation id="translation"
+                        element="sa-map"
+                        translations="{{_translations}}"></sa-translation>
     </template>
 
     <script>

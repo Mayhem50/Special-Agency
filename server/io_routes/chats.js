@@ -18,7 +18,8 @@ module.exports = function (io, socket) {
                         _sender: socket.user._id,
                         _receiver : data.mission._sponsor._id,
                         message : data.message,
-                        date: Date.now()
+                        date: Date.now(),
+                        tag: data.tag ? data.tag : null
                     }],
                 sponsorUnreads: 1
             });
@@ -55,7 +56,8 @@ module.exports = function (io, socket) {
                             _sender: socket.user._id,
                             _receiver : data._receiver,
                             message : data.message,
-                            date: Date.now()
+                            date: Date.now(),
+                            tag: data.tag ? data.tag : null
                         },
                         chat : chat
                     };
@@ -85,6 +87,8 @@ module.exports = function (io, socket) {
     });
         
     socket.on('read-chat', function (data) {
+        if (data == null) { return; }
+        
         Chat.findOne({ '_id' : data._id }, function (err, chat) {
             if (err) { throw (err); }
             console.log('chat read');

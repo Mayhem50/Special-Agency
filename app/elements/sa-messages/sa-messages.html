@@ -40,7 +40,9 @@
                      gradient-index="{{gradientIndex}}"></sa-chat-box>
         <sa-mission-card mission="{{currentChat._mission}}"
                          hide
-                         show-level></sa-mission-card>
+                         show-level
+                         favorites="{{model.favoriteMissions}}"
+                         postulateds="{{model.postulatedMissions}}"></sa-mission-card>
     </template>
 
     <script>

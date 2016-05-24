@@ -48,18 +48,22 @@
 
     <template>
             <div id="sorts">
-                <span>Sort by : </span>
-                <div id="last-add" class="sort button" on-click="_sortChanged">Last add</div>
-                <div id="older" class="sort button" on-click="_sortChanged">Older</div>
-                <div id="reward" class="sort button" on-click="_sortChanged">Reward</div>
-                <div id="difficulty" class="sort button" on-click="_sortChanged">Difficulty</div>
+                <span>{{_translations.texts.sorted_by}}</span><span>&nbsp;:&nbsp;</span>
+                <div id="last-add" class="sort button" on-click="_sortChanged">{{_translations.texts.last_add}}</div>
+                <div id="older" class="sort button" on-click="_sortChanged">{{_translations.texts.older}}</div>
+                <div id="reward" class="sort button" on-click="_sortChanged">{{_translations.texts.reward}}</div>
+                <div id="difficulty" class="sort button" on-click="_sortChanged">{{_translations.texts.difficulty}}</div>
             </div>
             <div id="filters">
-                <span>Filter by : </span>
-                <div id="ending-soon" class="button" on-click="_filterChanged">Ending soon</div>
-                <div id="arround-me" class="button" on-click="_filterChanged">Arround me</div>
-                <div id="pro-only" class="button" on-click="_filterChanged">Pro only</div>
+                <span>{{_translations.texts.filter_by}}</span><span>&nbsp;:&nbsp;</span>
+                <div id="ending-soon" class="button" on-click="_filterChanged">{{_translations.texts.ending_soon}}</div>
+                <div id="arround-me" class="button" on-click="_filterChanged">{{_translations.texts.arround_me}}</div>
+                <div id="pro-only" class="button" on-click="_filterChanged">{{_translations.texts.pro_only}}</div>
             </div>
+
+        <sa-translation id="translation"
+                        element="sa-mission-filter-toolbar"
+                        translations="{{_translations}}"></sa-translation>
 
     </template>
 

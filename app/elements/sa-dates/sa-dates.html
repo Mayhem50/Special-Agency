@@ -50,6 +50,7 @@
                 },
                 filter: function (item) {
                     this.$$('sa-empty-date').style.display = 'none';
+                    this.$$('sa-empty-date').color('#ffffff');
                     var index = this.dates.indexOf(item);
                     if (index < this.limit - 1) {
                         //var date = new Date(item);

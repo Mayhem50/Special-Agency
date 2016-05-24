@@ -38,6 +38,7 @@ var http_chats = require('./server/http_routes/chats')();
 var http_translation = require('./server/http_routes/translations')();
 var http_favorite_missions = require('./server/http_routes/favorite-missions')();
 var http_draft_missions = require('./server/http_routes/draft-missions')();
+var http_postulated_missions = require('./server/http_routes/postulated-missions')();
 
 app.use(http_index);
 app.use(http_users);
@@ -48,6 +49,7 @@ app.use(http_translation);
 app.use(http_chats);
 app.use(http_favorite_missions);
 app.use(http_draft_missions);
+app.use(http_postulated_missions);
 
 //app.use(csrf());
 

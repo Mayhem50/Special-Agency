@@ -41,7 +41,7 @@
         #buttons{
             display:flex;
             justify-content:space-between;
-            margin-top:25px;
+            margin-bottom:25px;
         }
 
         #buttons paper-button{
@@ -140,6 +140,7 @@
             display:flex;
             flex-direction:column;
             align-items:center;
+            justify-content: space-between;
             border-bottom-right-radius:5px;
         }
 
@@ -464,6 +465,12 @@
 
         }
 
+        #draft-button{
+            display:flex;
+            align-items:center;
+            cursor:pointer;
+        }
+
     </style>
     <template>
             <paper-card id="left-part">
@@ -471,7 +478,7 @@
                     <div id="left-row-1-cell-1">
                         <div id="reward-part">
                             <div id="reward-text">[[_translations.texts.reward]]</div>
-                            <paper-input disabled="[[disabled]]" type="number" always-float-label="false" no-label-float="true" value="{{mission.reward::input}}"><div suffix>€</div></paper-input>
+                            <paper-input id="reward" disabled="[[disabled]]" type="number" always-float-label="false" no-label-float="true" value="{{mission.reward::input}}"><div suffix>€</div></paper-input>
                         </div>
                         <div class="kinds-part">
                             <paper-dropdown-menu class="dropdown-menu" disabled="[[disabled]]" id="kinds-dropdown-menu" always-float-label="false" no-label-float="true" label="[[kind.name.en]]">
@@ -509,12 +516,12 @@
                     </div>
                     <div id="left-row-1-cell-2">
                         <sa-map id="map" disabled="[[disabled]]" latitude="{{mission.place.latitude}}" longitude="{{mission.place.longitude}}" address="{{mission.place.address}}" zoom="[[zoom]]">
-                            <div map-title class="cell-title">{{_translations.texts.mission_location}}</div>
+                            <div id="location-title" map-title class="cell-title">{{_translations.texts.mission_location}}</div>
                         </sa-map>
                     </div>
                     <div id="left-row-1-cell-3">
-                        <div class="cell-title">{{_translations.texts.available_dates}}</div>
-                        <sa-date-picker id="date" disabled="[[disabled]]" dates="{{mission.wishDates}}" on-date-selected="_onDateChanged">
+                        <div id="date-title" class="cell-title">{{_translations.texts.available_dates}}</div>
+                        <sa-date-picker id="date" action="{{action}}" disabled="[[disabled]]" dates="{{mission.wishDates}}" on-date-selected="_onDateChanged">
                             <iron-icon prev-month icon="chevron-left"></iron-icon>
                             <iron-icon next-month icon="chevron-right"></iron-icon>
                         </sa-date-picker>
@@ -527,7 +534,7 @@
                         </div>
                         <div id="left-row-2-cell-1-row-2">
                             <div id="left-row-2-cell-1-row-2-cell-1">
-                                <paper-input always-float-label="false" no-label-float="true" value="{{mission.title::input}}" disabled="[[disabled]]"></paper-input>
+                                <paper-input id="shortDescription" always-float-label="false" no-label-float="true" value="{{mission.shortDescription::input}}" disabled="[[disabled]]"></paper-input>
                             </div>
                         </div>
                         <div id="left-row-2-cell-1-row-3">
@@ -536,32 +543,37 @@
                     </div>
                     <div id="left-row-2-cell-2">
                         <div id="additional-infos">
-                            <div id="add-infos-title">{{_translations.texts.additional_infos}}</div>
+                            <div id="add-infos-title">
+                                <span>{{_translations.texts.laps}}</span>
+                                <span>&nbsp;</span>
+                                <span>{{dateText}}</span>
+                            </div>
                             <div id="add-infos-content">
-                                <paper-checkbox noink disabled="[[disabled]]">{{_translations.texts.flexible_dates}}</paper-checkbox>
-                                <div class="separator"></div>
-                                <paper-checkbox noink disabled="[[disabled]]">RDV 8:00 - 11:30</paper-checkbox>
-                                <paper-checkbox noink disabled="[[disabled]]">RDV 11:30 - 15:00</paper-checkbox>
-                                <paper-checkbox noink disabled="[[disabled]]">RDV 15:00 - 18:00</paper-checkbox>
-                                <paper-checkbox noink disabled="[[disabled]]">RDV 18:00 - 21:00</paper-checkbox>
-                                <div class="separator"></div>
+                                <!--<paper-checkbox noink disabled="[[disabled]]">{{_translations.texts.flexible_dates}}</paper-checkbox>
+                                <div class="separator"></div>-->
+                                <paper-checkbox id="check-0" noink disabled="[[disabled]]" on-change="_setDateLaps">RDV 8:00 - 11:30</paper-checkbox>
+                                <paper-checkbox id="check-1" noink disabled="[[disabled]]" on-change="_setDateLaps">RDV 11:30 - 15:00</paper-checkbox>
+                                <paper-checkbox id="check-2" noink disabled="[[disabled]]" on-change="_setDateLaps">RDV 15:00 - 18:00</paper-checkbox>
+                                <paper-checkbox id="check-3" noink disabled="[[disabled]]" on-change="_setDateLaps">RDV 18:00 - 21:00</paper-checkbox>
+                                <!--<div class="separator"></div>
                                 <paper-checkbox noink disabled="[[disabled]]">{{_translations.texts.tool_provided}}</paper-checkbox>
                                 <div class="separator"></div>
-                                <paper-textarea disabled="[[disabled]]" always-float-label="false" no-label-float="true"></paper-textarea>
+                                <paper-textarea disabled="[[disabled]]" always-float-label="false" no-label-float="true"></paper-textarea>-->
                             </div>
-                            <div id="buttons">
-                                <iron-pages id="apply-button" selected="0">
-                                    <div>
-                                        <div id="draft-part" on-click="test">
-                                            <paper-icon-button icon="save" on-tap="_saveAsDraft"></paper-icon-button><div>{{_translations.texts.save_draft}}</div>
-                                        </div>
-                                        <paper-button on-tap="_addMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span></paper-button>
+                            
+                        </div>
+                        <div style="width:85%;">
+                            <iron-pages id="apply-button" selected="0">
+                                <div id="buttons">
+                                    <div id="draft-button" on-click="_saveAsDraft">
+                                        <paper-icon-button id="draft-button" icon="save"></paper-icon-button><span>{{_translations.texts.save_draft}}</span>
                                     </div>
-                                    <paper-button on-tap="_postuleMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.postulate_mission}}</span></paper-button>
-                                    <paper-button on-tap="_updateMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span></paper-button>
-                                    <div></div>
-                                </iron-pages>
-                            </div>
+                                    <paper-button on-tap="_addMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span></paper-button>
+                                </div>
+                                <paper-button on-tap="_postuleMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.postulate_mission}}</span></paper-button>
+                                <paper-button on-tap="_updateMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span></paper-button>
+                                <div></div>
+                            </iron-pages>
                         </div>
                     </div>
                 </div>
@@ -624,12 +636,52 @@
                     },
                     subKind: Object
                 },
+                _computeDate:function(_date){
+                    var date = new Date(_date);
+                    return date.toLocaleDateString(app.lang);
+                },
+                _setDateLaps: function (e) {
+                    var checks = e.target.id.split('-');
+                    var idx = parseInt(checks[1]);
+                    this._currentDate.laps[idx] = e.target.checked;
+                    console.log('set laps');
+                },
                 _onDateChanged: function (e) {
-                    console.log(e);
+                    if (this.mission && this.mission.wishDates) {
+                        for (var idx = 0; idx < 4; ++idx) {
+                            this.querySelector('#check-' + idx).disabled = false;
+                        }
+
+                        this._currentDate = this.mission.wishDates.find(function (_date) {
+                            var date = new Date(_date.date);
+                            return date.getUTCDate() === e.detail.day - 1 &&
+                                date.getUTCMonth() === e.detail.month - 1 &&
+                                date.getUTCFullYear() === e.detail.year
+                        }.bind(this));
+
+                        if (!this._currentDate) {
+                            for (var idx = 0; idx < 4; ++idx) {
+                                this.querySelector('#check-' + idx).disabled = true;
+                            }
+
+                            this.dateText = '';
+                            return;
+                        }
+
+                        for (var idx = 0; idx < 4; ++idx) {
+                            this.querySelector('#check-' + idx).checked = this._currentDate.laps[idx];
+                        }
+
+                        this.dateText = this._computeDate(this._currentDate.date);
+                    }
+
                     this.$$('#right-part').init();
                 },
                 ready: function () {
                     this._createEmptyMission();
+                    for (var idx = 0; idx < 4; ++idx) {
+                        this.querySelector('#check-' + idx).disabled = true;
+                    }
                 },
                 _kindChanged: function (e) {
                     if (this.kind) {
@@ -674,7 +726,8 @@
                         _type: this.kind ? this.kind : null,
                         level: 1,
                         reward: 0,
-                        descritpion: '',
+                        description: '',
+                        shortDescription: '',
                         status: 'free',
                         creationDate: Date.now(),
                         wishDates: [],
@@ -686,7 +739,48 @@
                         tasks: []
                     }));
                 },
+                _validMission: function () {
+                    var ret = true;
+                    if (!this.mission.shortDescription || this.mission.shortDescription == '') {
+                        ret &= false;
+                        this.$.shortDescription.querySelector('paper-input-container').style.borderColor = 'red';
+                    }
+                    else {
+                        this.$.shortDescription.querySelector('paper-input-container').style.borderColor = '0 solid #e4e4e4';
+                    }
+
+                    if (!this.mission.reward || this.mission.reward == '0') {
+                        ret &= false;
+                        this.$.reward.style.borderColor = 'red';
+                    }
+                    else {
+                        this.$.reward.style.borderColor = '0 solid #e4e4e4';
+                    }
+
+                    if (!this.mission.wishDates || this.mission.wishDates.length == 0) {
+                        ret &= false;
+                        this.$$('#date-title').style.color = 'red';
+                        this.$$('#date-title').style.fontWeight = 'bold';
+                    }
+                    else {
+                        this.$$('#date-title').style.color = null;
+                        this.$$('#date-title').style.fontWeight = null;
+                    }
+
+                    if (!this.mission.place || this.mission.place.address == '') {
+                        ret &= false;
+                        this.$$('#location-title').style.color = 'red';
+                        this.$$('#location-title').style.fontWeight = 'bold';
+                    }
+                    else {
+                        this.$$('#location-title').style.color = null;
+                        this.$$('#location-title').style.fontWeight = null;
+                    }
+                    return ret;
+                },
                 _addMission: function (e) {
+                    if (!this._validMission()) { return; }
+
                     this.mission._type = this.kind;
                     app.socket.emit('add-mission', this.mission);
                     this._createEmptyMission();
@@ -696,15 +790,13 @@
                     this.mission._type = this.kind;
                     this.mission.status = 'draft'
                     app.socket.emit('add-mission', this.mission);
-                    this._createEmptyMission();
                 },
-                _postuleMission:function(){
-                    app.socket.emit('postulate-mission', {
-                        mission: this.mission,
-                        lang: app.lang,
-                        sender: app.user,
-                        receiver: this.mission._sponsor
-                    });
+                _postuleMission: function () {
+                    if (this.postulateds && this.mission && this.mission._id) {
+                        if (this.postulateds.indexOfObject('_mission', this.mission._id) == -1) {
+                            app.socket.emit('add-postulated-mission', { _mission: this.mission._id });
+                        }
+                    }                    
                 },
                 _selectLevel: function (e) {
                     this.mission.level = parseInt(e.target.id) - 1;
@@ -730,6 +822,9 @@
                             }
                             this.disabled = false;
                             this._clear();
+                            var date = new Date(Date.now());
+                            this.$.date.showDate.year = date.getUTCFullYear();
+                            this.$.date.showDate.month = date.getUTCMonth();
                             this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
                             this.$$('#apply-button').select(0);
                             this.$$('#right-pages').select(0);
@@ -738,6 +833,9 @@
                         case 'edition': {
                             this.disabled = false;
                             this.kind = this.mission._type;
+                            var date = new Date(Date.now());
+                            this.$.date.showDate.year = date.getUTCFullYear();
+                            this.$.date.showDate.month = date.getUTCMonth();
                             this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
                             this.$.map.clearMarkers();
                             this.$.map.clearCircle();
@@ -748,8 +846,11 @@
                             break;
                         }
                         case 'consultation': {
-                            this.kind = this.mission._type;
+                            var date = new Date(this.mission.wishDates[0].date);
+                            this.$.date.showDate.year = date.getUTCFullYear();
+                            this.$.date.showDate.month = date.getUTCMonth();
                             this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
+                            this.kind = this.mission._type;
                             this.disabled = true;
                             this.$.map.clearMarkers();
                             this.$.map.clearCircle();
@@ -759,7 +860,7 @@
                                 this.$$('#right-pages').select(2);
                                 this.$$('#apply-button').select(3);
                             }
-                            else {                                
+                            else {
                                 this.$$('#right-pages').select(1);
                                 this.$$('#apply-button').select(1);
                             }

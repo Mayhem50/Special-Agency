@@ -159,13 +159,17 @@
         paper-button{
             align-self:flex-end;
         }
+
+        #accept-agent{
+
+        }
     </style>
     <template>
         <div id="header">
             <div id="avatar"></div>
         </div>
         <div id="content">
-            <template id="chat" is="dom-repeat" items="[[chat.messages]]">
+            <template id="chat" is="dom-repeat" items="[[chat.messages]]" filter="_didPostulate">
                 <div class$="{{_computeSideClass(item, chat.messages.length)}}">
                     <div class$="{{_computeDateClass(item, chat.messages.length)}}">{{_computeDate(item, chat.messages.length)}}</div>
                     <div class$="{{_computeMessageClass(item, chat.messages.length)}}">
@@ -177,11 +181,21 @@
         </div>
         <paper-textarea value="{{_message::input}}" always-float-label="false" no-label-float="true"></paper-textarea>
         <div id="footer">
+            <paper-button id="accept-agent" on-tap="_acceptAgent">
+                <iron-icon icon="check"></iron-icon>
+                <span>{{_translations.texts.accept}}</span>
+            </paper-button>
+
             <paper-button on-tap="_sendMessage" disabled="[[disableButton]]">
-                <span>Send</span>
+                <span>{{_translations.texts.send}}</span>
                 <iron-icon icon="send"></iron-icon>
             </paper-button>
         </div>
+
+        <sa-translation id="translation"
+                        element="sa-chat-box"
+                        translations="{{_translations}}"></sa-translation>
+
     </template>
     <script>
         (function () {
@@ -205,13 +219,26 @@
                     },
                     messages: Object,
                     disableButton: false,
-                    gradientIndex: Number
+                    gradientIndex: Number,
+                    hasPostulate: {
+                        type: Boolean,
+                        value: false,
+                        observer: '_postulateChanged'
+                    }
                 },
                     observers: [
             '_chatsChanged(chats.*)'
                     ],
                 ready:function(){
                     this.gradientIndex = 0;
+                },
+                _postulateChanged: function(e){
+                    if (this.hasPostulate && app.role == 'sponsor') {
+                        this.$$('#accept-agent').style.display = null;
+                    }
+                    else {
+                        this.$$('#accept-agent').style.display = 'none';
+                    }
                 },
                 _missionChanged: function (e) {
                     this._getChat();                    
@@ -227,6 +254,14 @@
                             this._scrollDown();
                         }
                     }                    
+                },
+                _didPostulate: function(item){
+                    if (item.tag && item.tag == 'postulate') {
+                        this.hasPostulate = true;
+                        this._postulateChanged(null);
+                    }
+
+                    return true;
                 },
                 _getChat:function(){
                     if (this.mission && this.mission._sponsor) {
@@ -276,6 +311,9 @@
                         else if (app.role == 'agent') {
                             this._updateUI(this.chat._sponsor.avatar);
                         }
+
+                        this.hasPostulate = false;
+                        this._postulateChanged(null);
                     }
                     else {
                         this._updateUI('');
@@ -344,6 +382,11 @@
                     else {
                         this.disableButton = true;
                     }
+                },
+                _acceptAgent: function () {
+                    this.chat._mission._agent = this.chat._agent._id;
+                    this.chat._mission.status = 'accepted';
+                    app.socket.emit('update-mission', this.chat._mission);
                 }
             });
         })();

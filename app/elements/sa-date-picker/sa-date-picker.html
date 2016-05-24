@@ -105,13 +105,13 @@
             }
 
         td > div {
+            color:#666666;
             display: flex;
             justify-content: center;
             align-items: center;
             border-radius:2px;
             height: 30px;
             font-size:24px;
-            background-color:#b8b8b8;
             margin:1px;
             @apply(--sa-datepicker-number);
         }
@@ -221,6 +221,15 @@
             align-items:center;
             color:#cbcbcb;
             font-weight:600;
+        }
+
+        .before{
+            background-color:#8f8f8f;
+            pointer-events:none;
+        }
+
+        .after{
+            background-color:#ffffff;
         }
     </style>
     <template>
@@ -424,10 +433,16 @@
             if (e.target && e.target.nodeName == 'DIV' && e.target.classList.contains('day')) {
                 var found = -1;
 
+                var _date = new Date(this.showDate.year, this.showDate.month, day);
+                var now = new Date(Date.now());
+                if (_date.getMonth() == now.getMonth() && _date.getYear() == now.getYear() && _date.getDate() == now.getDate()) {
+                    return;
+                }
+
                 var day = parseInt(e.target.textContent || e.target.innerText);
 
                 for (var idx = 0; idx < this.dates.length; ++idx) {
-                    var date = new Date(this.dates[idx]);
+                    var date = new Date(this.dates[idx].date);
                     if(date.getUTCDate() === day - 1 && 
                         date.getUTCMonth() === this.showDate.month &&
                         date.getUTCFullYear() === this.showDate.year) {
@@ -435,13 +450,16 @@
                     }
                 }
 
-                if (found !== -1) {
+                if (found != -1) {
                     this.splice('dates', found, 1);
                 }
                 else {
                     e.target.classList.add('selected');
                     var date = new Date(this.showDate.year, this.showDate.month, day);
-                    this.push('dates', date.toISOString());
+                    this.push('dates', {
+                        date: date.toISOString(),
+                        laps : [false, false, false, false]
+                    });
                 }
 
                 this.date = {
@@ -730,6 +748,9 @@
             }
         },
         _genTable: function (year, month) {
+            this.currentMonth = this._getMonthLabel();
+            this.notifyPath('date.year', this.showDate.year);
+
             var table = document.createElement('table');
             var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
             var lDays = this._getDaysLabels();
@@ -770,50 +791,57 @@
                     if (day <= monthLength && (i2 > 0 || j >= startingDay)) {
                         var classes = [];
 
-                        if (typeof (this.dates) !== 'undefined') {
-                            for (var idx = 0; idx < this.dates.length; ++idx) {
-                                var date = new Date(this.dates[idx]);
-                                if (day == date.getUTCDate() + 1 &&
-                                    month == date.getUTCMonth() &&
-                                    year == date.getUTCFullYear()) {
-                                    classes.push('selected');
-                                }
-                            }
-                        }
-
-                        if (typeof (this.otherDates) !== 'undefined') {
-                            for (var idx = 0; idx < this.otherDates.length; ++idx) {
-                                var date = new Date(this.otherDates[idx]);
-                                if (day == date.getUTCDate() + 1 &&
-                                    month == date.getUTCMonth() &&
-                                    year == date.getUTCFullYear()) {
-                                    classes.push('agent-selected');
-                                }
-                            }
-                        }
-
-                        if (typeof (this.otherDates) !== 'undefined' && typeof (this.dates) !== 'undefined') {
-                            for (var idx = 0; idx < this.otherDates.length; ++idx) {
-                                var otherDate = new Date(this.otherDates[idx]);
-
-                                for (var jdx = 0; jdx < this.dates.length; ++jdx) {
-                                    var date = new Date(this.dates[jdx]);
-
-                                    if ((day == date.getUTCDate() + 1 &&
+                        if (this.action == 'creation' || this.action == 'edition') {
+                            if (typeof (this.dates) !== 'undefined') {
+                                for (var idx = 0; idx < this.dates.length; ++idx) {
+                                    var date = new Date(this.dates[idx].date);
+                                    if (day == date.getUTCDate() + 1 &&
                                         month == date.getUTCMonth() &&
-                                        year == date.getUTCFullYear()) && 
-                                        (day == otherDate.getUTCDate() + 1 &&
-                                        month == otherDate.getUTCMonth() &&
-                                        year == otherDate.getUTCFullYear())) {
-                                        classes.push('both-selected');
+                                        year == date.getUTCFullYear()) {
+                                        classes.push('selected');
+                                    }
+                                }
+                            }
+
+                            var now = new Date(Date.now());
+                            var _date = new Date(year, month, day);
+
+                            if (_date < now) {
+                                classes.push('before');
+                            }
+                            else {
+                                if (this.action == 'creation' || this.action == 'edition')
+                                    classes.push('after');
+                            }
+                        }
+                        else {
+                            if (this.dates) {
+                                var first = new Date(this.dates[0].date);
+                                var last = new Date(this.dates[this.dates.length - 1].date);
+                                var date = new Date(year, month, day);
+                                if(date < first || date > last){
+                                    classes.push('before');
+                                }
+                                else {
+                                    classes.push('after');
+                                }
+                            }
+
+                            if (typeof (this.otherDates) !== 'undefined') {
+                                for (var idx = 0; idx < this.otherDates.length; ++idx) {
+                                    var date = new Date(this.otherDates[idx]);
+                                    if (day == date.getUTCDate() + 1 &&
+                                        month == date.getUTCMonth() &&
+                                        year == date.getUTCFullYear()) {
+                                        classes.push('agent-selected');
                                     }
                                 }
                             }
                         }
-
+                        
                         if (day == thisDay && thisMonth == month && thisYear == year) {
                             classes.push('today');
-                        }
+                        }                        
 
                         html += '<td><div id="' + this.showDate.year + this.showDate.month + day + '" class="day ' + classes.join(' ') + '">' + day + '</div>';
                         day++;

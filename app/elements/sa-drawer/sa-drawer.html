@@ -149,6 +149,11 @@
             cursor: pointer;
         }
 
+        .active-slice{
+            color: #d8d8d8;
+            background-color: #454545;
+        }
+
         .first-slice {
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
@@ -198,7 +203,7 @@
                         </div>
                     </iron-collapse>
                     <div class="footer">
-                        <paper-button id="toggle-button" on-tap="_toggleView">Sign Up</paper-button>
+                        <paper-button id="toggle-button" on-tap="_toggleView"></paper-button>
                         <iron-collapse id="signup-collapse" on-transition-end="_openSignIn">
                             <div class="signin">
                                 <sa-login-signup user="{{user}}"></sa-login-signup>
@@ -209,38 +214,44 @@
                 </div>
                 <div class="is-logged">
                     <paper-tabs noink selected="{{role}}" attr-for-selected="data-role" on-iron-select="_onRoleChanged">
-                        <paper-tab data-role="agent">Agent</paper-tab>
-                        <paper-tab data-role="sponsor">Sponsor</paper-tab>
+                        <paper-tab data-role="agent">{{_translations.texts.agent}}</paper-tab>
+                        <paper-tab data-role="sponsor">{{_translations.texts.sponsor}}</paper-tab>
                     </paper-tabs>
                     <iron-pages id="role" selected="{{role}}" attr-for-selected="data-role">
                         <div id="agent-tab" class="tab" data-role="agent">
-                            <div class="id"><span>Agent:&nbsp;</span><span>[[user.agentID]]</span></div>
+                            <div class="id"><span>{{_translations.texts.agent}}</span><span>:&nbsp;</span><span>[[user.agentID]]</span></div>
                             <div id="agent-messages" class="slice first-slice" on-click="goToAgentMessages">
-                                <div>Messages</div>
+                                <div>{{_translations.texts.messages}}</div>
                                 <div id="badge-agent-messages" class="badge">{{agentUnreads}}</div>
                             </div>
-                            <div class="slice">Missions Accepted</div>
-                            <div class="slice">Missions Done</div>
-                            <div class="slice last-slice">Upcoming RDV</div>
+                            <div id="all" class="slice active-slice" on-click="goToMissionsFiltered">{{_translations.texts.all_missions}}</div>
+                            <div id="favorite" class="slice" on-click="goToMissionsFiltered">{{_translations.texts.favorites_missions}}</div>
+                            <div id="postulated" class="slice" on-click="goToMissionsFiltered">{{_translations.texts.postulated_missions}}</div>
+                            <div id="accepted" class="slice" on-click="goToMissionsFiltered">{{_translations.texts.accepted_missions}}</div>
+                            <div id="ended" class="slice last-slice" on-click="goToMissionsFiltered">{{_translations.texts.missions_done}}</div>
+                            <!--<div class="slice last-slice">Upcoming RDV</div>-->
                         </div>
                         <div id="sponsor-tab" class="tab" data-role="sponsor">
-                            <div class="id"><span>Sponsor:&nbsp;</span><span>[[user.agentID]]</span></div>
+                            <div class="id"><span>{{_translations.texts.sponsor}}</span><span>:&nbsp;</span><span>[[user.agentID]]</span></div>
                             <div id="sponsor-messages" class="slice first-slice" on-click="goToSponsorMessages">
-                                <div>Messages</div>
+                                <div>{{_translations.texts.messages}}</div>
                                 <div id="badge-sponsor-messages" class="badge">{{sponsorUnreads}}</div>
                             </div>
-                            <div class="slice">Missions Draft</div>
-                            <div class="slice">Missions Post</div>
-                            <div class="slice">Missions Ended</div>
-                            <div class="slice last-slice">Upcoming RDV</div>
+                            <div class="slice">{{_translations.texts.draft_missions}}</div>
+                            <div class="slice">{{_translations.texts.missions_posted}}</div>
+                            <div class="slice last-slice">{{_translations.texts.missions_done}}</div>
                         </div>
                     </iron-pages>
 
-                    <paper-button id="sing-out-button" on-tap="_logOut">Log Out</paper-button>
+                    <paper-button id="sing-out-button" on-tap="_logOut">{{_translations.texts.logout}}</paper-button>
                 </div>
 
             </iron-pages>
         </div>
+
+        <sa-translation id="translation"
+                        element="sa-drawer"
+                        translations="{{_translations}}"></sa-translation>
     </template>
 
     <script>
@@ -262,15 +273,25 @@
                         type: String,
                         value: 'agent'
                     },
+                    _translations: {
+                        type: Object,
+                        observer: '_getTranslations'
+                    }
                 },
                 observers: [
         'chatsChanged(model.chats.*)'
                 ],
                 attached: function () {
                     this._userChanged(null);
+
                     this.$$('#signin-collapse').show();
                     this.$$('#signup-collapse').hide();
                     this.$$('#avatar-container').style.backgroundImage = this._randomGradient();
+                },
+                _getTranslations:function(e){
+                    if (this._translations) {
+                        this.$$('#toggle-button').innerText = this._translations.texts.signup;
+                    }
                 },
                 chatsChanged: function (record) {
                     console.log('drawer ' + record.path);
@@ -330,11 +351,13 @@
                 },
                 _toggleView: function (e) {
                     if (this.$$('#signin-collapse').opened) {
+                        this.$$('#toggle-button').innerText = this._translations.texts.signin;
                         this.$$('#signin-collapse').hide();
                         this.$$('#signup-collapse').show();
                     }
                     else {
                         this.$$('#signup-collapse').hide();
+                        this.$$('#toggle-button').innerText = this._translations.texts.signup;
                     }
                 },
                 _openSignIn: function (e) {
@@ -349,9 +372,49 @@
                 },
                 goToAgentMessages: function (e) {
                     app.route = 'dashboard';
+                    this._activateSlice(e.target.id);
                 },
                 goToSponsorMessages: function (e) {
                     app.route = 'dashboard';
+                },
+                goToMissionsFiltered: function (e) {
+                    var filters = ['favorite', 'postulated', 'ended', 'accepted'];
+
+                    var index = filters.indexOf(e.target.id);
+
+                    if (index > -1) { filters.splice(index, 1); }                    
+
+                    filters.forEach(function (filter) {
+                        var id = '#' + filter;
+                        this.$$(id).classList.remove('active-slice');
+                    }.bind(this));
+
+                    app.route = 'missions';
+                    var active = !e.target.classList.contains('active-slice');
+                    app.fire('show-missions-filtered', { activate: active, filter: e.target.id, remove: filters });
+                    this._activateSlice(e.target.id);
+                },
+                _activateSlice: function (slice) {
+                    var slices = null;
+
+                    if (app.role == 'agent')
+                        slices = ['agent-messages', 'all', 'favorite', 'postulated', 'ended', 'accepted'];
+                    else
+                        slices = ['sponsor-messages', 'draft', 'posted', 'ended'];
+
+                    slices.forEach(function (elt) {
+                        var id = '#' + elt;
+
+                        if (elt == slice && elt.includes('message') && this.$$(id).classList.contains('active-slice')) {
+                        }
+                        else if(elt == slice && !this.$$(id).classList.contains('active-slice'))
+                            this.$$(id).classList.add('active-slice');
+                        else
+                            this.$$(id).classList.remove('active-slice');
+                    }.bind(this));
+                },
+                goToAcceptedMissions: function (e) {
+                    app.route = 'missions';
                 },
                 _onRoleChanged: function (e) {
                     app.role = this.role;

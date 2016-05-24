@@ -5,3 +5,5 @@ bower_components/
 .ntvs_analysis.dat
 *.suo
 obj/
+test/
+build/

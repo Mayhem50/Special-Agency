@@ -17,6 +17,7 @@
   "devDependencies": {
     "bcrypt": "^0.8.5",
     "bcrypt-nodejs": "*",
+    "bower": "1.7.9",
     "browser-sync": "^2.7.7",
     "connect-flash": "^0.1.1",
     "connect-history-api-fallback": "^1.1.0",
@@ -73,5 +74,8 @@
   "bugs": {
     "url": "http://github.com/Mayhem50/Special-Agency/issues"
   },
-  "homepage": "http://github.com/Mayhem50/Special-Agency#readme"
+  "homepage": "http://github.com/Mayhem50/Special-Agency#readme",
+  "scripts": {
+      "postinstall": "./node_modules/bower/bin/bower install"
+  }
 }

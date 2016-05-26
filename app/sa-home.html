@@ -1,4 +1,3 @@
-
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <link rel="import" href="../bower_components/app-route/app-location.html">
@@ -11,8 +10,9 @@
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/effects/parallax-background.html">
 
 <link rel="import" href="../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
-<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 
 <link rel="import" href="sa-theme.html">
 
@@ -25,6 +25,7 @@
         display: block;
         width: 100%;
         height: 100vh;
+        background-color: rgba(0,0,0,0);
       }
       
       ::-webkit-scrollbar { 
@@ -36,8 +37,15 @@
       }
       
       app-box {
-        height: 800px;
+        height: 766px;
         width : 100%;
+        text-align: center;
+        --app-box-content:{
+          display: flex;
+          align-items: center;   
+          flex-direction : column;       
+        };
+        margin : 0 auto;
       }
       
       app-toolbar{
@@ -47,6 +55,7 @@
         left:0;
         width: 100%;
         z-index: 10;
+        height: 80px;
       }
       
       article {
@@ -54,6 +63,45 @@
         max-width: 500px;
         text-align: center;
         margin: 0px auto;
+      }
+      
+      .app-box-content{
+        margin: auto;
+        font-size: 2em;
+        width: 37%;
+        color: var(--text-light-primary-color);
+        text-shadow: -0.15em 0.01em #222222;
+        display: flex;
+        flex-direction: column;        
+      }
+      
+      .app-box-content > div{
+        margin : 30px 0;
+      }
+      
+      .app-box-content > div > paper-button{
+        height : 60px;
+        border: solid 2px var(--font-light-secondary-color);
+        border-radius: 5px;
+        text-shadow: 0 0;
+        font-weight: 100;
+      }
+      
+      .app-box-content > div > paper-button:hover{
+        color: var(--text-dark-primary-color);
+        background-color: var(--light-primary-color);
+      }
+      
+      .app-box-content > div > span {
+        font-size: 3em;
+      }
+      
+      .special-text{
+        color: var(--text-special-primary-color);
+      }
+      
+      .agent-text{
+        color: var(--text-special-secondary-color);
       }
       
       .overlay {
@@ -75,7 +123,80 @@
     }
     
     #first-box{
-      top : -120px;
+      height: 900px;
+    }
+    
+    #search-bar{
+      height: 120px;
+      width : 100%;
+      background-color: var(--default-primary-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    #search-bar > .input { 
+      flex-grow : 2;     
+      --paper-input-container :{
+        background-color : var( --light-primary-color);
+        height: 60px;
+        padding : 0;
+        display: flex;
+        justify-content: center;
+      };
+      --paper-input-container-underline : {
+        height : 0px;
+      };
+      --paper-input-container-underline: {
+          height: 0;
+      };
+      --paper-input-container-underline-focus: {
+          height: 0;
+      };
+      --paper-input-container-underline-disabled: {
+          height: 0;
+      };
+      --paper-input-container-label : {                    
+          color: var(--text-light-primary-color);
+      };
+      margin-right : 0.1em;
+    }
+    
+    #search-bar > .left
+    {
+      flex-grow : 4;
+      --paper-input-container : {
+        background-color : var( --light-primary-color);
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        height: 60px;
+        padding : 0;
+        display: flex;
+        justify-content: center;
+      };
+    } 
+    
+    #search-bar > paper-button
+    {
+      flex-grow : 3;
+      background-color : #0693D3;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+      height: 60px;
+      margin : 0;
+      margin-right: 20%;
+      color: var(--text-light-secondary-color);
+      font-size: 25px;
+      font-weight: 100;
+    }
+    
+    #search-bar > div{      
+      flex-grow: 3;
+      margin-left: 6%;
+      color: var(--text-light-primary-color);
+      font-size: 25px;      
     }
     
     </style>
@@ -97,6 +218,21 @@
           <section>
             <app-box scroll-target="scrollingRegion" effects="parallax-background" id="first-box">
               <iron-image background src="../images/homepage/01.jpg"></iron-image>
+              <div class="app-box-content">
+                <div>
+                  Nous avons tous besoin des services d'un <span class="special-text">Special</span><span class="agent-text">Agent</span>
+                </div>
+                <div>
+                  <paper-button>Créer une mission</paper-button>
+                  <paper-button>Devenir agent</paper-button>
+                </div>
+              </div>
+              <div id="search-bar">
+                <div>Besoin d'action ?</div>
+                <paper-input class="input left" no-label-float always-float-label="false" label="Où ?"></paper-input>
+                <paper-dropdown-menu class="input" no-label-float always-float-label="false" label="Catégories"></paper-dropdown-menu>
+                <paper-button class="right">Trouver</paper-button>
+              </div>
             </app-box>
             <article>
               <div>
@@ -108,19 +244,9 @@
           </section>
       
           <section>
-            <article>
-              <div>
-                <h1>View One</h1>
-                <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
-                <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-              </div>
-            </article>
             <app-box scroll-target="scrollingRegion" effects="parallax-background" id="second-box">
               <iron-image background src="../images/homepage/02.jpg"></iron-image>
             </app-box>
-          </section>
-      
-          <section>
             <article>
               <div>
                 <h1>View One</h1>
@@ -128,9 +254,19 @@
                 <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
               </div>
             </article>
+          </section>
+      
+          <section>
             <app-box scroll-target="scrollingRegion" effects="parallax-background" id="third-box">
               <iron-image background src="../images/homepage/03.jpg"></iron-image>
             </app-box>
+            <article>
+              <div>
+                <h1>View One</h1>
+                <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+              </div>
+            </article>
           </section>
         </div>
       </div>
@@ -138,13 +274,20 @@
   </template>
 
   <script>
-
     Polymer({
 
       is: 'sa-home',
+      
+      attached: function(){
+        // Set offset of app-toolbar and repos paper-scroll-header-panel
+        this.async(function(){
+          this.$$('app-toolbar').style.marginTop = this.$$('app-toolbar').getBoundingClientRect().height + 'px';
+          this.$$('paper-scroll-header-panel').style.top = '-' + this.$$('app-toolbar').style.marginTop;
+          this.$$('paper-scroll-header-panel').style.height = this.$$('paper-scroll-header-panel').getBoundingClientRect().height + this.$$('app-toolbar').getBoundingClientRect().height + 'px';
+        }.bind(this));       
+      }
 
     });
-
   </script>
 
 </dom-module>

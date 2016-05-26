@@ -76,6 +76,6 @@
   },
   "homepage": "http://github.com/Mayhem50/Special-Agency#readme",
   "scripts": {
-      "postinstall": "./node_modules/bower/bin/bower install"
+      "postinstall": "bower install"
   }
 }

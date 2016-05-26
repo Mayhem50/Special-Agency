@@ -1,2 +1,2 @@
 ﻿var mongoose = require('mongoose');
-mongoose.connect(process.env.MONGOLAB_URI);
+mongoose.connect('mongodb://benjamin:regnier@ds011412.mlab.com:11412/heroku_lnxdtwx7');

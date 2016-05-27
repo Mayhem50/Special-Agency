@@ -79,7 +79,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         app.user = JSON.parse(window.sessionStorage['user']);
         
         //app.socket = io.connect('http://192.168.1.14:3000',{
-        app.socket = io.connect('http://192.168.11.136:3000', {
+        //app.socket = io.connect('http://192.168.11.136:3000', {
+        app.socket = io.connect('https://special-agency.herokuapp.com/', {
             query: 'token=' + window.sessionStorage.token,
             forceNew: true
         }).on('connect', function () {

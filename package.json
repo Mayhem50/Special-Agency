@@ -72,7 +72,8 @@
   },
   "homepage": "http://github.com/Mayhem50/Special-Agency#readme",
   "scripts": {
-    "postinstall": "./node_modules/bower/bin/bower install",
+    "postinstall": "./node_modules/bower/bin/bower install",    
+    "postbuild": "copy ./ToKeep/* ./app/bower_components/iron-collapse/",
     "start":  "node app.js"
   }
 }

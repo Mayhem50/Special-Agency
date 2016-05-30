@@ -3,7 +3,6 @@
   "shell": "app/sa-app.html",
   "fragments": [
     "app/sa-home.html",
-    "app/sa-view2.html",
-    "app/sa-view3.html"
+    "app/sa-dashboard.html"
   ]
 }

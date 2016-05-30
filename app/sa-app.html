@@ -1,12 +1,3 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <link rel="import" href="../bower_components/app-route/app-location.html">
@@ -16,66 +7,65 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="sa-icons.html">
 <link rel="import" href="sa-home.html">
-<link rel="import" href="sa-view2.html">
+<link rel="import" href="sa-dashboard.html">
 
 <dom-module id="sa-app">
 
-  <template>
+    <template>
 
-    <style>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
 
-      :host {
-        display: block;
-      }
-      
-    </style>
+        <!--<app-location route="{{route}}"></app-location>
+        <app-route
+            route="{{route}}"
+            pattern="/:page"
+            data="{{routeData}}"
+            tail="{{subroute}}"></app-route>-->
 
-    <app-location route="{{route}}"></app-location>
-    <app-route
-        route="{{route}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+        <iron-pages role="main" selected="[[route]]" attr-for-selected="name">
+            <sa-home name="home" route="{{route}}"></sa-home>
+            <sa-dashboard name="dashboard" back-page="{{route}}"></sa-dashboard>
+        </iron-pages>
 
-    <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-      <sa-home name="home"></sa-home>
-      <sa-view2 name="view2"></sa-view2>
-    </iron-pages>
+    </template>
 
-  </template>
+    <script>
 
-  <script>
+        Polymer({
 
-    Polymer({
+            is: 'sa-app',
 
-      is: 'sa-app',
+            properties: {
 
-      properties: {
+                route: {
+                    type: String,
+                    reflectToAttribute: true,
+                    value: 'home',
+                    observer: '_routeChanged'
+                },
 
-        page: {
-          type: String,
-          reflectToAttribute: true,
-          observer: '_pageChanged'
-        },
+            },
 
-      },
+            observers: [
+              '_routePageChanged(routeData.page)'
+            ],
 
-      observers: [
-        '_routePageChanged(routeData.page)'
-      ],
+            //_routePageChanged: function(page) {
+            //  this.page = page || 'home';
+            //},
 
-      _routePageChanged: function(page) {
-        this.page = 'home';
-      },
+            _routeChanged: function (page) {
+                // load page import on demand.
+                this.importHref(
+                  this.resolveUrl('sa-' + page + '.html'), null, null, true);
+            }
 
-      _pageChanged: function(page) {
-        // load page import on demand.
-        this.importHref(
-          this.resolveUrl('sa-' + page + '.html'), null, null, true);
-      }
+        });
 
-    });
-
-  </script>
+    </script>
 
 </dom-module>

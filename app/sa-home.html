@@ -3,291 +3,516 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 
-<link rel="import" href="../bower_components/iron-image/iron-image.html">
-
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/app-layout/app-box/app-box.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/effects/parallax-background.html">
 
 <link rel="import" href="../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 
+<link rel="import" href="../bower_components/firebase-element/firebase-auth.html">
+<link rel="import" href="../bower_components/firebase-element/firebase-collection.html">
+
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
 <link rel="import" href="sa-theme.html">
+<link rel="import" href="sa-icons.html">
 
 <dom-module id="sa-home">
 
   <template>
 
-    <style is="custom-style" include="sa-theme">
-      :host {
-        display: block;
-        width: 100%;
-        height: 100vh;
-        background-color: rgba(0,0,0,0);
-      }
+    <style is="custom-style" include="sa-theme iron-flex iron-flex-alignment">
+        :host {
+            display: block;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(0,0,0,0);
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        paper-scroll-header-panel {
+            height: 100vh;
+        }
       
-      ::-webkit-scrollbar { 
-        display: none; 
-      }
-      
-      paper-scroll-header-panel{
-        height: 100vh;
-      }
-      
-      app-box {
-        height: 766px;
-        width : 100%;
-        text-align: center;
-        --app-box-content:{
-          display: flex;
-          align-items: center;   
-          flex-direction : column;       
-        };
-        margin : 0 auto;
-      }
-      
-      app-toolbar{
-        background-color: var(--default-primary-color);
-        position: absolute;
-        top : 0;
-        left:0;
-        width: 100%;
-        z-index: 10;
-        height: 80px;
-      }
-      
-      article {
-        font-weight: 100;
-        max-width: 500px;
-        text-align: center;
-        margin: 0px auto;
-      }
-      
-      .app-box-content{
-        margin: auto;
-        font-size: 2em;
-        width: 37%;
-        color: var(--text-light-primary-color);
-        text-shadow: -0.15em 0.01em #222222;
-        display: flex;
-        flex-direction: column;        
-      }
-      
-      .app-box-content > div{
-        margin : 30px 0;
-      }
-      
-      .app-box-content > div > paper-button{
-        height : 60px;
-        border: solid 2px var(--font-light-secondary-color);
-        border-radius: 5px;
-        text-shadow: 0 0;
-        font-weight: 100;
-      }
-      
-      .app-box-content > div > paper-button:hover{
-        color: var(--text-dark-primary-color);
-        background-color: var(--light-primary-color);
-      }
-      
-      .app-box-content > div > span {
-        font-size: 3em;
-      }
-      
-      .special-text{
-        color: var(--text-special-primary-color);
-      }
-      
-      .agent-text{
-        color: var(--text-special-secondary-color);
-      }
-      
-      .overlay {
-      left: 0px;
-      right: 0;
-      top: 0px;
-      bottom: 0px;
-      position: absolute;
-    }
-    .overlay > #scrollingRegion {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      overflow-y: auto;
-      /* fixes scroll track's z-index bug in safari*/
-      -webkit-transform: translateZ(0);
-    }
+        app-box {
+            height: 766px;
+            width : 100%;
+            text-align: center;
+            --app-box-content:{
+                display: flex;
+                align-items: center;   
+                flex-direction : column;       
+            };
+            margin : 0 auto;
+        }
+
+        app-toolbar {
+            background-color: var(--default-primary-color);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+            height: 80px;
+        }
+
+        app-toolbar > paper-button{
+            background-color:#2a8600;
+            padding: 0.2em 0.57em;
+        }
+
+        iron-image {
+            width: 100%;
+            --iron-image-width: 100%;
+        }
+
+        paper-dialog{
+            width: 25vw;
+            height: 50vh;
+        }
+
+        article {
+            font-weight: 100;
+            width: 60%;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+            article > div {
+                margin: 0 1em;
+            }
+
+        h1 {
+            font-size: 2em;
+            -webkit-margin-before: 0.66em;
+            -webkit-margin-after: 0.66em;
+        }
+
+        .app-box-content {
+            margin: auto;
+            font-size: 2em;
+            width: 37%;
+            color: var(--text-light-primary-color);
+            text-shadow: -0.15em 0.01em #222222;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .app-box-content > div {
+                margin: 30px 0;
+            }
+
+                .app-box-content > div > paper-button {
+                    height: 60px;
+                    border: solid 2px var(--font-light-secondary-color);
+                    border-radius: 5px;
+                    text-shadow: 0 0;
+                    font-weight: 100;
+                }
+
+                    .app-box-content > div > paper-button:hover {
+                        color: var(--text-dark-primary-color);
+                        background-color: var(--light-primary-color);
+                    }
+
+                .app-box-content > div > span {
+                    font-size: 3em;
+                }
+
+        .special-text {
+            color: var(--text-special-primary-color);
+        }
+
+        .agent-text {
+            color: var(--text-light-secondary-color);
+        }
+
+        .agent-dark-text {
+            color: var(--text-dark-primary-color);
+        }
+
+        .overlay {
+            left: 0px;
+            right: 0;
+            top: 0px;
+            bottom: 0px;
+            position: absolute;
+        }
+
+            .overlay > #scrollingRegion {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                overflow-y: auto;
+                /* fixes scroll track's z-index bug in safari*/
+                -webkit-transform: translateZ(0);
+            }
+
+        #first-box {
+            height: 900px;
+        }
+
+        #search-bar {
+            height: 120px;
+            width: 100%;
+            background-color: var(--default-primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     
-    #first-box{
-      height: 900px;
-    }
+            #search-bar > .input { 
+                flex-grow : 2;     
+                --paper-input-container :{
+                background-color : var( --light-primary-color);
+                height: 60px;
+                padding : 0;
+                display: flex;
+                justify-content: center;
+                };
+                --paper-input-container-underline : {
+                height : 0px;
+                };
+                --paper-input-container-underline: {
+                    height: 0;
+                };
+                --paper-input-container-underline-focus: {
+                    height: 0;
+                };
+                --paper-input-container-underline-disabled: {
+                    height: 0;
+                };
+                --paper-input-container-label : {                    
+                    color: var(--text-light-primary-color);
+                };
+                margin-right : 0.1em;
+            }
     
-    #search-bar{
-      height: 120px;
-      width : 100%;
-      background-color: var(--default-primary-color);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+            #search-bar > .left
+            {
+                flex-grow : 4;
+                --paper-input-container : {
+                background-color : var( --light-primary-color);
+                border-top-left-radius: 5px;
+                border-bottom-left-radius: 5px;
+                height: 60px;
+                padding : 0;
+                display: flex;
+                justify-content: center;
+                };
+            } 
     
-    #search-bar > .input { 
-      flex-grow : 2;     
-      --paper-input-container :{
-        background-color : var( --light-primary-color);
-        height: 60px;
-        padding : 0;
-        display: flex;
-        justify-content: center;
-      };
-      --paper-input-container-underline : {
-        height : 0px;
-      };
-      --paper-input-container-underline: {
-          height: 0;
-      };
-      --paper-input-container-underline-focus: {
-          height: 0;
-      };
-      --paper-input-container-underline-disabled: {
-          height: 0;
-      };
-      --paper-input-container-label : {                    
-          color: var(--text-light-primary-color);
-      };
-      margin-right : 0.1em;
-    }
+            #search-bar > paper-button
+            {
+              flex-grow : 3;
+              background-color : #0693D3;
+              border-top-right-radius: 5px;
+              border-bottom-right-radius: 5px;
+              border-top-left-radius: 0px;
+              border-bottom-left-radius: 0px;
+              height: 60px;
+              margin : 0;
+              margin-right: 20%;
+              color: var(--text-light-secondary-color);
+              font-size: 25px;
+              font-weight: 100;
+            }
     
-    #search-bar > .left
-    {
-      flex-grow : 4;
-      --paper-input-container : {
-        background-color : var( --light-primary-color);
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
-        height: 60px;
-        padding : 0;
-        display: flex;
-        justify-content: center;
-      };
-    } 
-    
-    #search-bar > paper-button
-    {
-      flex-grow : 3;
-      background-color : #0693D3;
-      border-top-right-radius: 5px;
-      border-bottom-right-radius: 5px;
-      border-top-left-radius: 0px;
-      border-bottom-left-radius: 0px;
-      height: 60px;
-      margin : 0;
-      margin-right: 20%;
-      color: var(--text-light-secondary-color);
-      font-size: 25px;
-      font-weight: 100;
-    }
-    
-    #search-bar > div{      
-      flex-grow: 3;
-      margin-left: 6%;
-      color: var(--text-light-primary-color);
-      font-size: 25px;      
-    }
+            #search-bar > div{      
+              flex-grow: 3;
+              margin-left: 6%;
+              color: var(--text-light-primary-color);
+              font-size: 25px;      
+            }
     
     </style>
-    
-    <app-location route="{{route}}"></app-location>
-    <app-route
-        route="{{route}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+
+      <firebase-auth id="firebaseLogin" user="{{user}}" 
+                     location="https://specialagency.firebaseio.com" 
+                     status-known="{{known}}"
+                     on-error="_errorHandler" 
+                     on-user-created="_userSuccessHandler"
+                     on-login="_loginHandler"></firebase-auth>
+
+      <firebase-collection id="usersCollection" location="https://specialagency.firebaseio.com/users"></firebase-collection>
         
-    <paper-scroll-header-panel fixed>
-      <app-toolbar>
-        <paper-button>Click Me</paper-button>
-      </app-toolbar>
-      
-        <div class="overlay">
-          <div id="scrollingRegion">
-          <section>
-            <app-box scroll-target="scrollingRegion" effects="parallax-background" id="first-box">
-              <iron-image background src="../images/homepage/01.jpg"></iron-image>
-              <div class="app-box-content">
-                <div>
-                  Nous avons tous besoin des services d'un <span class="special-text">Special</span><span class="agent-text">Agent</span>
-                </div>
-                <div>
-                  <paper-button>Créer une mission</paper-button>
-                  <paper-button>Devenir agent</paper-button>
-                </div>
+      <paper-scroll-header-panel fixed>
+          <app-toolbar>
+              <paper-button on-tap="_login"><iron-icon icon="icons:account-circle"></iron-icon>Se connecter</paper-button>
+          </app-toolbar>
+
+          <div class="overlay">
+              <div id="scrollingRegion">
+                  <section>
+                      <app-box scroll-target="scrollingRegion" effects="parallax-background" id="first-box">
+                          <iron-image background src="../images/homepage/01.jpg"></iron-image>
+                          <div class="app-box-content layout vertical">
+                              <div>
+                                  Nous avons tous besoin des services d'un <span class="special-text">Special</span><span class="agent-text">Agent</span>
+                              </div>
+                              <div>
+                                  <paper-button>Créer une mission</paper-button>
+                                  <paper-button>Devenir agent</paper-button>
+                              </div>
+                          </div>
+                          <div id="search-bar">
+                              <div>Besoin d'action ?</div>
+                              <paper-input class="input left" no-label-float always-float-label="false" label="Où ?"></paper-input>
+                              <paper-dropdown-menu class="input" no-label-float always-float-label="false" label="Catégories"></paper-dropdown-menu>
+                              <paper-button class="right">Trouver</paper-button>
+                          </div>
+                      </app-box>
+                      <article class="layout horizontal center">
+                          <div>
+                              <h1>
+                                  <span class="special-text">Special</span><span class="agent-dark-text">Missions</span>
+                              </h1>
+                              <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                              <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                          </div>
+                          <div>
+                              <h1>
+                                  <span class="special-text">Special</span><span class="agent-dark-text">Sponsors</span>
+                              </h1>
+                              <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                              <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                          </div>
+                          <div>
+                              <h1>
+                                  <span class="special-text">Special</span><span class="agent-dark-text">Agents</span>
+                              </h1>
+                              <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                              <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                          </div>
+                      </article>
+                  </section>
+
+                  <section>
+                      <app-box scroll-target="scrollingRegion" effects="parallax-background" id="second-box">
+                          <iron-image background src="../images/homepage/02.jpg"></iron-image>
+                      </app-box>
+                      <article class="layout vertical">
+                          <div>
+                              <h1>
+                                  <span class="special-text">Special</span><span class="agent-dark-text">Missions</span>
+                              </h1>
+                          </div>
+                          <div class="layout horizontal around-justified">
+                              <div>
+                                  <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                                  <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                              </div>
+                              <div>
+                                  <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                                  <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                              </div>
+                              <div>
+                                  <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                                  <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                              </div>
+                          </div>
+                      </article>
+                  </section>
+
+                  <section>
+                      <app-box scroll-target="scrollingRegion" effects="parallax-background" id="third-box">
+                          <iron-image background src="../images/homepage/03.jpg"></iron-image>
+                      </app-box>
+                      <article class="layout vertical">
+                          <div>
+                              <h1>
+                                  <span class="special-text">Special</span><span class="agent-dark-text">Sponsors</span>
+                              </h1>
+                          </div>
+                          <div class="layout horizontal around-justified">
+                              <div>
+                                  <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                                  <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                              </div>
+                              <div>
+                                  <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                                  <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                              </div>
+                              <div>
+                                  <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                                  <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                              </div>
+                          </div>
+                      </article>
+
+                      <section>
+                          <app-box scroll-target="scrollingRegion" effects="parallax-background" id="third-box">
+                              <iron-image background src="../images/homepage/05.jpg"></iron-image>
+                          </app-box>
+                          <article class="layout vertical">
+                              <div>
+                                  <h1>
+                                      <span class="special-text">Special</span><span class="agent-dark-text">Agents</span>
+                                  </h1>
+                              </div>
+                              <div class="layout horizontal around-justified">
+                                  <div>
+                                      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                                      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                                  </div>
+                                  <div>
+                                      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                                      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                                  </div>
+                                  <div>
+                                      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                                      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                                  </div>
+                              </div>
+                          </article>
+                      </section>
+                  </section>
               </div>
-              <div id="search-bar">
-                <div>Besoin d'action ?</div>
-                <paper-input class="input left" no-label-float always-float-label="false" label="Où ?"></paper-input>
-                <paper-dropdown-menu class="input" no-label-float always-float-label="false" label="Catégories"></paper-dropdown-menu>
-                <paper-button class="right">Trouver</paper-button>
+          </div>
+      </paper-scroll-header-panel>
+
+      <paper-dialog id="loginDialog" class="layout vertical" 
+                    always-on-top 
+                    entry-animation="scale-up-animation"
+                    exit-animation="fade-out-animation">
+          <iron-collapse id="collapse" opened="{{open}}">
+              <div>Connectez vous avec :</div>
+              <div class="layout horizontal center around-justified">
+                  <paper-button id="twitter" on-tap="_requestLogin" raised><iron-icon src="../images/logos/twitter.png"></iron-icon>Twitter</paper-button>
+                  <paper-button id="google" on-tap="_requestLogin" raised><iron-icon src="../images/logos/google.png"></iron-icon>Google</paper-button>
+                  <paper-button id="facebook" on-tap="_requestLogin" raised><iron-icon src="../images/logos/facebook.png"></iron-icon>Facebook</paper-button>
               </div>
-            </app-box>
-            <article>
-              <div>
-                <h1>View One</h1>
-                <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
-                <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+              <div style="text-align:center;margin-top:2em;">ou avec vos identifiants</div>
+              <div class="layout vertical">
+                  <paper-input label="E-mail" value="{{email}}"></paper-input>
+                  <paper-input label="Password" value="{{password}}"></paper-input>
+                  <paper-button id="password" type="password" on-tap="_requestLogin" raised>Signin</paper-button>
               </div>
-            </article>
-          </section>
-      
-          <section>
-            <app-box scroll-target="scrollingRegion" effects="parallax-background" id="second-box">
-              <iron-image background src="../images/homepage/02.jpg"></iron-image>
-            </app-box>
-            <article>
-              <div>
-                <h1>View One</h1>
-                <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
-                <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+              <div class="layout vertical" center-justified>
+                  <div style="text-align:center;margin-top:2em;">Pas encore inscrit ?</div>
+                  <paper-button id="signup" on-tap="_requestSignup" raised>Incription</paper-button>
               </div>
-            </article>
-          </section>
-      
-          <section>
-            <app-box scroll-target="scrollingRegion" effects="parallax-background" id="third-box">
-              <iron-image background src="../images/homepage/03.jpg"></iron-image>
-            </app-box>
-            <article>
-              <div>
-                <h1>View One</h1>
-                <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
-                <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+          </iron-collapse>
+          <iron-collapse opened="[[!open]]">
+              <div class="layout vertical justified">
+                  <div><paper-icon-button on-tap="_signin" icon="icons:arrow-back"></paper-icon-button></div>
+                  <paper-input label="E-mail" value="{{email}}"></paper-input>
+                  <paper-input label="Password" value="{{password}}"></paper-input>
+                  <paper-input label="Confirm password" value="{{confirmPassword}}"></paper-input>
+                  </br></br>
+                  <paper-button id="password" type="password" on-tap="_signUp" raised>Signup</paper-button>
               </div>
-            </article>
-          </section>
-        </div>
-      </div>
-    </paper-scroll-header-panel>
+          </iron-collapse>
+      </paper-dialog>
+
   </template>
 
-  <script>
-    Polymer({
+    <script>
+        Polymer({
 
-      is: 'sa-home',
-      
-      attached: function(){
-        // Set offset of app-toolbar and repos paper-scroll-header-panel
-        this.async(function(){
-          this.$$('app-toolbar').style.marginTop = this.$$('app-toolbar').getBoundingClientRect().height + 'px';
-          this.$$('paper-scroll-header-panel').style.top = '-' + this.$$('app-toolbar').style.marginTop;
-          this.$$('paper-scroll-header-panel').style.height = this.$$('paper-scroll-header-panel').getBoundingClientRect().height + this.$$('app-toolbar').getBoundingClientRect().height + 'px';
-        }.bind(this));       
-      }
+            is: 'sa-home',
 
-    });
-  </script>
+            properties : {
+                open: {
+                    type: Boolean,
+                    value: true
+                },
+
+                route: {
+                    type: String,
+                    notify: true
+                }
+            },
+
+            attached: function () {
+                // Set offset of app-toolbar and repos paper-scroll-header-panel
+                this.async(function () {
+                    this.$$('app-toolbar').style.marginTop = this.$$('app-toolbar').getBoundingClientRect().height + 'px';
+                    this.$$('paper-scroll-header-panel').style.top = '-' + this.$$('app-toolbar').style.marginTop;
+                    this.$$('paper-scroll-header-panel').style.height = this.$$('paper-scroll-header-panel').getBoundingClientRect().height + this.$$('app-toolbar').getBoundingClientRect().height + 'px';
+
+                    this.$$('#first-box').$$('#contentContainer').style.display = 'flex';
+                    this.$$('#first-box').$$('#contentContainer').style.flexDirection = 'column';
+                }.bind(this));
+            },
+
+            _login: function(){
+                this.$.loginDialog.open();
+            },
+
+            _requestLogin: function (e) {
+                this.$.firebaseLogin.provider = e.target.id;
+              
+                if (e.target.id === 'password') {
+                    this.$.firebaseLogin.createUser(this.email, this.password);
+                }
+                else {
+                    this.$.firebaseLogin.login();
+                }
+            },
+
+            _loginHandler: function (e) {
+                this.user = e.detail.user;
+
+                var user = null;
+
+                if (this.$.firebaseLogin.provider === 'facebook') {
+                    user = e.detail.user.facebook;
+                }
+                else if (this.$.firebaseLogin.provider === 'google') {
+                    user = e.detail.user.google;
+                }
+                else if (this.$.firebaseLogin.provider === 'twitter') {
+                    user = e.detail.user.twitter;
+                }
+
+                this.$.loginDialog.close();
+
+                if (this.known && this.user)
+                    this.route = 'dashboard';
+            },
+
+            _errorHandler: function (e) {
+                alert(e.detail);
+            },
+
+            _userSuccessHandler: function (e) {
+                alert('user created');
+                this.$.firebaseLogin.login({
+                    'email': this.email,
+                    'password': this.password
+                });
+            },
+
+            _requestSignup: function (e) {
+                this.$.collapse.hide();
+            },
+
+            _signin: function (e) {
+                this.$.collapse.show();
+            },
+
+            _saveUserInfo: function (user) {
+                if (!user) { return; }
+                var data = {};
+                data[user.id] = user;
+          }
+      });
+    </script>
 
 </dom-module>

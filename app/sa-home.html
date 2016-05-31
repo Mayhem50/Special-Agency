@@ -13,6 +13,9 @@
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+
+<link rel="import" href="../bower_components/gold-email-input/gold-email-input.html">
+
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 
 <link rel="import" href="../bower_components/firebase-element/firebase-auth.html">
@@ -81,7 +84,7 @@
 
         paper-dialog{
             width: 25vw;
-            height: 50vh;
+            height: 60vh;
         }
 
         article {
@@ -112,13 +115,13 @@
         }
 
             .app-box-content > div {
-                margin: 30px 0;
+                margin: 1.2em 0;
             }
 
                 .app-box-content > div > paper-button {
-                    height: 60px;
-                    border: solid 2px var(--font-light-secondary-color);
-                    border-radius: 5px;
+                    height: 2em;
+                    border: solid 0.08em var(--font-light-secondary-color);
+                    border-radius: 0.2em;
                     text-shadow: 0 0;
                     font-weight: 100;
                 }
@@ -245,12 +248,11 @@
       <firebase-auth id="firebaseLogin" user="{{user}}" 
                      location="https://specialagency.firebaseio.com" 
                      status-known="{{known}}"
+                     provider="[[provider]]"
                      on-error="_errorHandler" 
                      on-user-created="_userSuccessHandler"
-                     on-login="_loginHandler"></firebase-auth>
-
-      <firebase-collection id="usersCollection" location="https://specialagency.firebaseio.com/users"></firebase-collection>
-        
+                     on-login="_loginHandler"></firebase-auth>   
+                 
       <paper-scroll-header-panel fixed>
           <app-toolbar>
               <paper-button on-tap="_login"><iron-icon icon="icons:account-circle"></iron-icon>Se connecter</paper-button>
@@ -386,36 +388,47 @@
           </div>
       </paper-scroll-header-panel>
 
-      <paper-dialog id="loginDialog" class="layout vertical" 
+      <paper-dialog id="loginDialog" 
+                    class="layout vertical" 
+                    on-iron-overlay-canceled="_resetDialog"
+                    on-iron-overlay-closed="_resetDialog"
                     always-on-top 
-                    entry-animation="scale-up-animation"
+                    entry-animation="fade-in-animation"
                     exit-animation="fade-out-animation">
           <iron-collapse id="collapse" opened="{{open}}">
-              <div>Connectez vous avec :</div>
-              <div class="layout horizontal center around-justified">
-                  <paper-button id="twitter" on-tap="_requestLogin" raised><iron-icon src="../images/logos/twitter.png"></iron-icon>Twitter</paper-button>
-                  <paper-button id="google" on-tap="_requestLogin" raised><iron-icon src="../images/logos/google.png"></iron-icon>Google</paper-button>
-                  <paper-button id="facebook" on-tap="_requestLogin" raised><iron-icon src="../images/logos/facebook.png"></iron-icon>Facebook</paper-button>
-              </div>
-              <div style="text-align:center;margin-top:2em;">ou avec vos identifiants</div>
-              <div class="layout vertical">
-                  <paper-input label="E-mail" value="{{email}}"></paper-input>
-                  <paper-input label="Password" value="{{password}}"></paper-input>
-                  <paper-button id="password" type="password" on-tap="_requestLogin" raised>Signin</paper-button>
-              </div>
-              <div class="layout vertical" center-justified>
-                  <div style="text-align:center;margin-top:2em;">Pas encore inscrit ?</div>
-                  <paper-button id="signup" on-tap="_requestSignup" raised>Incription</paper-button>
+              <div class="layout vertical justified ">
+                  <div>Connectez vous avec :</div>
+                  <div class="layout horizontal center around-justified">
+                      <!--TODO Use only one method-->
+                      <paper-button id="twitter" on-tap="_requestTwitterLogin" raised><iron-icon src="../images/logos/twitter.png"></iron-icon>Twitter</paper-button>
+                      <paper-button id="google" on-tap="_requestGoogleLogin" raised><iron-icon src="../images/logos/google.png"></iron-icon>Google</paper-button>
+                      <paper-button id="facebook" on-tap="_requestFacebookLogin" raised><iron-icon src="../images/logos/facebook.png"></iron-icon>Facebook</paper-button>
+                  </div>
+                  <div style="text-align:center;margin-top:2em;">ou avec vos identifiants</div>
+                  <div class="layout vertical">
+                      <gold-email-input id="loginEmail" label="E-mail" value="{{email}}" auto-validate></gold-email-input>
+                      <paper-input id="loginPassword" label="Password" value="{{password}}" type="password"></paper-input>
+                      </br>
+                      <paper-button on-tap="_resendPassword">Mot de passe oublié ?</paper-button>
+                      </br>
+                      <paper-button id="password" on-tap="_requestPasswordLogin" raised>Connexion</paper-button>
+                  </div>
+                  <div class="layout vertical" center-justified>
+                      <div style="text-align:center;margin-top:2em;">Pas encore inscrit ?</div>
+                      <paper-button id="signup" on-tap="_requestSignup" raised>Incription</paper-button>
+                  </div>
               </div>
           </iron-collapse>
           <iron-collapse opened="[[!open]]">
               <div class="layout vertical justified">
                   <div><paper-icon-button on-tap="_signin" icon="icons:arrow-back"></paper-icon-button></div>
-                  <paper-input label="E-mail" value="{{email}}"></paper-input>
-                  <paper-input label="Password" value="{{password}}"></paper-input>
-                  <paper-input label="Confirm password" value="{{confirmPassword}}"></paper-input>
-                  </br></br>
-                  <paper-button id="password" type="password" on-tap="_signUp" raised>Signup</paper-button>
+                  <paper-input id="signupLastName" label="Nom" value="{{lastName}}"></paper-input>
+                  <paper-input id="signupFirstName" label="Prénom" value="{{firstName}}"></paper-input>
+                  <gold-email-input id="signupEmail" label="E-mail" value="{{email}}" auto-validate></gold-email-input>
+                  <paper-input id="signupPassword" label="Password" value="{{password}}" type="password"></paper-input>
+                  <paper-input id="signupConfirmPassword" label="Confirm password" value="{{confirmPassword}}" type="password"></paper-input>
+                  </br>
+                  <paper-button type="password" on-tap="_signUp" raised>Inscription</paper-button>
               </div>
           </iron-collapse>
       </paper-dialog>
@@ -433,8 +446,13 @@
                     value: true
                 },
 
-                route: {
-                    type: String,
+                routeData: {
+                    type: Object,
+                    notify: true
+                },
+
+                user: {
+                    type: Object,
                     notify: true
                 }
             },
@@ -455,11 +473,32 @@
                 this.$.loginDialog.open();
             },
 
-            _requestLogin: function (e) {
-                this.$.firebaseLogin.provider = e.target.id;
-              
-                if (e.target.id === 'password') {
-                    this.$.firebaseLogin.createUser(this.email, this.password);
+            _requestTwitterLogin:function(){
+                this.provider = 'twitter';
+                this._requestLogin();
+            },
+
+            _requestGoogleLogin: function () {
+                this.provider = 'google';
+                this._requestLogin();
+            },
+
+            _requestFacebookLogin: function () {
+                this.provider = 'facebook';
+                this._requestLogin();
+            },
+
+            _requestPasswordLogin: function () {
+                this.provider = 'password';
+                this._requestLogin();
+            },
+
+            _requestLogin: function () {
+                if (this.provider === 'password') {
+                    this.$.firebaseLogin.login({
+                        'email': this.email,
+                        'password': this.password
+                    });
                 }
                 else {
                     this.$.firebaseLogin.login();
@@ -467,36 +506,27 @@
             },
 
             _loginHandler: function (e) {
-                this.user = e.detail.user;
-
-                var user = null;
-
-                if (this.$.firebaseLogin.provider === 'facebook') {
-                    user = e.detail.user.facebook;
-                }
-                else if (this.$.firebaseLogin.provider === 'google') {
-                    user = e.detail.user.google;
-                }
-                else if (this.$.firebaseLogin.provider === 'twitter') {
-                    user = e.detail.user.twitter;
+                if (this.$.firebaseLogin.provider === 'password' && this.firstName != '' && this.lastName != '') {
+                    this.user.password.displayName = this.firstName + ' ' + this.lastName;
+                    this.user.password.firstName = this.firstName;
+                    this.user.password.lastName = this.lastName;
                 }
 
+                this._saveUserInfo();
                 this.$.loginDialog.close();
 
-                if (this.known && this.user)
-                    this.route = 'dashboard';
+                if (this.known && this.user) {
+                    this.set('routeData.page', 'dashboard');
+                }
             },
 
             _errorHandler: function (e) {
-                alert(e.detail);
+                this.$.loginEmail.invalid = this.$.loginPassword.invalid = true;
             },
 
             _userSuccessHandler: function (e) {
-                alert('user created');
-                this.$.firebaseLogin.login({
-                    'email': this.email,
-                    'password': this.password
-                });
+                this.$.loginEmail.invalid = this.$.loginPassword.invalid = false;
+                this._requestLogin({target :{id: 'password'}});
             },
 
             _requestSignup: function (e) {
@@ -507,11 +537,69 @@
                 this.$.collapse.show();
             },
 
-            _saveUserInfo: function (user) {
-                if (!user) { return; }
-                var data = {};
-                data[user.id] = user;
-          }
+            _resendPassword: function(){
+                if (this.$.loginEmail.invalid) { return;}
+                this.$.firebaseLogin.sendPasswordResetEmail(this.email);
+            },
+
+            _saveUserInfo: function () {
+                if (!this.user) { return;}
+                var ref = new Firebase('https://specialagency.firebaseio.com/users/' + this.user.uid);
+
+                this.user.auth.token = null;
+                ref.set(this.user);
+            },
+
+            _resetDialog: function () {
+                this.async(function () {
+                    this.$.collapse.show();
+                }.bind(this), 1000);
+            },
+
+            _signUp: function () {
+                var res = true;
+                if (this.firstName === '' || this.$.signupEmail.invalid) {
+                    this.$.signupFirstName.invalid = true;
+                    this.$.signupFirstName.errorMessage = 'Le nom ne peut être vide';
+                    ret &= false;
+                }
+                else {
+                    this.$.signupFirstName.invalid = false;
+                    this.$.signupFirstName.errorMessage = '';
+                }
+
+                if (this.lastName === '' || this.$.signupEmail.invalid) {
+                    this.$.signupLastName.invalid = true;
+                    this.$.signupLastName.errorMessage = 'Le prénom ne peut être vide';
+                    ret &= false;
+                }
+                else {
+                    this.$.signupLastName.invalid = false;
+                    this.$.signupLastName.errorMessage = '';
+                }
+
+                if (this.signupEmail === '' || this.$.signupEmail.invalid) {
+                    this.$.signupEmail.invalid = true;
+                    ret &= false;
+                }
+                else {
+                    this.$.signupEmail.invalid = false;
+                }
+
+                if (this.signupPassword === '' || this.password != this.confirmPassword) {
+                    this.$.signupPassword.invalid = true;
+                    this.$.signupConfirmPassword.invalid = true;
+                    ret &= false;
+                }
+                else {
+                    this.$.signupEmail.invalid = false;
+                    this.$.signupConfirmPassword.invalid = true;
+                }
+
+                if (res) {
+                    this.$.firebaseLogin.createUser(this.email, this.password);
+                }
+            }
       });
     </script>
 

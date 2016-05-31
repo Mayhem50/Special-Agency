@@ -5,7 +5,7 @@
 
     <style>
     :root {
-        --dark-primary-color: #0f7c77;
+        --dark-primary-color: #383838;
         --light-primary-color: #ffffff;
         --default-primary-color: rgba(19, 19, 19, 0.85);
         --text-light-primary-color: #BABABA;
@@ -14,6 +14,16 @@
         --text-dark-secondary-color: #BABABA;
         --text-special-primary-color: #D8AE44;   
     }  
+
+    .toolbar-link:link, .toolbar-link:visited, .toolbar-link:hover, .toolbar-link:active{        
+        text-decoration: none;
+        color:var(--light-primary-color);
+    }
+
+    .drawer-link:link, .drawer-link:visited, .drawer-link:hover, .drawer-link:active{        
+        text-decoration: none;
+        color:var(--dark-primary-color);
+    }
       
     paper-button{        
       text-transform: none;

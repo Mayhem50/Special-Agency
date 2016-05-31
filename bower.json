@@ -6,7 +6,7 @@
   "private": true,
   "dependencies": {
     "app-layout": "polymerlabs/app-layout#master",
-    "app-route": "polymerelements/app-route#~0.9.0",
+    "app-route": "polymerelements/app-route#~0.9.1",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.3.1",
     "iron-icon": "polymerelements/iron-icon#^1.0.0",
     "iron-iconset-svg": "polymerelements/iron-iconset-svg#^1.0.0",
@@ -27,7 +27,8 @@
     "paper-fab": "PolymerElements/paper-fab#^1.2.0",
     "paper-dialog": "PolymerElements/paper-dialog#^1.0.4",
     "iron-collapse": "PolymerElements/iron-collapse#^1.0.8",
-    "paper-drawer-panel": "PolymerElements/paper-drawer-panel#^1.0.9"
+    "paper-drawer-panel": "PolymerElements/paper-drawer-panel#^1.0.9",
+    "gold-email-input": "PolymerElements/gold-email-input#^1.0.7"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

@@ -6,8 +6,10 @@
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 
 <link rel="import" href="sa-icons.html">
-<link rel="import" href="sa-home.html">
-<link rel="import" href="sa-dashboard.html">
+
+<!--Comments due to importHref vulcanize inlining-->
+<!--<link rel="import" href="sa-home.html">
+<link rel="import" href="sa-dashboard.html">-->
 
 <dom-module id="sa-app">
 
@@ -19,16 +21,15 @@
             }
         </style>
 
-        <!--<app-location route="{{route}}"></app-location>
-        <app-route
-            route="{{route}}"
-            pattern="/:page"
-            data="{{routeData}}"
-            tail="{{subroute}}"></app-route>-->
+        <app-location route="{{route}}"></app-location>
+        <app-route route="{{route}}"
+                   pattern="/:page"
+                   data="{{routeData}}"
+                   tail="{{subroute}}"></app-route>
 
-        <iron-pages role="main" selected="[[route]]" attr-for-selected="name">
-            <sa-home name="home" route="{{route}}"></sa-home>
-            <sa-dashboard name="dashboard" back-page="{{route}}"></sa-dashboard>
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+            <sa-home name="home" route-data="{{routeData}}"></sa-home>
+            <sa-dashboard name="dashboard" route="[[subroute]]"></sa-dashboard>
         </iron-pages>
 
     </template>
@@ -41,11 +42,10 @@
 
             properties: {
 
-                route: {
+                page: {
                     type: String,
                     reflectToAttribute: true,
-                    value: 'home',
-                    observer: '_routeChanged'
+                    observer: '_pageChanged'
                 },
 
             },
@@ -54,11 +54,11 @@
               '_routePageChanged(routeData.page)'
             ],
 
-            //_routePageChanged: function(page) {
-            //  this.page = page || 'home';
-            //},
+            _routePageChanged: function (page) {
+                this.page = page || 'home';
+            },
 
-            _routeChanged: function (page) {
+            _pageChanged: function (page) {
                 // load page import on demand.
                 this.importHref(
                   this.resolveUrl('sa-' + page + '.html'), null, null, true);

@@ -1,0 +1,39 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="sa-theme.html">
+<link rel="import" href="sa-icons.html">
+
+<dom-module id="sa-template">
+
+  <template>
+
+    <style is="custom-style" include="sa-theme iron-flex iron-flex-alignment">
+        :host {
+            display: block;
+        }
+    
+    </style>
+                    
+      <div>
+
+      </div>
+
+  </template>
+
+    <script>
+        Polymer({
+
+            is: 'sa-template',
+
+            properties: {
+                route: {
+                    type: Object,
+                    observer: '_routeChanged'
+                }
+            }
+      });
+    </script>
+
+</dom-module>

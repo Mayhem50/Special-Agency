@@ -1,0 +1,87 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="sa-theme.html">
+<link rel="import" href="sa-icons.html">
+
+<dom-module id="sa-profile">
+
+    <template>
+
+        <style is="custom-style" include="sa-theme iron-flex iron-flex-alignment">
+            :host {
+                display: block;
+                @apply(--layout-vertical);
+                @apply(--layout-center);
+                height:100%;
+            }
+
+            #avatar {
+                width: 15em;
+                height:15em;
+                background-size: contain;
+                border-radius: 50%;
+                background-size: 100%;
+                margin: 0.5em;
+                @apply(--layout-vertical);
+                @apply(--layout-center);
+                @apply(--layout-end-justified);
+            }
+        </style>
+
+        <firebase-collection data="{{userDatas}}" location="{{_computeLocation(uid)}}"></firebase-collection>
+
+        <div id="avatar" style="background-image:url({{arrayItem(userDatas.*, 2, 'profileImageURL')}})">
+        </div>
+
+        <section>
+            <h1>Connexion</h1>
+            <div>Votre e-mail: {{arrayItem(userDatas.*, 2, 'email')}}</div>
+            <div>Votre mot de passe: *********</div>
+        </section>
+
+        <section>
+            <h1>Informations visible sur le site</h1>
+            <div>Votre pseudo: {{arrayItem(userDatas.*, 2, 'displayName')}}</div>
+        </section>
+
+        <section>
+            <h1>Informations personnelles</h1>
+            <div>Votre nom: {{arrayItem(userDatas.*, 2, 'lastName')}}</div>
+            <div>Votre pr&eacute;nom: {{arrayItem(userDatas.*, 2, 'firstName')}}</div>
+            <div>Votre date de naissance: {{arrayItem(userDatas.*, 2, 'birthDate')}}</div>
+            <div>Votre adresse: {{arrayItem(userDatas.*, 2, 'address')}}</div>
+            <div>Votre t&eacute;l&eacute;phone: {{arrayItem(userDatas.*, 2, 'phone')}}</div>
+        </section>
+        
+
+    </template>
+
+    <script>
+        Polymer({
+
+            is: 'sa-profile',
+
+            properties: {
+                uid: {
+                    type: String
+                },
+
+                userDatas: {
+                    type: Array
+                }
+            },
+
+            arrayItem: function (change, index, path) {
+                return this.get(path, change.base[index]);
+            },
+
+            _computeLocation: function(uid){
+                return 'https://specialagency.firebaseio.com/users/' + this.uid;
+            }
+        });
+    </script>
+
+</dom-module>

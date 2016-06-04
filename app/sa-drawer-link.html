@@ -1,0 +1,116 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="sa-theme.html">
+<link rel="import" href="sa-icons.html">
+
+<dom-module id="sa-drawer-link">
+
+  <template>
+
+    <style is="custom-style" include="sa-theme iron-flex iron-flex-alignment">
+        :host {
+            display: block;
+            width: 100%;
+            --tongue-selected-color: var(--light-secondary-color);
+            --tongue-unselected-color: transparent;
+            --tongue-width: 0.2em;
+            font-weight:100;
+            font-size: 14px;
+        }
+
+        #container{
+            font-weight:100;
+            background-color:var(--dark-primary-color);
+            color:var(--text-light-primary-color);
+        }
+
+        #container:hover{
+            font-weight:800;
+            background-color:var(--dark-secondary-color);
+        }
+        
+        #container[selected]{
+            font-weight:500;
+            background-color:var(--dark-secondary-color);
+        }
+
+        a:link, a:visited, a:hover, a:active {
+            text-decoration: none;
+            color: var(--text-light-primary-color);
+        }
+
+        #dummy{
+            width:var(--tongue-width);
+            background-color: var(--tongue-unselected-color);
+        }
+        
+        #dummy[selected]{
+            background-color: var(--tongue-selected-color);
+        }
+
+        iron-icon{
+            margin-right:0.1em;
+            width:1.5em;
+        }
+
+        paper-button{
+            width:100%;
+            margin:0;
+            display:flex;
+            justify-content:flex-start;
+        }
+    
+    </style>
+                    
+      <div id="container" class="layout horizontal" selected$="{{selected}}">
+          <div id="dummy" selected$="{{selected}}">&nbsp;</div>
+          <a href="{{route}}" class="flex">
+              <paper-button on-tap="_onTap"><iron-icon icon="{{icon}}"></iron-icon>{{text}}</paper-button>
+          </a>
+      </div>
+
+  </template>
+
+    <script>
+        Polymer({
+
+            is: 'sa-drawer-link',
+
+            properties: {
+                selected: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+
+                ID: {
+                    type: String,
+                    readOnly: true,
+                    value: function () {
+                        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+                    }
+                },
+
+                active:{
+                    type: String,
+                    notify: true,
+                    observer: '_activeChanged'
+                }
+            },
+
+            _activeChanged: function (selected) {
+                if (selected !== this.ID) {
+                    this.selected = false;
+                }
+            },
+
+            _onTap: function () {
+                this.selected = !this.selected;
+                this.set('active', this.ID);
+            },
+      });
+    </script>
+
+</dom-module>

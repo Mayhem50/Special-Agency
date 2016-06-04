@@ -32,6 +32,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="app\sa-app.html" />
+    <Content Include="app\sa-drawer-link.html" />
+    <Content Include="app\sa-profile.html" />
+    <Content Include="app\sa-template.html" />
     <Content Include="app\sa-dashboard.html" />
     <Content Include="app\sa-home.html" />
     <Content Include="app\sa-icons.html" />

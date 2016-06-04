@@ -19,6 +19,9 @@
 <link rel="import" href="sa-theme.html">
 <link rel="import" href="sa-icons.html">
 
+<link rel="import" href="sa-drawer-link.html">
+<link rel="import" href="sa-profile.html">
+
 <dom-module id="sa-dashboard">
 
   <template>
@@ -34,13 +37,13 @@
         ::-webkit-scrollbar {
             display: none;
         }
-
-        paper-scroll-header-panel {
-            height: 100vh;
+        
+        #drawer {
+            background-color:var(--dark-secondary-color);
         }
 
         app-toolbar {
-            background-color: var(--default-primary-color);
+            background-color: var(--dark-secondary-color-with-alpha);
             position: absolute;
             top: 0;
             left: 0;
@@ -55,14 +58,29 @@
         }
 
         #avatarContainer{
-            background-color:var(--default-primary-color);
+            background-color:var(--dark-secondary-color-with-alpha);
+            color:var(--text-light-primary-color);
         }
 
         #avatar{
-            width: 50%;
+            width: 25%;
             background-size:contain;
             border-radius: 50%;
             background-size:100%;
+            margin: 0.5em;
+        }
+
+        #deconnectionButton{
+            background-color: var(--dark-secondary-color);
+            margin: 0;
+            color: var(--text-light-primary-color);
+            width: 100%;
+            border-radius:0;
+        }
+
+        #profile{
+            display:none;
+            color: black;
         }
     
     </style>
@@ -70,38 +88,34 @@
       <firebase-auth id="firebaseLogin" location="https://specialagency.firebaseio.com"></firebase-auth> 
 
       <app-route route="{{route}}"
-                 pattern="/:dashboard/:page"
+                 pattern="/dashboard/:dashboardpage"
                  data="{{routeData}}"
                  tail="{{subroute}}"></app-route>
               
       <paper-drawer-panel>
-          <paper-header-panel class="layout vertical" drawer>
-              <div id="avatarContainer" class="layout horizontal center-justified self-stretch" header>
-                  <div id="avatar"></div>
+          <div id="drawer" class="fullbleed layout vertical justified" drawer>
+              <div id="avatarContainer" class="layout horizontal self-stretch center" header>
+                  <div id="avatar" class="layout horizontal center center-justified" on-mouseenter="_showProfileLink" on-mouseleave="_hideProfileLink">
+                      <a id="profile" class="drawer-link" href="/dashboard/profile"><iron-icon icon="icons:create"></iron-icon></a>
+                  </div>
+                  <div>{{userInfos.displayName}}</div>
               </div>
 
-              <div class="layout vertical self-center" content>
-                  <a class="drawer-link" href="/dashboard/missions">Missions</a>
-                  <a class="drawer-link" href="/dashboard/messages">Messages</a>
+              <div class="flex layout vertical self-stretch" content>
+                  <sa-drawer-link route="/dashboard/missions" text="Missions" icon="icons:exit-to-app" active="{{selected}}"></sa-drawer-link>
+                  <sa-drawer-link route="/dashboard/messages" text="Messages" active="{{selected}}"></sa-drawer-link>
               </div>
 
-          </paper-header-panel>
-          <paper-scroll-header-panel fixed main>
-              <app-toolbar>
-                  <a class="toolbar-link" href="/">
-                      <paper-button on-tap="_logout"><iron-icon icon="icons:account-circle"></iron-icon>Se déconnecter</paper-button>
-                  </a>
-                  <a class="toolbar-link" href="/dashboard/create-mission">
-                      <paper-button on-tap="_logout"><iron-icon icon="icons:add-circle"></iron-icon>Créer une mission</paper-button>
-                  </a>
-              </app-toolbar>
+              <a class="drawer-link layout horizontal center-justified" href="/">
+                  <paper-button id="deconnectionButton" on-tap="_logout"><iron-icon icon="icons:exit-to-app"></iron-icon>Se déconnecter</paper-button>
+              </a>
 
-              <div class="overlay">
-                  <iron-page selected="[[page]]" attr-for-selected="name">
-
-                  </iron-page>
-              </div>
-          </paper-scroll-header-panel>
+          </div>
+          <div main class="fullbleed">
+              <iron-pages selected="[[page]]" attr-for-selected="name">
+                  <sa-profile name="profile" uid="{{user.uid}}"></sa-profile>
+              </iron-pages>
+          </div>
       </paper-drawer-panel>
 
   </template>
@@ -118,14 +132,27 @@
                 }
             },
 
+            _showProfileLink: function(){
+                this.$.profile.style.display = 'block';
+            },
+
+            _hideProfileLink: function () {
+                this.$.profile.style.display = 'none';
+            },
+
             _logout: function (e) {
                 this.$.firebaseLogin.logout();
                 window.localStorage.clear();
             },
 
             _routeChanged: function (page) {
-                if (page.path === '' && page.prefix === '/dashboard') {
+                if (page.prefix === '/dashboard') {
                     this.async(this._getUser);
+                }
+
+                if (page.path == '/profile') {
+                    this.page = 'profile';
+                    this.selected = '';
                 }
             },
 
@@ -133,26 +160,16 @@
                 this.user = JSON.parse(window.localStorage['firebase:session::specialagency']);
 
                 if (!this.user) { return; }
+                this._getInfos();
                 this._computeAvatar();
             },
 
+            _getInfos: function () {
+                this.userInfos = this.user[this.user.provider];
+            },
+
             _computeAvatar: function () {
-                var url = 'url("';
-
-                if (this.user.google) {
-                    url += this.user.google.profileImageURL;
-                }
-                else if (this.user.facebook) {
-                    url += this.user.facebook.profileImageURL;
-                }
-                else if (this.user.twitter) {
-                    url += this.user.twitter.profileImageURL;
-                }
-                else if (this.user.password) {
-                    url += this.user.password.profileImageURL;
-                }
-
-                url += '")';
+                var url = 'url("' + this.userInfos.profileImageURL + '")';
 
                 this.$.avatar.style.backgroundImage = url;
                 this.$.avatar.style.height = this.$.avatar.getBoundingClientRect().width + 'px';

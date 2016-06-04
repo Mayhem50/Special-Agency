@@ -19,11 +19,11 @@
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 
 <link rel="import" href="../bower_components/firebase-element/firebase-auth.html">
-<link rel="import" href="../bower_components/firebase-element/firebase-collection.html">
 
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
@@ -62,11 +62,12 @@
             margin : 0 auto;
         }
 
+        paper-icon-button{
+            color:var(--text-light-primary-color);
+        }
+
         app-toolbar {
-            background-color: var(--default-primary-color);
-            position: absolute;
-            top: 0;
-            left: 0;
+            background-color: var(--dark-secondary-color-with-alpha);
             width: 100%;
             z-index: 10;
             height: 80px;
@@ -85,6 +86,7 @@
         paper-dialog{
             width: 25vw;
             height: 60vh;
+            font-size:15px;
         }
 
         article {
@@ -107,7 +109,6 @@
         .app-box-content {
             margin: auto;
             font-size: 2em;
-            width: 37%;
             color: var(--text-light-primary-color);
             text-shadow: -0.15em 0.01em #222222;
             display: flex;
@@ -131,7 +132,7 @@
                         background-color: var(--light-primary-color);
                     }
 
-                .app-box-content > div > span {
+                .app-box-content > div > div > span {
                     font-size: 3em;
                 }
 
@@ -168,12 +169,50 @@
 
         #first-box {
             height: 900px;
+            --app-box-background-front-layer: {
+                background-image: url('../images/homepage/01.jpg');
+                background-position: bottom;
+                padding-bottom: 120px;
+                margin-top: -20px;
+                height: 100%;
+                @apply(--layout-vertical);
+            };
+        }
+        
+        #second-box {
+            --app-box-background-front-layer: {
+                background-image: url('../images/homepage/02.jpg');
+                background-position: bottom;
+                padding-bottom: 120px;
+                margin-top: -20px;
+                height: 100%;
+            };
+        }
+        
+        #third-box {
+            --app-box-background-front-layer: {
+                background-image: url('../images/homepage/03.jpg');
+                background-position: bottom;
+                padding-bottom: 120px;
+                margin-top: -20px;
+                height: 100%;
+            };
+        }
+        
+        #forth-box {
+            --app-box-background-front-layer: {
+                background-image: url('../images/homepage/05.jpg');
+                background-position: bottom;
+                padding-bottom: 120px;
+                margin-top: -20px;
+                height: 100%;
+            };
         }
 
         #search-bar {
             height: 120px;
             width: 100%;
-            background-color: var(--default-primary-color);
+            background-color: var(--dark-secondary-color-with-alpha);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -182,14 +221,14 @@
             #search-bar > .input { 
                 flex-grow : 2;     
                 --paper-input-container :{
-                background-color : var( --light-primary-color);
-                height: 60px;
-                padding : 0;
-                display: flex;
-                justify-content: center;
+                    background-color : var(--light-primary-color);
+                    height: 3.75em;
+                    padding : 0;
+                    display: flex;
+                    justify-content: center;
                 };
                 --paper-input-container-underline : {
-                height : 0px;
+                    height : 0;
                 };
                 --paper-input-container-underline: {
                     height: 0;
@@ -210,29 +249,28 @@
             {
                 flex-grow : 4;
                 --paper-input-container : {
-                background-color : var( --light-primary-color);
-                border-top-left-radius: 5px;
-                border-bottom-left-radius: 5px;
-                height: 60px;
-                padding : 0;
-                display: flex;
-                justify-content: center;
+                    background-color : var(--light-primary-color);
+                    border-top-left-radius: 0.5em;
+                    border-bottom-left-radius: 0.5em;
+                    height: 3.75em;
+                    padding : 0;
+                    display: flex;
+                    justify-content: center;
                 };
-            } 
+            }
     
             #search-bar > paper-button
             {
               flex-grow : 3;
               background-color : #0693D3;
-              border-top-right-radius: 5px;
-              border-bottom-right-radius: 5px;
+              border-top-right-radius: 0.5em;
+              border-bottom-right-radius: 0.5em;
               border-top-left-radius: 0px;
               border-bottom-left-radius: 0px;
-              height: 60px;
+              height: 3.75em;
               margin : 0;
               margin-right: 20%;
               color: var(--text-light-secondary-color);
-              font-size: 25px;
               font-weight: 100;
             }
     
@@ -240,8 +278,110 @@
               flex-grow: 3;
               margin-left: 6%;
               color: var(--text-light-primary-color);
-              font-size: 25px;      
+              font-size: 25px; 
+              text-align: left;     
             }
+
+        @media (max-width: 860px) {
+            app-box {
+            height: 380px;
+            width : 100%;
+            text-align: center;
+            --app-box-content:{
+                display: flex;
+                align-items: center;   
+                flex-direction : column;       
+            };
+            margin : 0 auto;
+        }
+
+        app-toolbar {
+            height: 50px;
+        }
+
+        app-toolbar > paper-button{
+            background-color:#2a8600;
+            padding: 0.05em 0.2em;
+        }
+
+        iron-image {
+            width: 100%;
+            --iron-image-width: 100%;
+        }
+
+        paper-dialog{
+            width: 99vw;
+            height: 95vh;
+            font-size:10px;
+        }
+
+        article {
+            width: 100%;
+        }
+
+            article > div {
+                margin: 0 0.5em;
+            }
+
+        h1 {
+            font-size: 2em;
+            -webkit-margin-before: 0.66em;
+            -webkit-margin-after: 0.66em;
+        }
+
+        .app-box-content {
+            font-size: 1.1em;
+            width: 100%;
+            text-shadow: -0.05em 0.001em #222222;
+        }
+
+            .app-box-content > div {
+                margin: 0.2em 0;
+            }
+
+                .app-box-content > div > paper-button {
+                    height: 1em;
+                    border-radius: 0.02em;
+                }
+
+                .app-box-content > div > span {
+                    font-size: 1em;
+                }
+
+        #first-box {
+            height: 460px;
+            background-image: url('../images/homepage/01.jpg');
+            background-size: cover;
+        }
+
+        #search-bar {
+            height: 60px;
+            font-size: 8px;
+        }
+    
+            #search-bar > div{      
+              margin-left: 6%;
+              font-size: 12px;      
+            }
+            
+            #search-bar > paper-button{      
+              margin-right: 6%;    
+            }
+
+        .wrapped{
+            flex-wrap:wrap;
+        } 
+        }
+
+        @media (max-width: 320px) {   
+
+            paper-dialog{
+                width: 99vw;
+                height: 90vh;
+                font-size:12px;
+            }
+        
+        }
     
     </style>
 
@@ -251,21 +391,32 @@
                      provider="[[provider]]"
                      on-error="_errorHandler" 
                      on-user-created="_userSuccessHandler"
-                     on-login="_loginHandler"></firebase-auth>   
-                 
-      <paper-scroll-header-panel fixed>
+                     on-login="_loginHandler"></firebase-auth>
+
+      <firebase-collection data="{{userDatas}}" location="{{_computeLocation(uid)}}" log></firebase-collection>
+
+      <iron-media-query query="(min-width:860px)" query-matches="{{wide}}"></iron-media-query>
+                       
+      <paper-scroll-header-panel>
           <app-toolbar>
-              <paper-button on-tap="_login"><iron-icon icon="icons:account-circle"></iron-icon>Se connecter</paper-button>
+              <template is="dom-if" if="{{wide}}">
+                  <paper-button on-tap="_login"><iron-icon icon="icons:account-circle"></iron-icon>Se connecter</paper-button>
+              </template>
+              <template is="dom-if" if="{{!wide}}">
+                  <paper-icon-button on-tap="_login" icon="icons:account-circle"></paper-icon-button>
+              </template>
           </app-toolbar>
 
           <div class="overlay">
               <div id="scrollingRegion">
                   <section>
                       <app-box scroll-target="scrollingRegion" effects="parallax-background" id="first-box">
-                          <iron-image background src="../images/homepage/01.jpg"></iron-image>
                           <div class="app-box-content layout vertical">
                               <div>
-                                  Nous avons tous besoin des services d'un <span class="special-text">Special</span><span class="agent-text">Agent</span>
+                                  <div>Nous avons tous besoin des services d'un</div>
+                                  <div>
+                                      <span class="special-text">Special</span><span class="agent-text">Agent</span>
+                                  </div>
                               </div>
                               <div>
                                   <paper-button>Créer une mission</paper-button>
@@ -274,12 +425,13 @@
                           </div>
                           <div id="search-bar">
                               <div>Besoin d'action ?</div>
-                              <paper-input class="input left" no-label-float always-float-label="false" label="Où ?"></paper-input>
-                              <paper-dropdown-menu class="input" no-label-float always-float-label="false" label="Catégories"></paper-dropdown-menu>
+                              <paper-input id="whereInput" class="input left" no-label-float always-float-label="false" label="Où ?"></paper-input>
+                              <paper-dropdown-menu id="kindsSelector" class="input" no-label-float always-float-label="false" label="Catégories"></paper-dropdown-menu>
                               <paper-button class="right">Trouver</paper-button>
                           </div>
-                      </app-box>
-                      <article class="layout horizontal center">
+                      </app-box>                      
+
+                      <article class="layout horizontal around-justified wrapped">
                           <div>
                               <h1>
                                   <span class="special-text">Special</span><span class="agent-dark-text">Missions</span>
@@ -306,7 +458,6 @@
 
                   <section>
                       <app-box scroll-target="scrollingRegion" effects="parallax-background" id="second-box">
-                          <iron-image background src="../images/homepage/02.jpg"></iron-image>
                       </app-box>
                       <article class="layout vertical">
                           <div>
@@ -314,7 +465,7 @@
                                   <span class="special-text">Special</span><span class="agent-dark-text">Missions</span>
                               </h1>
                           </div>
-                          <div class="layout horizontal around-justified">
+                          <div class="layout horizontal around-justified  wrapped">
                               <div>
                                   <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
                                   <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
@@ -333,7 +484,6 @@
 
                   <section>
                       <app-box scroll-target="scrollingRegion" effects="parallax-background" id="third-box">
-                          <iron-image background src="../images/homepage/03.jpg"></iron-image>
                       </app-box>
                       <article class="layout vertical">
                           <div>
@@ -341,7 +491,7 @@
                                   <span class="special-text">Special</span><span class="agent-dark-text">Sponsors</span>
                               </h1>
                           </div>
-                          <div class="layout horizontal around-justified">
+                          <div class="layout horizontal around-justified  wrapped">
                               <div>
                                   <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
                                   <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
@@ -356,33 +506,32 @@
                               </div>
                           </div>
                       </article>
+                  </section>
 
-                      <section>
-                          <app-box scroll-target="scrollingRegion" effects="parallax-background" id="third-box">
-                              <iron-image background src="../images/homepage/05.jpg"></iron-image>
-                          </app-box>
-                          <article class="layout vertical">
+                  <section>
+                      <app-box scroll-target="scrollingRegion" effects="parallax-background" id="forth-box">
+                      </app-box>
+                      <article class="layout vertical">
+                          <div>
+                              <h1>
+                                  <span class="special-text">Special</span><span class="agent-dark-text">Agents</span>
+                              </h1>
+                          </div>
+                          <div class="layout horizontal around-justified wrapped">
                               <div>
-                                  <h1>
-                                      <span class="special-text">Special</span><span class="agent-dark-text">Agents</span>
-                                  </h1>
+                                  <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                                  <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
                               </div>
-                              <div class="layout horizontal around-justified">
-                                  <div>
-                                      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
-                                      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-                                  </div>
-                                  <div>
-                                      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
-                                      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-                                  </div>
-                                  <div>
-                                      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
-                                      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-                                  </div>
+                              <div>
+                                  <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                                  <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
                               </div>
-                          </article>
-                      </section>
+                              <div>
+                                  <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
+                                  <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+                              </div>
+                          </div>
+                      </article>
                   </section>
               </div>
           </div>
@@ -398,12 +547,22 @@
           <iron-collapse id="collapse" opened="{{open}}">
               <div class="layout vertical justified ">
                   <div>Connectez vous avec :</div>
-                  <div class="layout horizontal center around-justified">
-                      <!--TODO Use only one method-->
-                      <paper-button id="twitter" on-tap="_requestTwitterLogin" raised><iron-icon src="../images/logos/twitter.png"></iron-icon>Twitter</paper-button>
-                      <paper-button id="google" on-tap="_requestGoogleLogin" raised><iron-icon src="../images/logos/google.png"></iron-icon>Google</paper-button>
-                      <paper-button id="facebook" on-tap="_requestFacebookLogin" raised><iron-icon src="../images/logos/facebook.png"></iron-icon>Facebook</paper-button>
-                  </div>
+                  <template is="dom-if" if="{{wide}}">
+                      <div class="layout horizontal center around-justified">
+                          <!--TODO Use only one method-->
+                          <paper-button id="twitter" on-tap="_requestTwitterLogin" raised><iron-icon src="../images/logos/twitter.png"></iron-icon>Twitter</paper-button>
+                          <paper-button id="google" on-tap="_requestGoogleLogin" raised><iron-icon src="../images/logos/google.png"></iron-icon>Google</paper-button>
+                          <paper-button id="facebook" on-tap="_requestFacebookLogin" raised><iron-icon src="../images/logos/facebook.png"></iron-icon>Facebook</paper-button>
+                      </div>
+                  </template>
+                  <template is="dom-if" if="{{!wide}}">
+                      <div class="layout horizontal center around-justified">
+                          <!--TODO Use only one method-->
+                          <paper-icon-button id="twitter" on-tap="_requestTwitterLogin" raised src="../images/logos/twitter.png"></paper-icon-button>
+                          <paper-icon-button id="google" on-tap="_requestGoogleLogin" raised src="../images/logos/google.png"></paper-icon-button>
+                          <paper-icon-button id="facebook" on-tap="_requestFacebookLogin" raised src="../images/logos/facebook.png"></paper-icon-button>
+                      </div>
+                  </template>
                   <div style="text-align:center;margin-top:2em;">ou avec vos identifiants</div>
                   <div class="layout vertical">
                       <gold-email-input id="loginEmail" label="E-mail" value="{{email}}" auto-validate></gold-email-input>
@@ -460,13 +619,18 @@
             attached: function () {
                 // Set offset of app-toolbar and repos paper-scroll-header-panel
                 this.async(function () {
-                    this.$$('app-toolbar').style.marginTop = this.$$('app-toolbar').getBoundingClientRect().height + 'px';
-                    this.$$('paper-scroll-header-panel').style.top = '-' + this.$$('app-toolbar').style.marginTop;
-                    this.$$('paper-scroll-header-panel').style.height = this.$$('paper-scroll-header-panel').getBoundingClientRect().height + this.$$('app-toolbar').getBoundingClientRect().height + 'px';
+                    window.addEventListener('resize', this._adaptHomePage.bind(this));
+                    this._adaptHomePage();
+                }.bind(this));
+            },
 
+            _adaptHomePage:function(){
+                //this.$$('paper-scroll-header-panel').style.height = this.$$('paper-scroll-header-panel').getBoundingClientRect().height + this.$$('app-toolbar').getBoundingClientRect().height + 'px';
+
+                if (!this.wide) {
                     this.$$('#first-box').$$('#contentContainer').style.display = 'flex';
                     this.$$('#first-box').$$('#contentContainer').style.flexDirection = 'column';
-                }.bind(this));
+                }
             },
 
             _login: function(){
@@ -512,12 +676,8 @@
                     this.user.password.lastName = this.lastName;
                 }
 
-                this._saveUserInfo();
                 this.$.loginDialog.close();
-
-                if (this.known && this.user) {
-                    this.set('routeData.page', 'dashboard');
-                }
+                this._saveUserInfo();                
             },
 
             _errorHandler: function (e) {
@@ -526,7 +686,8 @@
 
             _userSuccessHandler: function (e) {
                 this.$.loginEmail.invalid = this.$.loginPassword.invalid = false;
-                this._requestLogin({target :{id: 'password'}});
+                this.provider = 'password';
+                this._requestLogin();
             },
 
             _requestSignup: function (e) {
@@ -546,8 +707,22 @@
                 if (!this.user) { return;}
                 var ref = new Firebase('https://specialagency.firebaseio.com/users/' + this.user.uid);
 
-                this.user.auth.token = null;
-                ref.set(this.user);
+                var userExist = false;
+
+                ref.once('value').then(function (snapshot) {
+                    this.user = snapshot.val();
+
+                    if (!this.user[this.user.provider].displayName) {
+                        this.user.auth.token = null;
+                        ref.update(this.user);
+                    }
+                    window.localStorage.clear();
+                    window.localStorage.setItem('firebase:session::specialagency', JSON.stringify(this.user));
+
+                    if (this.known && this.user) {
+                        this.set('routeData.page', 'dashboard');
+                    }
+                }.bind(this));                
             },
 
             _resetDialog: function () {

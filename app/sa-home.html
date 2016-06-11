@@ -18,7 +18,7 @@
 
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 
-<link rel="import" href="../bower_components/firebase-element/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -385,13 +385,12 @@
     
     </style>
 
-      <firebase-auth id="firebaseLogin" user="{{user}}" 
-                     location="https://specialagency.firebaseio.com" 
-                     status-known="{{known}}"
+      <firebase-auth id="firebaseLogin"
+                     app-name="Special Agency" 
+                     user="{{user}}"  
                      provider="[[provider]]"
-                     on-error="_errorHandler" 
-                     on-user-created="_userSuccessHandler"
-                     on-login="_loginHandler"></firebase-auth>
+                     signed-in="{{known}}"
+                     on-error="_errorHandler"></firebase-auth>
 
       <firebase-collection data="{{userDatas}}" location="{{_computeLocation(uid)}}" log></firebase-collection>
 
@@ -659,13 +658,10 @@
 
             _requestLogin: function () {
                 if (this.provider === 'password') {
-                    this.$.firebaseLogin.login({
-                        'email': this.email,
-                        'password': this.password
-                    });
+                    this.$.firebaseLogin.signInWithEmailAndPassword(this.email, this.password).then(this._loginHandler.bind(this)).catch(this._errorHandler.bind(this));
                 }
                 else {
-                    this.$.firebaseLogin.login();
+                    this.$.firebaseLogin.signInWithPopup().then(this._loginHandler.bind(this)).catch(this._errorHandler.bind(this));
                 }
             },
 
@@ -677,7 +673,10 @@
                 }
 
                 this.$.loginDialog.close();
-                this._saveUserInfo();                
+                this._saveUserInfo();
+                if (this.known && this.user) {
+                    this.set('routeData.page', 'dashboard');
+                }
             },
 
             _errorHandler: function (e) {
@@ -704,25 +703,25 @@
             },
 
             _saveUserInfo: function () {
-                if (!this.user) { return;}
-                var ref = new Firebase('https://specialagency.firebaseio.com/users/' + this.user.uid);
+                //if (!this.user) { return;}
+                //var ref = new Firebase('https://specialagency.firebaseio.com/users/' + this.user.uid);
 
-                var userExist = false;
+                //var userExist = false;
 
-                ref.once('value').then(function (snapshot) {
-                    this.user = snapshot.val();
+                //ref.once('value').then(function (snapshot) {
+                //    this.user = snapshot.val();
 
-                    if (!this.user[this.user.provider].displayName) {
-                        this.user.auth.token = null;
-                        ref.update(this.user);
-                    }
-                    window.localStorage.clear();
-                    window.localStorage.setItem('firebase:session::specialagency', JSON.stringify(this.user));
+                //    if (!this.user[this.user.provider].displayName) {
+                //        this.user.auth.token = null;
+                //        ref.update(this.user);
+                //    }
+                //    window.localStorage.clear();
+                //    window.localStorage.setItem('firebase:session::specialagency', JSON.stringify(this.user));
 
-                    if (this.known && this.user) {
-                        this.set('routeData.page', 'dashboard');
-                    }
-                }.bind(this));                
+                //    if (this.known && this.user) {
+                //        this.set('routeData.page', 'dashboard');
+                //    }
+                //}.bind(this));                
             },
 
             _resetDialog: function () {

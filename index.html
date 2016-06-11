@@ -50,6 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </script>
 
+    <link rel="import" href="./bower_components/polymerfire/firebase-app.html">
     <link rel="import" href="/app/sa-app.html">
 
     <style>
@@ -67,7 +68,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 </head>
 <body>
-    <sa-app unresolved>My App</sa-app>
+
+    <firebase-app name="Special Agency"
+                  auth-domain="special-agency-c3c77.firebaseapp.com"
+                  database-url="https://special-agency-c3c77.firebaseio.com"
+                  api-key="AIzaSyCpP7uvmm9UqoVG3ZQejWXqpQ9mSn5WEDc">
+    </firebase-app>
+
+    <sa-app></sa-app>
 </body>
 </html>
 

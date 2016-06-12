@@ -1,5 +1,6 @@
 {
   "projects": {
-    "specialagency": "project-5354252190088472147"
+    "specialagency": "project-5354252190088472147",
+    "default": "special-agency"
   }
 }

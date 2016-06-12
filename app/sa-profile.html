@@ -1,6 +1,10 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="sa-theme.html">
@@ -31,29 +35,28 @@
             }
         </style>
 
-        <firebase-collection data="{{userDatas}}" location="{{_computeLocation(uid)}}"></firebase-collection>
-
-        <div id="avatar" style="background-image:url({{arrayItem(userDatas.*, 2, 'profileImageURL')}})">
+        <div id="avatar" style="background-image:url({{_computeAvatar(userData)}})">
+            <paper-spinner active="[[loading]]"></paper-spinner>
         </div>
 
         <section>
             <h1>Connexion</h1>
-            <div>Votre e-mail: {{arrayItem(userDatas.*, 2, 'email')}}</div>
-            <div>Votre mot de passe: *********</div>
+            <paper-input label="Votre e-mail" value="{{userData.email}}" disabled></paper-input>
+            <paper-input label="Votre mot de passe" value="******" typeof="password"></paper-input>
         </section>
 
         <section>
             <h1>Informations visible sur le site</h1>
-            <div>Votre pseudo: {{arrayItem(userDatas.*, 2, 'displayName')}}</div>
+            <paper-input label="Votre pseudo" value="{{userData.displayName}}"></paper-input>
         </section>
 
         <section>
             <h1>Informations personnelles</h1>
-            <div>Votre nom: {{arrayItem(userDatas.*, 2, 'lastName')}}</div>
-            <div>Votre pr&eacute;nom: {{arrayItem(userDatas.*, 2, 'firstName')}}</div>
-            <div>Votre date de naissance: {{arrayItem(userDatas.*, 2, 'birthDate')}}</div>
-            <div>Votre adresse: {{arrayItem(userDatas.*, 2, 'address')}}</div>
-            <div>Votre t&eacute;l&eacute;phone: {{arrayItem(userDatas.*, 2, 'phone')}}</div>
+            <paper-input label="Votre Pr&eacute;nom" value="{{userData.firstName}}"></paper-input>
+            <paper-input label="Votre Nom" value="{{userData.lastName}}"></paper-input>
+            <div>Votre date de naissance: {{userData.birthDate}}</div>
+            <div>Votre adresse: </div>
+            <div>Votre t&eacute;l&eacute;phone: </div>
         </section>
         
 
@@ -65,21 +68,21 @@
             is: 'sa-profile',
 
             properties: {
-                uid: {
-                    type: String
-                },
-
-                userDatas: {
-                    type: Array
+                userData: {
+                    type: Object,
+                    notify : true
                 }
             },
 
-            arrayItem: function (change, index, path) {
-                return this.get(path, change.base[index]);
+            ready: function(){
+                this.loading = true;
             },
 
-            _computeLocation: function(uid){
-                return 'https://specialagency.firebaseio.com/users/' + this.uid;
+            _computeAvatar: function (userData) {
+                if (userData) {
+                    this.loading = false;
+                    return userData.photoURL;
+                }
             }
         });
     </script>

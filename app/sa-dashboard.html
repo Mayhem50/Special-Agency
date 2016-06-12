@@ -5,10 +5,12 @@
 
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 <link rel="import" href="../bower_components/paper-drawer-panel/paper-drawer-panel.html">
 
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -80,12 +82,17 @@
 
         #profile{
             display:none;
-            color: black;
+            color: white;
         }
     
     </style>
 
-      <firebase-auth  id="firebaseLogin" app-name="Special Agency"></firebase-auth> 
+      <firebase-auth  user="{{user}}" app-name="Special Agency"></firebase-auth>
+
+      <firebase-document id="userData"
+                         app-name="Special Agency"
+                         path="/users/[[user.uid]]"
+                         data="{{userData}}"></firebase-document>
 
       <app-route route="{{route}}"
                  pattern="/dashboard/:dashboardpage"
@@ -96,9 +103,10 @@
           <div id="drawer" class="fullbleed layout vertical justified" drawer>
               <div id="avatarContainer" class="layout horizontal self-stretch center" header>
                   <div id="avatar" class="layout horizontal center center-justified" on-mouseenter="_showProfileLink" on-mouseleave="_hideProfileLink">
+                      <paper-spinner active="[[loading]]"></paper-spinner>
                       <a id="profile" class="drawer-link" href="/dashboard/profile"><iron-icon icon="icons:create"></iron-icon></a>
                   </div>
-                  <div>{{user.displayName}}</div>
+                  <div>{{userData.displayName}}</div>
               </div>
 
               <div class="flex layout vertical self-stretch" content>
@@ -113,7 +121,7 @@
           </div>
           <div main class="fullbleed">
               <iron-pages selected="[[page]]" attr-for-selected="name">
-                  <sa-profile name="profile" uid="{{user.uid}}"></sa-profile>
+                  <sa-profile name="profile" user-data="{{userData}}" user="{{user}}"></sa-profile>
               </iron-pages>
           </div>
       </paper-drawer-panel>
@@ -129,7 +137,17 @@
                 route: {
                     type: Object,
                     observer: '_routeChanged'
+                },
+
+                user: {
+                    type: Object,
+                    value: null,
+                    observer: '_userChanged'
                 }
+            },
+
+            ready: function () {
+                this.loading = true;
             },
 
             _showProfileLink: function(){
@@ -145,6 +163,21 @@
                 this.$.firebaseLogin.signOut();
             },
 
+            _userChanged: function () {
+                if (this.user) {
+                    this.$.userData.getStoredValue(this.$.userData.path).then(function (value) {
+                        if (JSON.stringify(value) == '{}') {
+                            var user = JSON.parse(window.localStorage['firebase:authUser:AIzaSyCpP7uvmm9UqoVG3ZQejWXqpQ9mSn5WEDc:Special Agency']);
+                            this.userData = user.providerData[0];
+                            this.set('userData.displayName', user.displayName);                            
+                        }
+
+                        this._computeAvatar();
+                        this.loading = false;
+                    }.bind(this));
+                }
+            },
+
             _routeChanged: function (page) {
                 if (page.prefix === '/dashboard') {
                     this.async(this._getUser);
@@ -156,18 +189,9 @@
                 }
             },
 
-            _getUser:function(){
-                this.user = JSON.parse(window.localStorage['firebase:authUser:AIzaSyCpP7uvmm9UqoVG3ZQejWXqpQ9mSn5WEDc:Special Agency']);
-
-                if (!this.user) { return; }
-                this._computeAvatar();
-            },
-
             _computeAvatar: function () {
                 //Todo put default image
-                var url = this.user.photoURL != null ? 'url("' + this.user.photoURL + '")' : '../images/logos/businessman.png';
-
-                this.$.avatar.style.backgroundImage = url;
+                this.$.avatar.style.backgroundImage = this.userData.photoURL != null ? 'url("' + this.userData.photoURL + '")' : 'url("../images/logos/businessman.png")';;
                 this.$.avatar.style.height = this.$.avatar.getBoundingClientRect().width + 'px';
             }
       });

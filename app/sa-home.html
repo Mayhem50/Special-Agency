@@ -388,6 +388,7 @@
       <firebase-auth id="firebaseLogin"
                      app-name="Special Agency" 
                      user="{{user}}"  
+                     signed-in="{{signedIn}}"
                      provider="[[provider]]"></firebase-auth>
 
       <firebase-collection data="{{userDatas}}" location="{{_computeLocation(uid)}}" log></firebase-collection>
@@ -657,27 +658,38 @@
 
             _requestLogin: function () {
                 if (this.provider === 'password') {
-                    this.$.firebaseLogin.signInWithEmailAndPassword(this.email, this.password).then(function (response) {
-                        if(this.user){
-                            this.user.updateProfile({
-                                displayName: this.firstName + ' ' + this.lastName
-                            }).then(function () {
-                                console.log('update user');
-                                var user = JSON.parse(window.localStorage['firebase:authUser:AIzaSyCpP7uvmm9UqoVG3ZQejWXqpQ9mSn5WEDc:Special Agency']);
-                                user.displayName = this.firstName + ' ' + this.lastName;
-                                window.localStorage.setItem('firebase:authUser:AIzaSyCpP7uvmm9UqoVG3ZQejWXqpQ9mSn5WEDc:Special Agency', JSON.stringify(user));
-                                this._loginSuccess();
-                            }.bind(this), function () {
-                                console.log('Error : Update user fail');
-                            });
-                        }
-                        else {
+                    this.$.firebaseLogin.signInWithEmailAndPassword(this.email, this.password).then(function (resolve) {
+                        if (resolve) {
+                            this.user = this.$.firebaseLogin.auth.currentUser;
+
+                            if (this.user.displayName === '' || !this.user.displayName) {
+                                this.user.updateProfile({
+                                    displayName: this.firstName + ' ' + this.lastName
+                                }).then(function (resolve) {
+                                    console.log('update user');
+                                    var user = JSON.parse(window.localStorage['firebase:authUser:AIzaSyCpP7uvmm9UqoVG3ZQejWXqpQ9mSn5WEDc:Special Agency']);
+                                    user.displayName = this.firstName + ' ' + this.lastName;
+                                    window.localStorage.setItem('firebase:authUser:AIzaSyCpP7uvmm9UqoVG3ZQejWXqpQ9mSn5WEDc:Special Agency', JSON.stringify(user));
+                                    this._loginSuccess();
+                                }.bind(this), function (error) {
+                                    console.log(error);
+                                });
+                            }
                             this._loginSuccess();
                         }
-                    }.bind(this), this._errorHandler.bind(this));
+                        else {
+                            this._errorHandler('Error : internal error');
+                        }
+                    }.bind(this)).catch(this._errorHandler.bind(this));
                 }
                 else {
-                    this.$.firebaseLogin.signInWithPopup().then(this._loginSuccess.bind(this), this._errorHandler.bind(this));
+                    this.$.firebaseLogin.signInWithPopup().then(function (resolve) {
+                        if (resolve) {
+                            this._loginSuccess();
+                        }
+                    }.bind(this)).catch(function (reject) {
+                        this._errorHandler('Error : internal error');
+                    }.bind(this));
                 }
             },
 
@@ -689,7 +701,7 @@
 
             _errorHandler: function (e) {
                 console.log(e);
-                this.error = e.detail.message;
+                this.error = e;
                 this.$.loginEmail.invalid = this.$.loginPassword.invalid = true;
             },
 

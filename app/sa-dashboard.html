@@ -85,6 +85,8 @@
     
     </style>
 
+      <firebase-auth  id="firebaseLogin" app-name="Special Agency"></firebase-auth> 
+
       <app-route route="{{route}}"
                  pattern="/dashboard/:dashboardpage"
                  data="{{routeData}}"
@@ -140,6 +142,7 @@
 
             _logout: function (e) {
                 window.localStorage.clear();
+                this.$.firebaseLogin.signOut();
             },
 
             _routeChanged: function (page) {
@@ -162,7 +165,7 @@
 
             _computeAvatar: function () {
                 //Todo put default image
-                var url = this.user.photoURL != null ? 'url("' + this.user.photoURL + '")' : '';
+                var url = this.user.photoURL != null ? 'url("' + this.user.photoURL + '")' : '../images/logos/businessman.png';
 
                 this.$.avatar.style.backgroundImage = url;
                 this.$.avatar.style.height = this.$.avatar.getBoundingClientRect().width + 'px';

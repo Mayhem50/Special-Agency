@@ -388,9 +388,7 @@
       <firebase-auth id="firebaseLogin"
                      app-name="Special Agency" 
                      user="{{user}}"  
-                     provider="[[provider]]"
-                     signed-in="{{known}}"
-                     on-error="_errorHandler"></firebase-auth>
+                     provider="[[provider]]"></firebase-auth>
 
       <firebase-collection data="{{userDatas}}" location="{{_computeLocation(uid)}}" log></firebase-collection>
 
@@ -570,6 +568,7 @@
                       <paper-button on-tap="_resendPassword">Mot de passe oublié ?</paper-button>
                       </br>
                       <paper-button id="password" on-tap="_requestPasswordLogin" raised>Connexion</paper-button>
+                      <div>[[error]]</div>
                   </div>
                   <div class="layout vertical" center-justified>
                       <div style="text-align:center;margin-top:2em;">Pas encore inscrit ?</div>
@@ -658,32 +657,44 @@
 
             _requestLogin: function () {
                 if (this.provider === 'password') {
-                    this.$.firebaseLogin.signInWithEmailAndPassword(this.email, this.password).then(this._loginHandler.bind(this)).catch(this._errorHandler.bind(this));
+                    this.$.firebaseLogin.signInWithEmailAndPassword(this.email, this.password).then(function (response) {
+                        if(this.user){
+                            this.user.updateProfile({
+                                displayName: this.firstName + ' ' + this.lastName
+                            }).then(function () {
+                                console.log('update user');
+                                var user = JSON.parse(window.localStorage['firebase:authUser:AIzaSyCpP7uvmm9UqoVG3ZQejWXqpQ9mSn5WEDc:Special Agency']);
+                                user.displayName = this.firstName + ' ' + this.lastName;
+                                window.localStorage.setItem('firebase:authUser:AIzaSyCpP7uvmm9UqoVG3ZQejWXqpQ9mSn5WEDc:Special Agency', JSON.stringify(user));
+                                this._loginSuccess();
+                            }.bind(this), function () {
+                                console.log('Error : Update user fail');
+                            });
+                        }
+                        else {
+                            this._loginSuccess();
+                        }
+                    }.bind(this), this._errorHandler.bind(this));
                 }
                 else {
-                    this.$.firebaseLogin.signInWithPopup().then(this._loginHandler.bind(this)).catch(this._errorHandler.bind(this));
+                    this.$.firebaseLogin.signInWithPopup().then(this._loginSuccess.bind(this), this._errorHandler.bind(this));
                 }
             },
 
-            _loginHandler: function (e) {
-                if (this.$.firebaseLogin.provider === 'password' && this.firstName != '' && this.lastName != '') {
-                    this.user.password.displayName = this.firstName + ' ' + this.lastName;
-                    this.user.password.firstName = this.firstName;
-                    this.user.password.lastName = this.lastName;
-                }
-
+            _loginSuccess: function (e) {
+                this.error = '';
+                this.set('routeData.page', 'dashboard');
                 this.$.loginDialog.close();
-                this._saveUserInfo();
-                if (this.known && this.user) {
-                    this.set('routeData.page', 'dashboard');
-                }
             },
 
             _errorHandler: function (e) {
+                console.log(e);
+                this.error = e.detail.message;
                 this.$.loginEmail.invalid = this.$.loginPassword.invalid = true;
             },
 
             _userSuccessHandler: function (e) {
+                console.log('user created');
                 this.$.loginEmail.invalid = this.$.loginPassword.invalid = false;
                 this.provider = 'password';
                 this._requestLogin();
@@ -700,28 +711,6 @@
             _resendPassword: function(){
                 if (this.$.loginEmail.invalid) { return;}
                 this.$.firebaseLogin.sendPasswordResetEmail(this.email);
-            },
-
-            _saveUserInfo: function () {
-                //if (!this.user) { return;}
-                //var ref = new Firebase('https://specialagency.firebaseio.com/users/' + this.user.uid);
-
-                //var userExist = false;
-
-                //ref.once('value').then(function (snapshot) {
-                //    this.user = snapshot.val();
-
-                //    if (!this.user[this.user.provider].displayName) {
-                //        this.user.auth.token = null;
-                //        ref.update(this.user);
-                //    }
-                //    window.localStorage.clear();
-                //    window.localStorage.setItem('firebase:session::specialagency', JSON.stringify(this.user));
-
-                //    if (this.known && this.user) {
-                //        this.set('routeData.page', 'dashboard');
-                //    }
-                //}.bind(this));                
             },
 
             _resetDialog: function () {
@@ -767,11 +756,11 @@
                 }
                 else {
                     this.$.signupEmail.invalid = false;
-                    this.$.signupConfirmPassword.invalid = true;
+                    this.$.signupConfirmPassword.invalid = false;
                 }
 
                 if (res) {
-                    this.$.firebaseLogin.createUser(this.email, this.password);
+                    this.$.firebaseLogin.createUserWithEmailAndPassword(this.email, this.password).then(this._userSuccessHandler.bind(this), this._errorHandler.bind(this));
                 }
             }
       });

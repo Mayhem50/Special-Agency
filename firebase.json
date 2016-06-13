@@ -1,5 +1,4 @@
 {
-  "firebase": "specialagency",
   "public": "build\\bundled",
   "ignore": [
     "firebase.json",

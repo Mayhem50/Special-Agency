@@ -18,7 +18,7 @@
 
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 
-<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -386,13 +386,10 @@
     </style>
 
       <firebase-auth id="firebaseLogin"
-                     app-name="Special Agency" 
-                     user="{{user}}"  
-                     signed-in="{{signedIn}}"
+                     app-name="special-agent" 
+                     user="{{user}}"
                      provider="[[provider]]"></firebase-auth>
-
-      <firebase-collection data="{{userDatas}}" location="{{_computeLocation(uid)}}" log></firebase-collection>
-
+      
       <iron-media-query query="(min-width:860px)" query-matches="{{wide}}"></iron-media-query>
                        
       <paper-scroll-header-panel>
@@ -660,22 +657,8 @@
                 if (this.provider === 'password') {
                     this.$.firebaseLogin.signInWithEmailAndPassword(this.email, this.password).then(function (resolve) {
                         if (resolve) {
-                            this.user = this.$.firebaseLogin.auth.currentUser;
-
-                            if (this.user.displayName === '' || !this.user.displayName) {
-                                this.user.updateProfile({
-                                    displayName: this.firstName + ' ' + this.lastName
-                                }).then(function (resolve) {
-                                    console.log('update user');
-                                    var user = JSON.parse(window.localStorage['firebase:authUser:AIzaSyCpP7uvmm9UqoVG3ZQejWXqpQ9mSn5WEDc:Special Agency']);
-                                    user.displayName = this.firstName + ' ' + this.lastName;
-                                    window.localStorage.setItem('firebase:authUser:AIzaSyCpP7uvmm9UqoVG3ZQejWXqpQ9mSn5WEDc:Special Agency', JSON.stringify(user));
-                                    this._loginSuccess();
-                                }.bind(this), function (error) {
-                                    console.log(error);
-                                });
-                            }
-                            this._loginSuccess();
+                            window.localStorage['displayName'] = this.firstName + ' ' + this.lastName;
+                            this._loginSuccess('dashboard');
                         }
                         else {
                             this._errorHandler('Error : internal error');
@@ -685,7 +668,7 @@
                 else {
                     this.$.firebaseLogin.signInWithPopup().then(function (resolve) {
                         if (resolve) {
-                            this._loginSuccess();
+                            this._loginSuccess('dashboard');
                         }
                     }.bind(this)).catch(function (reject) {
                         this._errorHandler('Error : internal error');
@@ -693,9 +676,9 @@
                 }
             },
 
-            _loginSuccess: function (e) {
+            _loginSuccess: function (page) {
                 this.error = '';
-                this.set('routeData.page', 'dashboard');
+                this.set('routeData.page', page);
                 this.$.loginDialog.close();
             },
 

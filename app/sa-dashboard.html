@@ -5,10 +5,12 @@
 
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 <link rel="import" href="../bower_components/paper-drawer-panel/paper-drawer-panel.html">
 
 <link rel="import" href="../bower_components/firebase-element/firebase-auth.html">
+<link rel="import" href="../bower_components/firebase-element/firebase-document.html">
 
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -80,12 +82,19 @@
 
         #profile{
             display:none;
-            color: black;
+            color: white;
         }
     
     </style>
 
-      <firebase-auth id="firebaseLogin" location="https://specialagency.firebaseio.com"></firebase-auth> 
+      <firebase-auth id="firebaseLogin" user="{{user}}"
+                     location="https://special-agent.firebaseio.com"></firebase-auth>
+
+      <firebase-document id="userData"
+                         log
+                         app-name="special-agent"
+                         location="https://special-agent.firebaseapp.com/users/[[user.uid]]"
+                         data="{{userData}}"></firebase-document>
 
       <app-route route="{{route}}"
                  pattern="/dashboard/:dashboardpage"
@@ -96,9 +105,10 @@
           <div id="drawer" class="fullbleed layout vertical justified" drawer>
               <div id="avatarContainer" class="layout horizontal self-stretch center" header>
                   <div id="avatar" class="layout horizontal center center-justified" on-mouseenter="_showProfileLink" on-mouseleave="_hideProfileLink">
+                      <paper-spinner active="[[loading]]"></paper-spinner>
                       <a id="profile" class="drawer-link" href="/dashboard/profile"><iron-icon icon="icons:create"></iron-icon></a>
                   </div>
-                  <div>{{userInfos.displayName}}</div>
+                  <div>{{userData.displayName}}</div>
               </div>
 
               <div class="flex layout vertical self-stretch" content>
@@ -113,7 +123,7 @@
           </div>
           <div main class="fullbleed">
               <iron-pages selected="[[page]]" attr-for-selected="name">
-                  <sa-profile name="profile" uid="{{user.uid}}"></sa-profile>
+                  <sa-profile name="profile" user-data="{{userData}}" user="{{user}}"></sa-profile>
               </iron-pages>
           </div>
       </paper-drawer-panel>
@@ -129,7 +139,17 @@
                 route: {
                     type: Object,
                     observer: '_routeChanged'
+                },
+
+                user: {
+                    type: Object,
+                    value: null,
+                    observer: '_userChanged'
                 }
+            },
+
+            ready: function () {
+                this.loading = true;
             },
 
             _showProfileLink: function(){
@@ -141,8 +161,28 @@
             },
 
             _logout: function (e) {
-                this.$.firebaseLogin.logout();
                 window.localStorage.clear();
+                this.$.firebaseLogin.logOut();
+            },
+
+            _userChanged: function () {
+                if (this.user) {
+                    this.$.userData.getStoredValue('/').then(function (value) {
+                        if (JSON.stringify(value) == '{}') {
+
+                            this.async(function () {
+                                this.userData = this.user[this.user.provider];
+                                if (window.localStorage['displayName']) {
+                                    this.set('userData.displayName', window.localStorage['displayName']);
+                                    window.localStorage['displayName'] = null;
+                                }
+                                this._computeAvatar();
+                                this.loading = false;
+                            }.bind(this), 500);
+                        }
+
+                    }.bind(this));
+                }
             },
 
             _routeChanged: function (page) {
@@ -156,22 +196,9 @@
                 }
             },
 
-            _getUser:function(){
-                this.user = JSON.parse(window.localStorage['firebase:session::specialagency']);
-
-                if (!this.user) { return; }
-                this._getInfos();
-                this._computeAvatar();
-            },
-
-            _getInfos: function () {
-                this.userInfos = this.user[this.user.provider];
-            },
-
             _computeAvatar: function () {
-                var url = 'url("' + this.userInfos.profileImageURL + '")';
-
-                this.$.avatar.style.backgroundImage = url;
+                //Todo put default image
+                this.$.avatar.style.backgroundImage = this.userData.photoURL != null ? 'url("' + this.userData.photoURL + '")' : 'url("../images/logos/businessman.png")';;
                 this.$.avatar.style.height = this.$.avatar.getBoundingClientRect().width + 'px';
             }
       });

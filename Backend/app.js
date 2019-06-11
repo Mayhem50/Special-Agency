@@ -8,12 +8,12 @@ var flash = require('connect-flash');
 var cors = require('cors');
 
 var app = module.exports = express();
-var server = require('./server/controllers/server.js')(app);
-var io = require('./server/controllers/socket.io.js')(server);
+var server = require('./controllers/server.js')(app);
+var io = require('./controllers/socket.io.js')(server);
 
-var db = require('./server/controllers/mongoose');
-var session = require('./server/controllers/session');
-var passport = require('./server/controllers/passport');
+var db = require('./controllers/mongoose');
+var session = require('./controllers/session');
+var passport = require('./controllers/passport');
 
 
 app.use(bodyParser.json());
@@ -29,16 +29,16 @@ app.use(cookieParser());
 
 app.use(flash());
 
-var http_index = require('./server/http_routes/index')();
-var http_users = require('./server/http_routes/users')(passport);
-var http_missions = require('./server/http_routes/missions')(passport);
-var http_helpers = require('./server/http_routes/helpers')();
-var http_kinds = require('./server/http_routes/kinds')();
-var http_chats = require('./server/http_routes/chats')();
-var http_translation = require('./server/http_routes/translations')();
-var http_favorite_missions = require('./server/http_routes/favorite-missions')();
-var http_draft_missions = require('./server/http_routes/draft-missions')();
-var http_postulated_missions = require('./server/http_routes/postulated-missions')();
+var http_index = require('./http_routes/index')();
+var http_users = require('./http_routes/users')(passport);
+var http_missions = require('./http_routes/missions')(passport);
+var http_helpers = require('./http_routes/helpers')();
+var http_kinds = require('./http_routes/kinds')();
+var http_chats = require('./http_routes/chats')();
+var http_translation = require('./http_routes/translations')();
+var http_favorite_missions = require('./http_routes/favorite-missions')();
+var http_draft_missions = require('./http_routes/draft-missions')();
+var http_postulated_missions = require('./http_routes/postulated-missions')();
 
 app.use(http_index);
 app.use(http_users);

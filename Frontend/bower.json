@@ -1,8 +1,6 @@
 {
   "name": "special-agency",
   "devDependencies": {
-    "iron-elements": "PolymerElements/iron-elements#*",
-    "paper-elements": "PolymerElements/paper-elements#*",
     "platinum-elements": "PolymerElements/platinum-elements#*",
     "neon-elements": "PolymerElements/neon-elements#*",
     "test-fixture": "PolymerElements/test-fixture#*",

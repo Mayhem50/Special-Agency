@@ -16,142 +16,151 @@
 <dom-module id="sa-mission-infos">
     <style>
         :host {
-            display:flex;
+            display: flex;
             margin-top: 15px;
-            justify-content:space-around;
-            --sa-mission-card:{
-                margin:0;
+            justify-content: space-around;
+
+            --sa-mission-card: {
+                margin: 0;
             }
-        }              
-
-        .cell-title{
-            height:40px;
-            background-color:rgba(56, 56, 56, 0.92);
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            color:#989898;
         }
 
-        paper-card{
-            border-radius:7px;
-            background-color:rgba(101, 101, 101, 0.47);
+        .cell-title {
+            height: 40px;
+            background-color: rgba(56, 56, 56, 0.92);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #989898;
         }
 
-        #buttons{
-            display:flex;
-            justify-content:space-between;
-            margin-bottom:25px;
+        paper-card {
+            border-radius: 7px;
+            background-color: rgba(101, 101, 101, 0.47);
         }
 
-        #buttons paper-button{
-            background-color:#339933;
-            color:#ffffff;
+        #buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
         }
 
-        #left-row-1{
-            height:300px;
-            display:flex;
+        #buttons paper-button {
+            background-color: #339933;
+            color: #ffffff;
         }
 
-        #left-row-2{            
-            height:495px;
-            display:flex;
+        #left-row-1 {
+            height: 300px;
+            display: flex;
         }
 
-        #left-row-1-cell-1{
-            width:300px; 
-            display:flex;
-            flex-direction:column;
-            border-top-left-radius:5px; 
-            justify-content:space-around;   
-            background-color:#ffffff;
+        #left-row-2 {
+            height: 495px;
+            display: flex;
         }
 
-        #reward-part{
+        #left-row-1-cell-1 {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            border-top-left-radius: 5px;
+            justify-content: space-around;
+            background-color: #ffffff;
+        }
+
+        #reward-part {
             display: flex;
             align-items: baseline;
             padding: 0 30px;
         }
 
-        #reward-part paper-input{      
+        #reward-part paper-input {
             font-size: 16px;
-            width:80px;
+            width: 80px;
             height: 40px;
             padding: 2px 15px;
             background-color: rgb(247, 247, 247);
             color: #cccccc;
-            border:1px solid #d6d6d6;  
-            border-radius:5px; 
-            margin: 0 auto;   
-            text-align:right;
-            --paper-input-container-label : {                    
-                    color: #999999;
-                    text-align:center;
+            border: 1px solid #d6d6d6;
+            border-radius: 5px;
+            margin: 0 auto;
+            text-align: right;
+
+            --paper-input-container-label : {
+                color: #999999;
+                text-align: center;
             }
+
             --paper-input-container-input-color: #cccccc;
-            --paper-menu-button-dropdown-background:rgba(0, 0, 0, 0.67);            
+            --paper-menu-button-dropdown-background:rgba(0, 0, 0, 0.67);
 
             --paper-input-container-underline: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-focus: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-disabled: {
-                border-color:rgba(114, 114, 114, 0);
+                border-color: rgba(114, 114, 114, 0);
                 height: 0;
-            };
+            }
+
+            ;
         }
 
-        #reward-text{
-            font-size:18px;
-            color:#454545;
-            margin-right:10px;
+        #reward-text {
+            font-size: 18px;
+            color: #454545;
+            margin-right: 10px;
         }
 
-        #left-row-1-cell-2{
-            width:550px;
-            display:flex;
-            flex-direction:column;
+        #left-row-1-cell-2 {
+            width: 550px;
+            display: flex;
+            flex-direction: column;
         }
 
-        #left-row-1-cell-3{
-            width:410px;
+        #left-row-1-cell-3 {
+            width: 410px;
         }
 
-        #left-row-1-cell-3 .cell-title{
-            border-top-right-radius:5px;
-        }
-        
-        #left-row-2-cell-1{
-            width:850px;
-            background-color:#ffffff;
-            display:flex;
-            flex-direction:column;
-            border-bottom-left-radius:5px;
+        #left-row-1-cell-3 .cell-title {
+            border-top-right-radius: 5px;
         }
 
-        #left-row-2-cell-2{
-            width:410px;
-            background-color:#ffffff;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
+        #left-row-2-cell-1 {
+            width: 850px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            border-bottom-left-radius: 5px;
+        }
+
+        #left-row-2-cell-2 {
+            width: 410px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: space-between;
-            border-bottom-right-radius:5px;
+            border-bottom-right-radius: 5px;
         }
 
-        #additional-infos{
+        #additional-infos {
             display: flex;
             flex-direction: column;
             width: 95%;
             align-items: stretch;
         }
 
-        #add-infos-content{    
+        #add-infos-content {
             display: flex;
             flex-direction: column;
             background-color: #efefef;
@@ -160,20 +169,22 @@
             border-bottom-right-radius: 5px;
         }
 
-        #add-infos-content paper-checkbox{
-            margin:5px 25px;        
-            --paper-checkbox-unchecked-background-color:#efefef;
-            --paper-checkbox-unchecked-color:rgba(0, 0, 0, 0);
-            --paper-checkbox-box-unchecked:{
-                border-radius:5px;
-                border:2px solid #b4b4b4;
+        #add-infos-content paper-checkbox {
+            margin: 5px 25px;
+            --paper-checkbox-unchecked-background-color: #efefef;
+            --paper-checkbox-unchecked-color: rgba(0, 0, 0, 0);
+
+            --paper-checkbox-box-unchecked: {
+                border-radius: 5px;
+                border: 2px solid #b4b4b4;
             }
+
             --paper-checkbox-label-color:#656565;
-            --paper-checkbox-checked-color:rgba(0,0,0,0);
+            --paper-checkbox-checked-color:rgba(0, 0, 0, 0);
             --paper-checkbox-checkmark-color:#656565;
         }
 
-        #add-infos-title{
+        #add-infos-title {
             height: 40px;
             background-color: rgba(56, 56, 56, 0.92);
             display: flex;
@@ -185,108 +196,132 @@
             border-top-right-radius: 5px;
         }
 
-        #add-infos-content paper-textarea{
-            margin:5px 25px;        
+        #add-infos-content paper-textarea {
+            margin: 5px 25px;
             --paper-input-container-input-color: #cccccc;
 
-            --paper-input-container-input:{
-                color:#454545;
-                font-size:12px;
+            --paper-input-container-input: {
+                color: #454545;
+                font-size: 12px;
                 height: 85px;
-            };
+            }
 
-            --paper-input-suffix:{
-                font-size:32px;
-                line-height:normal;
-            };
+            ;
 
-            --paper-input-container:{
+            --paper-input-suffix: {
+                font-size: 32px;
+                line-height: normal;
+            }
+
+            ;
+
+            --paper-input-container: {
                 padding: 4px;
                 background-color: rgb(247, 247, 247);
                 margin-left: 7px;
                 margin-right: 7px;
                 border-radius: 5px;
-                border:2px solid #dbdbdb;
+                border: 2px solid #dbdbdb;
                 flex-grow: 1;
                 height: 85px;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-focus: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-disabled: {
-                border-color:rgba(114, 114, 114, 0);
+                border-color: rgba(114, 114, 114, 0);
                 height: 0;
-            };
+            }
+
+            ;
         }
 
-        .separator{
-            width:98%;
+        .separator {
+            width: 98%;
             margin: 5px auto;
             border-top: 1px solid #d5d5d5;
         }
 
-        #left-row-2-cell-1-row-1{
-            height:68px;
-            display:flex;
+        #left-row-2-cell-1-row-1 {
+            height: 68px;
+            display: flex;
         }
 
-        #left-row-2-cell-1-row-2{
-            height:68px;
-            display:flex;
+        #left-row-2-cell-1-row-2 {
+            height: 68px;
+            display: flex;
         }
 
-        #left-row-2-cell-1-row-3 > paper-textarea{
-            margin:0 auto;
-            height:100%;
-               
+        #left-row-2-cell-1-row-3>paper-textarea {
+            margin: 0 auto;
+            height: 100%;
+
             --paper-input-container-input-color: #cccccc;
 
-            --paper-input-container-input:{
-                color:#454545;
-                font-size:24px;
+            --paper-input-container-input: {
+                color: #454545;
+                font-size: 24px;
                 height: 335px;
-            };
+            }
 
-            --paper-input-suffix:{
-                font-size:32px;
-                line-height:normal;
-            };
+            ;
 
-            --paper-input-container:{
+            --paper-input-suffix: {
+                font-size: 32px;
+                line-height: normal;
+            }
+
+            ;
+
+            --paper-input-container: {
                 padding: 4px;
                 background-color: rgb(247, 247, 247);
                 margin-left: 7px;
                 margin-right: 7px;
                 border-radius: 5px;
-                border:2px solid #dbdbdb;
+                border: 2px solid #dbdbdb;
                 flex-grow: 1;
                 height: 335px;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-focus: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-disabled: {
-                border-color:rgba(114, 114, 114, 0);
+                border-color: rgba(114, 114, 114, 0);
                 height: 0;
-            };
+            }
+
+            ;
         }
 
-        .kinds-part{
-            display:flex;
-            align-items:center;
-            padding:0 30px;
+        .kinds-part {
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
         }
 
         .dropdown-menu {
@@ -295,120 +330,143 @@
             padding: 2px 15px;
             background-color: rgb(247, 247, 247);
             color: #cccccc;
-            border:1px solid #d6d6d6;  
-            border-radius:5px; 
-            margin: 0 auto;   
-            --paper-input-container-label : {                    
-                    color: #999999;
-                    text-align:center;
+            border: 1px solid #d6d6d6;
+            border-radius: 5px;
+            margin: 0 auto;
+
+            --paper-input-container-label : {
+                color: #999999;
+                text-align: center;
             }
+
             --paper-input-container-input-color: #cccccc;
-            --paper-menu-button-dropdown-background:rgba(255, 255, 255, 0.87);            
+            --paper-menu-button-dropdown-background:rgba(255, 255, 255, 0.87);
 
             --paper-input-container-underline: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-focus: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-disabled: {
-                border-color:rgba(114, 114, 114, 0);
+                border-color: rgba(114, 114, 114, 0);
                 height: 0;
-            };
+            }
+
+            ;
         }
 
-        #left-row-2-cell-1-row-2-cell-1{
-            margin:0 auto;
-            width:100%;
+        #left-row-2-cell-1-row-2-cell-1 {
+            margin: 0 auto;
+            width: 100%;
         }
 
-        #left-row-2-cell-1-row-2-cell-1 paper-input{                            
+        #left-row-2-cell-1-row-2-cell-1 paper-input {
             --paper-input-container-input-color: #cccccc;
 
-            --paper-input-container-input:{
-                color:#c2c2c2;
-                font-size:18px;
-            };
+            --paper-input-container-input: {
+                color: #c2c2c2;
+                font-size: 18px;
+            }
 
-            --paper-input-suffix:{
-                font-size:32px;
-                line-height:normal;
-            };
+            ;
 
-            --paper-input-container:{
+            --paper-input-suffix: {
+                font-size: 32px;
+                line-height: normal;
+            }
+
+            ;
+
+            --paper-input-container: {
                 padding: 8px;
                 background-color: rgb(247, 247, 247);
                 border-radius: 5px;
                 flex-grow: 1;
                 border: 2px solid #e4e4e4;
                 margin: 0 7px;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-focus: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-disabled: {
-                border-color:rgba(114, 114, 114, 0);
+                border-color: rgba(114, 114, 114, 0);
                 height: 0;
-            };
+            }
+
+            ;
         }
 
-        sa-map{
-            align-self:flex-start;
-            --sa-map-header:{
-                position:absolute;
-                width:550px;
-                z-index:2;
+        sa-map {
+            align-self: flex-start;
+
+            --sa-map-header: {
+                position: absolute;
+                width: 550px;
+                z-index: 2;
             }
         }
 
-        sa-date-picker{
-            margin-top:2px;
-            height:300px;
-            --pk-datepicker-header:{
-                display:flex;
-                justify-content:center;
+        sa-date-picker {
+            margin-top: 2px;
+            height: 300px;
+
+            --pk-datepicker-header: {
+                display: flex;
+                justify-content: center;
                 background-color: #494949;
                 color: #b8b8b8;
                 border-radius: 5px;
-                width:75%;
+                width: 75%;
             }
         }
 
-        [prev-month], [next-month]{
-            width:48px;
-            height:100%;
+        [prev-month],
+        [next-month] {
+            width: 48px;
+            height: 100%;
         }
 
-        #draft-part{
-            display:flex;
-            align-items:center;
-            cursor:pointer;
+        #draft-part {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
         }
 
-        #buttons paper-button{
-            display:flex;
-            align-items:center;
+        #buttons paper-button {
+            display: flex;
+            align-items: center;
         }
 
         #buttons paper-button iron-icon {
-            margin-right:5px;
+            margin-right: 5px;
         }
 
-        #level-part{
-            display:flex;
-            align-items:center;            
-            padding:0 30px;
+        #level-part {
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
         }
 
-        #level-image{
+        #level-image {
             border: 1px solid #d6d6d6;
             border-right: 0;
             width: 64px;
@@ -419,165 +477,197 @@
             background-image: url('images/levels/easy.jpg');
             background-repeat: no-repeat;
             background-position-y: 6px;
-            border-bottom-left-radius:5px;
-            border-top-left-radius:5px;
+            border-bottom-left-radius: 5px;
+            border-top-left-radius: 5px;
         }
 
-        #level-part paper-dropdown-menu{
+        #level-part paper-dropdown-menu {
             font-size: 16px;
             height: 40px;
             padding: 2px 15px;
             background-color: rgb(247, 247, 247);
             color: #cccccc;
-            border:1px solid #d6d6d6;
-            border-bottom-right-radius:5px;
-            border-top-right-radius:5px;
-            --paper-input-container-label : {                    
-                    color: #999999;
-                    text-align:center;
+            border: 1px solid #d6d6d6;
+            border-bottom-right-radius: 5px;
+            border-top-right-radius: 5px;
+
+            --paper-input-container-label : {
+                color: #999999;
+                text-align: center;
             }
 
             --paper-input-container-input-color: #cccccc;
-            --paper-menu-button-dropdown-background:rgba(255, 255, 255, 0.87);            
+            --paper-menu-button-dropdown-background:rgba(255, 255, 255, 0.87);
 
             --paper-input-container-underline: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-focus: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-disabled: {
                 height: 0;
-                border-color:rgba(114, 114, 114, 0);
-            };
+                border-color: rgba(114, 114, 114, 0);
+            }
+
+            ;
         }
 
-        #level-background{
-            display:flex;
-            align-items:center;
-            height:32px;
+        #level-background {
+            display: flex;
+            align-items: center;
+            height: 32px;
         }
 
-        sa-chats-list{
-            width:300px;
+        sa-chats-list {
+            width: 300px;
 
         }
 
-        #draft-button{
-            display:flex;
-            align-items:center;
-            cursor:pointer;
+        #draft-button {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
         }
-
     </style>
     <template>
-            <paper-card id="left-part">
-                <div id="left-row-1">
-                    <div id="left-row-1-cell-1">
-                        <div id="reward-part">
-                            <div id="reward-text">[[_translations.texts.reward]]</div>
-                            <paper-input id="reward" disabled="[[disabled]]" type="number" always-float-label="false" no-label-float="true" value="{{mission.reward::input}}"><div suffix>€</div></paper-input>
-                        </div>
-                        <div class="kinds-part">
-                            <paper-dropdown-menu class="dropdown-menu" disabled="[[disabled]]" id="kinds-dropdown-menu" always-float-label="false" no-label-float="true" label="[[kind.name.en]]">
-                                <div class="dropdown-content">
-                                    <template id="kindsList" is="dom-repeat" items="[[kinds]]">
-                                        <paper-item on-click="_selectKind">[[item.name.en]]</paper-item>
-                                    </template>
-                                </div>
-                            </paper-dropdown-menu>
-                        </div>
-
-                        <div class="kinds-part">
-                            <paper-dropdown-menu class="dropdown-menu" disabled="[[disabled]]" id="kinds-dropdown-menu" always-float-label="false" no-label-float="true" label="[[subKind.name.en]]">
-                                <div class="dropdown-content">
-                                    <template id="subKindsList" is="dom-repeat" items="[[subKinds]]">
-                                        <paper-item on-click="_selectSubKind">[[item.name.en]]</paper-item>
-                                    </template>
-                                </div>
-                            </paper-dropdown-menu>
-                        </div>
-                        <div id="level-part">
-                            <div id="level-background">
-                                <div id="level-image"></div>
+        <paper-card id="left-part">
+            <div id="left-row-1">
+                <div id="left-row-1-cell-1">
+                    <div id="reward-part">
+                        <div id="reward-text">[[_translations.texts.reward]]</div>
+                        <paper-input id="reward" disabled="[[disabled]]" type="number" always-float-label="false"
+                            no-label-float="true" value="{{mission.reward::input}}">
+                            <div suffix>€</div>
+                        </paper-input>
+                    </div>
+                    <div class="kinds-part">
+                        <paper-dropdown-menu class="dropdown-menu" disabled="[[disabled]]" id="kinds-dropdown-menu"
+                            always-float-label="false" no-label-float="true" label="[[kind.name.en]]">
+                            <div class="dropdown-content">
+                                <template id="kindsList" is="dom-repeat" items="[[kinds]]">
+                                    <paper-item on-click="_selectKind">[[item.name.en]]</paper-item>
+                                </template>
                             </div>
-                            <paper-dropdown-menu disabled="[[disabled]]" id="levels-dropdown-menu" always-float-label="false" no-label-float="true" selected="{{mission.level}}" label="[[levelLabel]]">
-                                <div class="dropdown-content">
-                                    <paper-item id="1" on-click="_selectLevel">{{_translations.texts.easy}}</paper-item>
-                                    <paper-item id="2" on-click="_selectLevel">{{_translations.texts.simple}}</paper-item>
-                                    <paper-item id="3" on-click="_selectLevel">{{_translations.texts.normal}}</paper-item>
-                                    <paper-item id="4" on-click="_selectLevel">{{_translations.texts.advanced}}</paper-item>
-                                    <paper-item id="5" on-click="_selectLevel">{{_translations.texts.difficult}}</paper-item>
-                                </div>
-                            </paper-dropdown-menu>
+                        </paper-dropdown-menu>
+                    </div>
+
+                    <div class="kinds-part">
+                        <paper-dropdown-menu class="dropdown-menu" disabled="[[disabled]]" id="kinds-dropdown-menu"
+                            always-float-label="false" no-label-float="true" label="[[subKind.name.en]]">
+                            <div class="dropdown-content">
+                                <template id="subKindsList" is="dom-repeat" items="[[subKinds]]">
+                                    <paper-item on-click="_selectSubKind">[[item.name.en]]</paper-item>
+                                </template>
+                            </div>
+                        </paper-dropdown-menu>
+                    </div>
+                    <div id="level-part">
+                        <div id="level-background">
+                            <div id="level-image"></div>
                         </div>
-                    </div>
-                    <div id="left-row-1-cell-2">
-                        <sa-map id="map" disabled="[[disabled]]" latitude="{{mission.place.latitude}}" longitude="{{mission.place.longitude}}" address="{{mission.place.address}}" zoom="[[zoom]]">
-                            <div id="location-title" map-title class="cell-title">{{_translations.texts.mission_location}}</div>
-                        </sa-map>
-                    </div>
-                    <div id="left-row-1-cell-3">
-                        <div id="date-title" class="cell-title">{{_translations.texts.available_dates}}</div>
-                        <sa-date-picker id="date" action="{{action}}" disabled="[[disabled]]" dates="{{mission.wishDates}}" on-date-selected="_onDateChanged">
-                            <iron-icon prev-month icon="chevron-left"></iron-icon>
-                            <iron-icon next-month icon="chevron-right"></iron-icon>
-                        </sa-date-picker>
+                        <paper-dropdown-menu disabled="[[disabled]]" id="levels-dropdown-menu"
+                            always-float-label="false" no-label-float="true" selected="{{mission.level}}"
+                            label="[[levelLabel]]">
+                            <div class="dropdown-content">
+                                <paper-item id="1" on-click="_selectLevel">{{_translations.texts.easy}}</paper-item>
+                                <paper-item id="2" on-click="_selectLevel">{{_translations.texts.simple}}</paper-item>
+                                <paper-item id="3" on-click="_selectLevel">{{_translations.texts.normal}}</paper-item>
+                                <paper-item id="4" on-click="_selectLevel">{{_translations.texts.advanced}}</paper-item>
+                                <paper-item id="5" on-click="_selectLevel">{{_translations.texts.difficult}}
+                                </paper-item>
+                            </div>
+                        </paper-dropdown-menu>
                     </div>
                 </div>
-                <div id="left-row-2">
-                    <div id="left-row-2-cell-1">
-                        <div id="left-row-2-cell-1-row-1">
-                            
+                <div id="left-row-1-cell-2">
+                    <sa-map id="map" disabled="[[disabled]]" latitude="{{mission.place.latitude}}"
+                        longitude="{{mission.place.longitude}}" address="{{mission.place.address}}" zoom="[[zoom]]">
+                        <div id="location-title" map-title class="cell-title">{{_translations.texts.mission_location}}
                         </div>
-                        <div id="left-row-2-cell-1-row-2">
-                            <div id="left-row-2-cell-1-row-2-cell-1">
-                                <paper-input id="shortDescription" always-float-label="false" no-label-float="true" value="{{mission.shortDescription::input}}" disabled="[[disabled]]"></paper-input>
-                            </div>
-                        </div>
-                        <div id="left-row-2-cell-1-row-3">
-                            <paper-textarea always-float-label="false" no-label-float="true" value="{{mission.description::input}}" disabled="[[disabled]]"></paper-textarea>
+                    </sa-map>
+                </div>
+                <div id="left-row-1-cell-3">
+                    <div id="date-title" class="cell-title">{{_translations.texts.available_dates}}</div>
+                    <sa-date-picker id="date" action="{{action}}" disabled="[[disabled]]" dates="{{mission.wishDates}}"
+                        on-date-selected="_onDateChanged">
+                        <iron-icon prev-month icon="chevron-left"></iron-icon>
+                        <iron-icon next-month icon="chevron-right"></iron-icon>
+                    </sa-date-picker>
+                </div>
+            </div>
+            <div id="left-row-2">
+                <div id="left-row-2-cell-1">
+                    <div id="left-row-2-cell-1-row-1">
+
+                    </div>
+                    <div id="left-row-2-cell-1-row-2">
+                        <div id="left-row-2-cell-1-row-2-cell-1">
+                            <paper-input id="shortDescription" always-float-label="false" no-label-float="true"
+                                value="{{mission.shortDescription::input}}" disabled="[[disabled]]"></paper-input>
                         </div>
                     </div>
-                    <div id="left-row-2-cell-2">
-                        <div id="additional-infos">
-                            <div id="add-infos-title">
-                                <span>{{_translations.texts.laps}}</span>
-                                <span>&nbsp;</span>
-                                <span>{{dateText}}</span>
-                            </div>
-                            <div id="add-infos-content">
-                                <!--<paper-checkbox noink disabled="[[disabled]]">{{_translations.texts.flexible_dates}}</paper-checkbox>
+                    <div id="left-row-2-cell-1-row-3">
+                        <paper-textarea always-float-label="false" no-label-float="true"
+                            value="{{mission.description::input}}" disabled="[[disabled]]"></paper-textarea>
+                    </div>
+                </div>
+                <div id="left-row-2-cell-2">
+                    <div id="additional-infos">
+                        <div id="add-infos-title">
+                            <span>{{_translations.texts.laps}}</span>
+                            <span>&nbsp;</span>
+                            <span>{{dateText}}</span>
+                        </div>
+                        <div id="add-infos-content">
+                            <!--<paper-checkbox noink disabled="[[disabled]]">{{_translations.texts.flexible_dates}}</paper-checkbox>
                                 <div class="separator"></div>-->
-                                <paper-checkbox id="check-0" noink disabled="[[disabled]]" on-change="_setDateLaps">RDV 8:00 - 11:30</paper-checkbox>
-                                <paper-checkbox id="check-1" noink disabled="[[disabled]]" on-change="_setDateLaps">RDV 11:30 - 15:00</paper-checkbox>
-                                <paper-checkbox id="check-2" noink disabled="[[disabled]]" on-change="_setDateLaps">RDV 15:00 - 18:00</paper-checkbox>
-                                <paper-checkbox id="check-3" noink disabled="[[disabled]]" on-change="_setDateLaps">RDV 18:00 - 21:00</paper-checkbox>
-                                <!--<div class="separator"></div>
+                            <paper-checkbox id="check-0" noink disabled="[[disabled]]" on-change="_setDateLaps">RDV 8:00
+                                - 11:30</paper-checkbox>
+                            <paper-checkbox id="check-1" noink disabled="[[disabled]]" on-change="_setDateLaps">RDV
+                                11:30 - 15:00</paper-checkbox>
+                            <paper-checkbox id="check-2" noink disabled="[[disabled]]" on-change="_setDateLaps">RDV
+                                15:00 - 18:00</paper-checkbox>
+                            <paper-checkbox id="check-3" noink disabled="[[disabled]]" on-change="_setDateLaps">RDV
+                                18:00 - 21:00</paper-checkbox>
+                            <!--<div class="separator"></div>
                                 <paper-checkbox noink disabled="[[disabled]]">{{_translations.texts.tool_provided}}</paper-checkbox>
                                 <div class="separator"></div>
                                 <paper-textarea disabled="[[disabled]]" always-float-label="false" no-label-float="true"></paper-textarea>-->
-                            </div>
-                            
                         </div>
-                        <div style="width:85%;">
-                            <iron-pages id="apply-button" selected="0">
-                                <div id="buttons">
-                                    <div id="draft-button" on-click="_saveAsDraft">
-                                        <paper-icon-button id="draft-button" icon="save"></paper-icon-button><span>{{_translations.texts.save_draft}}</span>
-                                    </div>
-                                    <paper-button on-tap="_addMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span></paper-button>
+
+                    </div>
+                    <div style="width:85%;">
+                        <iron-pages id="apply-button" selected="0">
+                            <div id="buttons">
+                                <div id="draft-button" on-click="_saveAsDraft">
+                                    <paper-icon-button id="draft-button" icon="save"></paper-icon-button>
+                                    <span>{{_translations.texts.save_draft}}</span>
                                 </div>
-                                <paper-button on-tap="_postuleMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.postulate_mission}}</span></paper-button>
-                                <paper-button on-tap="_updateMission"><iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span></paper-button>
-                                <div></div>
-                            </iron-pages>
-                        </div>
+                                <paper-button on-tap="_addMission">
+                                    <iron-icon icon="check"></iron-icon>
+                                    <span>{{_translations.texts.send_mission}}</span>
+                                </paper-button>
+                            </div>
+                            <paper-button on-tap="_postuleMission">
+                                <iron-icon icon="check"></iron-icon>
+                                <span>{{_translations.texts.postulate_mission}}</span>
+                            </paper-button>
+                            <paper-button on-tap="_updateMission">
+                                <iron-icon icon="check"></iron-icon><span>{{_translations.texts.send_mission}}</span>
+                            </paper-button>
+                            <div></div>
+                        </iron-pages>
                     </div>
                 </div>
-            </paper-card>
+            </div>
+        </paper-card>
 
         <iron-pages id="right-pages" selected="0">
             <sa-mission-card id="right-part" mission="[[mission]]" show-level></sa-mission-card>
@@ -585,33 +675,29 @@
             <sa-chats-list chats="{{chats}}" mission="[[mission]]" on-chat-selected="_showChat"></sa-chats-list>
         </iron-pages>
 
-        <sa-translation id="translation"
-                        element="sa-mission-infos"
-                        translations="{{_translations}}"></sa-translation>
+        <sa-translation id="translation" element="sa-mission-infos" translations="{{_translations}}"></sa-translation>
 
-        <sa-xhr id="xhr"
-                url="[[subKindsUrl]]"
-                result="{{subKinds}}"></sa-xhr>
+        <sa-xhr id="xhr" url="[[subKindsUrl]]" result="{{subKinds}}"></sa-xhr>
 
     </template>
 
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-mission-infos',
+        class SaMissionInfos extends Polymer.Element {
+            static get is() { return 'sa-mission-infos'; }
 
-                properties: {
-                    _translations : Object,
-                    zoom:{
+            static get properties() {
+                return {
+                    _translations: Object,
+                    zoom: {
                         type: Number,
                         value: 15
                     },
-                    action:{
+                    action: {
                         type: String,
-                        observer:'_actionChanged'
+                        observer: '_actionChanged'
                     },
                     disabled: {
-                        type:Boolean,
+                        type: Boolean,
                         value: false
                     },
                     levelLabel: {
@@ -635,279 +721,302 @@
                         observer: '_subKindsChanged'
                     },
                     subKind: Object
-                },
-                _computeDate:function(_date){
-                    var date = new Date(_date);
-                    return date.toLocaleDateString(app.lang);
-                },
-                _setDateLaps: function (e) {
-                    var checks = e.target.id.split('-');
-                    var idx = parseInt(checks[1]);
-                    this._currentDate.laps[idx] = e.target.checked;
-                    console.log('set laps');
-                },
-                _onDateChanged: function (e) {
-                    if (this.mission && this.mission.wishDates) {
-                        for (var idx = 0; idx < 4; ++idx) {
-                            this.querySelector('#check-' + idx).disabled = false;
-                        }
+                };
+            }
 
-                        this._currentDate = this.mission.wishDates.find(function (_date) {
-                            var date = new Date(_date.date);
-                            return date.getUTCDate() === e.detail.day - 1 &&
-                                date.getUTCMonth() === e.detail.month - 1 &&
-                                date.getUTCFullYear() === e.detail.year
-                        }.bind(this));
+            _computeDate = function (_date) {
+                var date = new Date(_date);
+                return date.toLocaleDateString(app.lang);
+            }
 
-                        if (!this._currentDate) {
-                            for (var idx = 0; idx < 4; ++idx) {
-                                this.querySelector('#check-' + idx).disabled = true;
-                            }
+            _setDateLaps = function (e) {
+                var checks = e.target.id.split('-');
+                var idx = parseInt(checks[1]);
+                this._currentDate.laps[idx] = e.target.checked;
+                console.log('set laps');
+            }
 
-                            this.dateText = '';
-                            return;
-                        }
-
-                        for (var idx = 0; idx < 4; ++idx) {
-                            this.querySelector('#check-' + idx).checked = this._currentDate.laps[idx];
-                        }
-
-                        this.dateText = this._computeDate(this._currentDate.date);
-                    }
-
-                    this.$$('#right-part').init();
-                },
-                ready: function () {
-                    this._createEmptyMission();
+            _onDateChanged = function (e) {
+                if (this.mission && this.mission.wishDates) {
                     for (var idx = 0; idx < 4; ++idx) {
-                        this.querySelector('#check-' + idx).disabled = true;
-                    }
-                },
-                _kindChanged: function (e) {
-                    if (this.kind) {
-                        this._setLevel();
-                    }
-                },
-                _kindsChanged: function (e) {
-                    this.$.kindsList.render();
-                },
-                _selectKind: function (e) {
-                    this._updateSelectedKind(e.target._templateInstance.item);
-                    this.$$('#kinds-dropdown-menu').close();
-                },
-                _updateSelectedKind: function (e) {
-                    this.set('kind', e);
-                    this.kind.name.en = this.kind.name.en.replace(/^./, this.kind.name.en[0].toUpperCase());
-                    this.kind.name.fr = this.kind.name.fr.replace(/^./, this.kind.name.fr[0].toUpperCase());
-                    this.mission._type = this.kind;
-                    this.$$('#right-part').init();
-                    this.subKindsUrl = '/kinds/' + this.kind._id;
-                    this.$.xhr.request();
-                },
-                _subKindsChanged: function (e) {
-                    if (this.suKinds)
-                        this.subKind = this.suKinds[0];
-                    this.$.subKindsList.render();
-                },
-                _selectSubKind: function (e) {
-                    this._updateSelectedSubKind(e.target._templateInstance.item);
-                    this.$$('#kinds-dropdown-menu').close();
-                },
-                _updateSelectedSubKind: function (e) {
-                    this.set('subKind', e);
-                    this.subKind.name.en = this.subKind.name.en.replace(/^./, this.subKind.name.en[0].toUpperCase());
-                    this.subKind.name.fr = this.subKind.name.fr.replace(/^./, this.subKind.name.fr[0].toUpperCase());
-                    this.mission._subType = this.subKind;
-                    this.$$('#right-part').init();
-                },
-                _createEmptyMission: function () {
-                    this.set('mission', new Object({
-                        title: '',
-                        _type: this.kind ? this.kind : null,
-                        level: 1,
-                        reward: 0,
-                        description: '',
-                        shortDescription: '',
-                        status: 'free',
-                        creationDate: Date.now(),
-                        wishDates: [],
-                        place: {
-                            longitude: '',
-                            latitude: '',
-                            address: ''
-                        },
-                        tasks: []
-                    }));
-                },
-                _validMission: function () {
-                    var ret = true;
-                    if (!this.mission.shortDescription || this.mission.shortDescription == '') {
-                        ret &= false;
-                        this.$.shortDescription.querySelector('paper-input-container').style.borderColor = 'red';
-                    }
-                    else {
-                        this.$.shortDescription.querySelector('paper-input-container').style.borderColor = '0 solid #e4e4e4';
+                        this.querySelector('#check-' + idx).disabled = false;
                     }
 
-                    if (!this.mission.reward || this.mission.reward == '0') {
-                        ret &= false;
-                        this.$.reward.style.borderColor = 'red';
-                    }
-                    else {
-                        this.$.reward.style.borderColor = '0 solid #e4e4e4';
-                    }
+                    this._currentDate = this.mission.wishDates.find(function (_date) {
+                        var date = new Date(_date.date);
+                        return date.getUTCDate() === e.detail.day - 1 &&
+                            date.getUTCMonth() === e.detail.month - 1 &&
+                            date.getUTCFullYear() === e.detail.year
+                    }.bind(this));
 
-                    if (!this.mission.wishDates || this.mission.wishDates.length == 0) {
-                        ret &= false;
-                        this.$$('#date-title').style.color = 'red';
-                        this.$$('#date-title').style.fontWeight = 'bold';
-                    }
-                    else {
-                        this.$$('#date-title').style.color = null;
-                        this.$$('#date-title').style.fontWeight = null;
-                    }
-
-                    if (!this.mission.place || this.mission.place.address == '') {
-                        ret &= false;
-                        this.$$('#location-title').style.color = 'red';
-                        this.$$('#location-title').style.fontWeight = 'bold';
-                    }
-                    else {
-                        this.$$('#location-title').style.color = null;
-                        this.$$('#location-title').style.fontWeight = null;
-                    }
-                    return ret;
-                },
-                _addMission: function (e) {
-                    if (!this._validMission()) { return; }
-
-                    this.mission._type = this.kind;
-                    app.socket.emit('add-mission', this.mission);
-                    this._createEmptyMission();
-                    this.fire('close-infos');
-                },
-                _saveAsDraft:function(e){
-                    this.mission._type = this.kind;
-                    this.mission.status = 'draft'
-                    app.socket.emit('add-mission', this.mission);
-                },
-                _postuleMission: function () {
-                    if (this.postulateds && this.mission && this.mission._id) {
-                        if (this.postulateds.indexOfObject('_mission', this.mission._id) == -1) {
-                            app.socket.emit('add-postulated-mission', { _mission: this.mission._id });
+                    if (!this._currentDate) {
+                        for (var idx = 0; idx < 4; ++idx) {
+                            this.querySelector('#check-' + idx).disabled = true;
                         }
-                    }                    
-                },
-                _selectLevel: function (e) {
-                    this.mission.level = parseInt(e.target.id) - 1;
-                    this.$$('#levels-dropdown-menu').close();
-                    this._setLevel();
-                    this.levelLabel = e.target.innerText;
-                    this.$$('#right-part').init();
-                },
-                _clear: function () {
-                    this._createEmptyMission();
-                    this.$.map.clearMarkers();
-                    this.$.map.clearCircle();
-                    this.$.map.getLocation();
-                },
-                _actionChanged: function (e) {
-                    this.zoom = 16;
-                    this._setLevel();
 
-                    switch (this.action) {
-                        case 'creation': {
-                            if (this.kinds) {
-                                this.kind = this.kinds[0];
-                            }
-                            this.disabled = false;
-                            this._clear();
-                            var date = new Date(Date.now());
-                            this.$.date.showDate.year = date.getUTCFullYear();
-                            this.$.date.showDate.month = date.getUTCMonth();
-                            this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
-                            this.$$('#apply-button').select(0);
-                            this.$$('#right-pages').select(0);
-                            break;
-                        }
-                        case 'edition': {
-                            this.disabled = false;
-                            this.kind = this.mission._type;
-                            var date = new Date(Date.now());
-                            this.$.date.showDate.year = date.getUTCFullYear();
-                            this.$.date.showDate.month = date.getUTCMonth();
-                            this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
-                            this.$.map.clearMarkers();
-                            this.$.map.clearCircle();
-                            this.$.map.setLocation(this.mission.place.longitude, this.mission.place.latitude);
-                            this.$.map.drawMarker(this.mission.place.longitude, this.mission.place.latitude, this.mission.place.address);
-                            this.$$('#apply-button').select(2);
-                            this.$$('#right-pages').select(0);
-                            break;
-                        }
-                        case 'consultation': {
-                            var date = new Date(this.mission.wishDates[0].date);
-                            this.$.date.showDate.year = date.getUTCFullYear();
-                            this.$.date.showDate.month = date.getUTCMonth();
-                            this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
-                            this.kind = this.mission._type;
-                            this.disabled = true;
-                            this.$.map.clearMarkers();
-                            this.$.map.clearCircle();
-                            this.$.map.setLocation(this.mission.place.longitude, this.mission.place.latitude);
-                            this.$.map.drawMarker(this.mission.place.longitude, this.mission.place.latitude, this.mission.place.address);
-                            if (app.user._id == this.mission._sponsor._id) {
-                                this.$$('#right-pages').select(2);
-                                this.$$('#apply-button').select(3);
-                            }
-                            else {
-                                this.$$('#right-pages').select(1);
-                                this.$$('#apply-button').select(1);
-                            }
-                            break;
-                        }
+                        this.dateText = '';
+                        return;
                     }
-                },
-                _setLevel: function () {
-                    if (!this.mission) { return; }
 
-                    var image;
-
-                    switch (this.mission.level) {
-                        default:
-                        case 0:
-                            image = 'easy';
-                            break;
-                        case 1:
-                            image = 'simple';
-                            break;
-                        case 2:
-                            image = 'normal';
-                            break;
-                        case 3:
-                            image = 'advanced';
-                            break;
-                        case 4:
-                            image = 'difficult';
-                            break;
+                    for (var idx = 0; idx < 4; ++idx) {
+                        this.querySelector('#check-' + idx).checked = this._currentDate.laps[idx];
                     }
-                    this.$$('#level-image').style.backgroundImage = 'url("/images/levels/' + image + '.png")';
-                    this.$$('#level-background').style.background = this.kind ? this.kind.color : '#cccccc';
-                    if(this._translations)
-                        this.levelLabel = this._translations.texts[image];
-                },
-                _showChat: function (e) {
-                    app.currentChat = e.detail.chat;
-                    app.notifyPath("route", "dashboard");
-                },
-                _updateMission: function (e) {
-                    this.mission._type = this.kind;
-                    app.socket.emit('update-mission', this.mission);
-                    this._createEmptyMission();
-                    this.fire('close-infos');
+
+                    this.dateText = this._computeDate(this._currentDate.date);
                 }
-            });
-        })();
 
+                this.$$('#right-part').init();
+            }
+
+            ready = function () {
+                this._createEmptyMission();
+                for (var idx = 0; idx < 4; ++idx) {
+                    this.querySelector('#check-' + idx).disabled = true;
+                }
+            }
+
+            _kindChanged = function (e) {
+                if (this.kind) {
+                    this._setLevel();
+                }
+            }
+
+            _kindsChanged = function (e) {
+                this.$.kindsList.render();
+            }
+
+            _selectKind = function (e) {
+                this._updateSelectedKind(e.target._templateInstance.item);
+                this.$$('#kinds-dropdown-menu').close();
+            }
+
+            _updateSelectedKind = function (e) {
+                this.set('kind', e);
+                this.kind.name.en = this.kind.name.en.replace(/^./, this.kind.name.en[0].toUpperCase());
+                this.kind.name.fr = this.kind.name.fr.replace(/^./, this.kind.name.fr[0].toUpperCase());
+                this.mission._type = this.kind;
+                this.$$('#right-part').init();
+                this.subKindsUrl = '/kinds/' + this.kind._id;
+                this.$.xhr.request();
+            }
+
+            _subKindsChanged = function (e) {
+                if (this.suKinds)
+                    this.subKind = this.suKinds[0];
+                this.$.subKindsList.render();
+            }
+
+            _selectSubKind = function (e) {
+                this._updateSelectedSubKind(e.target._templateInstance.item);
+                this.$$('#kinds-dropdown-menu').close();
+            }
+
+            _updateSelectedSubKind = function (e) {
+                this.set('subKind', e);
+                this.subKind.name.en = this.subKind.name.en.replace(/^./, this.subKind.name.en[0].toUpperCase());
+                this.subKind.name.fr = this.subKind.name.fr.replace(/^./, this.subKind.name.fr[0].toUpperCase());
+                this.mission._subType = this.subKind;
+                this.$$('#right-part').init();
+            }
+
+            _createEmptyMission = function () {
+                this.set('mission', new Object({
+                    title: '',
+                    _type: this.kind ? this.kind : null,
+                    level: 1,
+                    reward: 0,
+                    description: '',
+                    shortDescription: '',
+                    status: 'free',
+                    creationDate: Date.now(),
+                    wishDates: [],
+                    place: {
+                        longitude: '',
+                        latitude: '',
+                        address: ''
+                    },
+                    tasks: []
+                }));
+            }
+
+            _validMission = function () {
+                var ret = true;
+                if (!this.mission.shortDescription || this.mission.shortDescription == '') {
+                    ret &= false;
+                    this.$.shortDescription.querySelector('paper-input-container').style.borderColor = 'red';
+                }
+                else {
+                    this.$.shortDescription.querySelector('paper-input-container').style.borderColor = '0 solid #e4e4e4';
+                }
+
+                if (!this.mission.reward || this.mission.reward == '0') {
+                    ret &= false;
+                    this.$.reward.style.borderColor = 'red';
+                }
+                else {
+                    this.$.reward.style.borderColor = '0 solid #e4e4e4';
+                }
+
+                if (!this.mission.wishDates || this.mission.wishDates.length == 0) {
+                    ret &= false;
+                    this.$$('#date-title').style.color = 'red';
+                    this.$$('#date-title').style.fontWeight = 'bold';
+                }
+                else {
+                    this.$$('#date-title').style.color = null;
+                    this.$$('#date-title').style.fontWeight = null;
+                }
+
+                if (!this.mission.place || this.mission.place.address == '') {
+                    ret &= false;
+                    this.$$('#location-title').style.color = 'red';
+                    this.$$('#location-title').style.fontWeight = 'bold';
+                }
+                else {
+                    this.$$('#location-title').style.color = null;
+                    this.$$('#location-title').style.fontWeight = null;
+                }
+                return ret;
+            }
+
+            _addMission = function (e) {
+                if (!this._validMission()) { return; }
+
+                this.mission._type = this.kind;
+                app.socket.emit('add-mission', this.mission);
+                this._createEmptyMission();
+                this.fire('close-infos');
+            }
+
+            _saveAsDraft = function (e) {
+                this.mission._type = this.kind;
+                this.mission.status = 'draft'
+                app.socket.emit('add-mission', this.mission);
+            }
+
+            _postuleMission = function () {
+                if (this.postulateds && this.mission && this.mission._id) {
+                    if (this.postulateds.indexOfObject('_mission', this.mission._id) == -1) {
+                        app.socket.emit('add-postulated-mission', { _mission: this.mission._id });
+                    }
+                }
+            }
+
+            _selectLevel = function (e) {
+                this.mission.level = parseInt(e.target.id) - 1;
+                this.$$('#levels-dropdown-menu').close();
+                this._setLevel();
+                this.levelLabel = e.target.innerText;
+                this.$$('#right-part').init();
+            }
+
+            _clear = function () {
+                this._createEmptyMission();
+                this.$.map.clearMarkers();
+                this.$.map.clearCircle();
+                this.$.map.getLocation();
+            }
+
+            _actionChanged = function (e) {
+                this.zoom = 16;
+                this._setLevel();
+
+                switch (this.action) {
+                    case 'creation': {
+                        if (this.kinds) {
+                            this.kind = this.kinds[0];
+                        }
+                        this.disabled = false;
+                        this._clear();
+                        var date = new Date(Date.now());
+                        this.$.date.showDate.year = date.getUTCFullYear();
+                        this.$.date.showDate.month = date.getUTCMonth();
+                        this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
+                        this.$$('#apply-button').select(0);
+                        this.$$('#right-pages').select(0);
+                        break;
+                    }
+                    case 'edition': {
+                        this.disabled = false;
+                        this.kind = this.mission._type;
+                        var date = new Date(Date.now());
+                        this.$.date.showDate.year = date.getUTCFullYear();
+                        this.$.date.showDate.month = date.getUTCMonth();
+                        this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
+                        this.$.map.clearMarkers();
+                        this.$.map.clearCircle();
+                        this.$.map.setLocation(this.mission.place.longitude, this.mission.place.latitude);
+                        this.$.map.drawMarker(this.mission.place.longitude, this.mission.place.latitude, this.mission.place.address);
+                        this.$$('#apply-button').select(2);
+                        this.$$('#right-pages').select(0);
+                        break;
+                    }
+                    case 'consultation': {
+                        var date = new Date(this.mission.wishDates[0].date);
+                        this.$.date.showDate.year = date.getUTCFullYear();
+                        this.$.date.showDate.month = date.getUTCMonth();
+                        this.$.date._genTable(this.$.date.showDate.year, this.$.date.showDate.month);
+                        this.kind = this.mission._type;
+                        this.disabled = true;
+                        this.$.map.clearMarkers();
+                        this.$.map.clearCircle();
+                        this.$.map.setLocation(this.mission.place.longitude, this.mission.place.latitude);
+                        this.$.map.drawMarker(this.mission.place.longitude, this.mission.place.latitude, this.mission.place.address);
+                        if (app.user._id == this.mission._sponsor._id) {
+                            this.$$('#right-pages').select(2);
+                            this.$$('#apply-button').select(3);
+                        }
+                        else {
+                            this.$$('#right-pages').select(1);
+                            this.$$('#apply-button').select(1);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            _setLevel = function () {
+                if (!this.mission) { return; }
+
+                var image;
+
+                switch (this.mission.level) {
+                    default:
+                    case 0:
+                        image = 'easy';
+                        break;
+                    case 1:
+                        image = 'simple';
+                        break;
+                    case 2:
+                        image = 'normal';
+                        break;
+                    case 3:
+                        image = 'advanced';
+                        break;
+                    case 4:
+                        image = 'difficult';
+                        break;
+                }
+                this.$$('#level-image').style.backgroundImage = 'url("/images/levels/' + image + '.png")';
+                this.$$('#level-background').style.background = this.kind ? this.kind.color : '#cccccc';
+                if (this._translations)
+                    this.levelLabel = this._translations.texts[image];
+            }
+
+            _showChat = function (e) {
+                app.currentChat = e.detail.chat;
+                app.notifyPath("route", "dashboard");
+            }
+
+            _updateMission = function (e) {
+                this.mission._type = this.kind;
+                app.socket.emit('update-mission', this.mission);
+                this._createEmptyMission();
+                this.fire('close-infos');
+            }
+        }
+
+        customElements.define(SaMissionInfos.is, SaMissionInfos);
     </script>
 </dom-module>

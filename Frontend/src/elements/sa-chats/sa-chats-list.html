@@ -90,9 +90,9 @@
     <script>
         (function () {
             Polymer({
-                is: 'sa-chats-list',
+                static get is() { return 'sa-chats-list'; }
 
-                properties: {
+                static get properties() { return  {
                     chats: Object,
                     selectedChat: {
                         type: Object,

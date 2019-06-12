@@ -10,48 +10,60 @@
             @apply(--sa-chat-box);
         }
 
-        paper-textarea{   
-            background-color:#ffffff;
+        paper-textarea {
+            background-color: #ffffff;
             --paper-input-container-input-color: #cccccc;
 
-            --paper-input-container-input:{
-                color:#454545;
-                font-size:12px;
+            --paper-input-container-input: {
+                color: #454545;
+                font-size: 12px;
                 height: 85px;
-            };
+            }
 
-            --paper-input-suffix:{
-                font-size:32px;
-                line-height:normal;
-            };
+            ;
 
-            --paper-input-container:{
-                margin:10px 7px 3px;
+            --paper-input-suffix: {
+                font-size: 32px;
+                line-height: normal;
+            }
+
+            ;
+
+            --paper-input-container: {
+                margin: 10px 7px 3px;
                 background-color: rgb(247, 247, 247);
                 border-radius: 5px;
-                border:2px solid #dbdbdb;
+                border: 2px solid #dbdbdb;
                 flex-grow: 1;
                 height: 85px;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-focus: {
                 height: 0;
-            };
+            }
+
+            ;
 
             --paper-input-container-underline-disabled: {
-                border-color:rgba(114, 114, 114, 0);
+                border-color: rgba(114, 114, 114, 0);
                 height: 0;
-            };
+            }
+
+            ;
         }
 
         #header {
-            border-top-left-radius:5px;
-            border-top-right-radius:5px;
-            height:75px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            height: 75px;
             background-image: url('../../images/gradient-2_300x300.png');
             background-repeat: no-repeat;
             background-size: cover;
@@ -74,19 +86,19 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            padding-bottom:7px;
+            padding-bottom: 7px;
         }
 
-            #content paper-input {
-                align-self: flex-end;
-            }
+        #content paper-input {
+            align-self: flex-end;
+        }
 
         #footer {
             background-color: #ffffff;
             display: flex;
-            justify-content:flex-end;
-            border-bottom-left-radius:5px;
-            border-bottom-right-radius:5px;
+            justify-content: flex-end;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
         }
 
         .element {
@@ -101,7 +113,7 @@
         .message {
             color: #9b9b9b;
             padding: 5px;
-            display:flex;
+            display: flex;
         }
 
         .my-element {
@@ -111,15 +123,14 @@
         .my-message {
             border-radius: 5px;
             background-color: #efefef;
-            justify-content:space-between;
+            justify-content: space-between;
         }
 
         .other-element {
             align-self: flex-start;
         }
 
-        .other-message {
-        }
+        .other-message {}
 
         .date {
             background-color: #666666;
@@ -136,7 +147,7 @@
             align-self: flex-start;
         }
 
-        .avatar{
+        .avatar {
             min-width: 30px;
             height: 30px;
             background-size: contain;
@@ -144,25 +155,21 @@
             margin: 9px;
         }
 
-        .my-avatar{
-            order:5;
+        .my-avatar {
+            order: 5;
         }
 
-        .other-avatar{
-            order:0;
+        .other-avatar {
+            order: 0;
         }
 
-        .message-content{
+        .message-content {}
 
+        paper-button {
+            align-self: flex-end;
         }
 
-        paper-button{
-            align-self:flex-end;
-        }
-
-        #accept-agent{
-
-        }
+        #accept-agent {}
     </style>
     <template>
         <div id="header">
@@ -171,9 +178,11 @@
         <div id="content">
             <template id="chat" is="dom-repeat" items="[[chat.messages]]" filter="_didPostulate">
                 <div class$="{{_computeSideClass(item, chat.messages.length)}}">
-                    <div class$="{{_computeDateClass(item, chat.messages.length)}}">{{_computeDate(item, chat.messages.length)}}</div>
+                    <div class$="{{_computeDateClass(item, chat.messages.length)}}">
+                        {{_computeDate(item, chat.messages.length)}}</div>
                     <div class$="{{_computeMessageClass(item, chat.messages.length)}}">
-                        <div class$="{{_computeAvatarClass(item, chat.messages.length)}}" style$="{{_computeStyle(item, chat.messages.length)}}">&nbsp;</div>
+                        <div class$="{{_computeAvatarClass(item, chat.messages.length)}}"
+                            style$="{{_computeStyle(item, chat.messages.length)}}">&nbsp;</div>
                         <div class="message-content">[[item.message]]</div>
                     </div>
                 </div>
@@ -192,17 +201,15 @@
             </paper-button>
         </div>
 
-        <sa-translation id="translation"
-                        element="sa-chat-box"
-                        translations="{{_translations}}"></sa-translation>
+        <sa-translation id="translation" element="sa-chat-box" translations="{{_translations}}"></sa-translation>
 
     </template>
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-chat-box',
+        class SaChatBox extends Polymen.Element {
+            static get is() { return 'sa-chat-box'; }
 
-                properties: {
+            static get properties() {
+                return {
                     chats: Object,
                     chat: {
                         type: Object,
@@ -215,7 +222,7 @@
                     _message: {
                         type: String,
                         value: '',
-                        observer:'_messageCheck'
+                        observer: '_messageCheck'
                     },
                     messages: Object,
                     disableButton: false,
@@ -225,171 +232,195 @@
                         value: false,
                         observer: '_postulateChanged'
                     }
-                },
-                    observers: [
-            '_chatsChanged(chats.*)'
-                    ],
-                ready:function(){
-                    this.gradientIndex = 0;
-                },
-                _postulateChanged: function(e){
-                    if (this.hasPostulate && app.role == 'sponsor') {
-                        this.$$('#accept-agent').style.display = null;
-                    }
-                    else {
-                        this.$$('#accept-agent').style.display = 'none';
-                    }
-                },
-                _missionChanged: function (e) {
-                    this._getChat();                    
-                },
-                _chatsChanged: function (record) {
-                    if (record.path == 'chats.splices'){
-                        this._getChat();                        
-                    }
-                    else if(record.path.includes('messages.splices')) {
-                        var updatedChat = this.chats[getIndexInArrayFromPath(record.path)];
-                        if (this.chat && updatedChat && this.chat._id == updatedChat._id) {
-                            this.chat = updatedChat;
-                            this._scrollDown();
-                        }
-                    }                    
-                },
-                _didPostulate: function(item){
-                    if (item.tag && item.tag == 'postulate') {
-                        this.hasPostulate = true;
-                        this._postulateChanged(null);
-                    }
+                };
+            }
+            static get observers() {
+                return [
+                    '_chatsChanged(chats.*)'
+                ];
+            }
+            ready = function () {
+                this.gradientIndex = 0;
+            }
 
-                    return true;
-                },
-                _getChat:function(){
-                    if (this.mission && this.mission._sponsor) {
-                        this._updateUI(this.mission._sponsor.avatar);
+            _postulateChanged = function (e) {
+                if (this.hasPostulate && app.role == 'sponsor') {
+                    this.$$('#accept-agent').style.display = null;
+                }
+                else {
+                    this.$$('#accept-agent').style.display = 'none';
+                }
+            }
 
-                        this.chat = this.chats.find(function (element) {
-                            return (element._agent._id == app.user._id || element._sponsor._id == app.user._id) && element._mission._id == this.mission._id;
-                        }.bind(this));
+            _missionChanged = function (e) {
+                this._getChat();
+            }
 
+            _chatsChanged = function (record) {
+                if (record.path == 'chats.splices') {
+                    this._getChat();
+                }
+                else if (record.path.includes('messages.splices')) {
+                    var updatedChat = this.chats[getIndexInArrayFromPath(record.path)];
+                    if (this.chat && updatedChat && this.chat._id == updatedChat._id) {
+                        this.chat = updatedChat;
                         this._scrollDown();
                     }
-                },
-                _sendMessage: function () {
-                    var mission = this.mission ? this.mission : this.chat._mission;
-                    var data = {
-                        message: this._message,
-                        _sender: app.user._id,
-                        _receiver: (app.role == 'agent') ? mission._sponsor : this.chat._agent._id,
-                        mission: mission,
-                        chat: this.chat ? this.chat._id : null
-                    }
-                    app.socket.emit('new-message', data);
-                    this._message = '';
-                },
-                _getMessageObject: function (withMission) {
-                    if (withMission) {
-                        return {
-                            message: this._message,
-                            _sender: app.user._id,
-                            _receiver: (app.role == 'agent') ? this.mission._sponsor : this.chat._agent._id,
-                            mission: this.mission
-                        }
-                    }
-                    else {
-                        return {
-                            message: this._message,
-                            _sender: app.user._id,
-                            _receiver: (app.role == 'agent') ? this.mission._sponsor : this.chat._agent._id
-                        }
-                    }
-                },
-                _chatChanged: function (e) {
-                    if (this.chat) {
-                        if (app.role == 'sponsor') {
-                            this._updateUI(this.chat._agent.avatar);
-                        }
-                        else if (app.role == 'agent') {
-                            this._updateUI(this.chat._sponsor.avatar);
-                        }
+                }
+            }
 
-                        this.hasPostulate = false;
-                        this._postulateChanged(null);
-                    }
-                    else {
-                        this._updateUI('');
-                    }
+            _didPostulate = function (item) {
+                if (item.tag && item.tag == 'postulate') {
+                    this.hasPostulate = true;
+                    this._postulateChanged(null);
+                }
+
+                return true;
+            }
+
+            _getChat = function () {
+                if (this.mission && this.mission._sponsor) {
+                    this._updateUI(this.mission._sponsor.avatar);
+
+                    this.chat = this.chats.find(function (element) {
+                        return (element._agent._id == app.user._id || element._sponsor._id == app.user._id) && element._mission._id == this.mission._id;
+                    }.bind(this));
 
                     this._scrollDown();
-                },
-                _updateUI: function (avatar) {
-                    this.$.header.style.backgroundImage = this._randomGradient();
-                    this.$.avatar.style.backgroundImage = avatar;
-                },
-                _computeSideClass: function (item, length) {
-                    return this._applyIsMine(item, 'element');
-                },
-                _computeMessageClass: function (item, length) {
-                    return this._applyIsMine(item, 'message');
-                },
-                _computeDateClass: function (item, length) {
-                    var str = this._applyIsMine(item, 'date');
-                    return this._applyIsMine(item, 'date');
-                },
-                _randomGradient: function () {
-                    return "url('../../images/gradient-" + this.gradientIndex + "_300x300.png')";
-                },
-                _computeDate: function (item, length) {
-                    var date = new Date(item.date);
-                    return date.toLocaleDateString();
-                },
-                _computeStyle: function (item, length) {
-                    if (app.role == 'agent') {
-                        if (app.user._id == item._sender) {
-                            return 'background-image: ' + this.chat._agent.avatar + ';';
-                        }
-                        else {
-                            return 'background-image: ' + this.chat._sponsor.avatar + ';';
-                        }
-                    }
-                    else if (app.role == 'sponsor') {
-                        if (app.user._id == item._sender) {
-                            return 'background-image: ' + this.chat._sponsor.avatar + ';';
-                        }
-                        else {
-                            return 'background-image: ' + this.chat._agent.avatar + ';';
-                        }
-                    }
-                },
-                _computeAvatarClass: function (item, length) {
-                    return this._applyIsMine(item, 'avatar');
-                },
-                _scrollDown: function () {
-                    this.$.chat.render();
-                    this.$.content.scrollTop = this.$.content.scrollHeight;
-                },
-                _applyIsMine: function (item, value) {
-                    if (app.user._id == item._sender) {
-                        return value + ' my-' + value;
-                    }
-                    else {
-                        return value + ' other-' + value;
-                    }
-                },
-                _messageCheck: function (e) {
-                    if (this._message != '') {
-                        this.disableButton = false;
-                    }
-                    else {
-                        this.disableButton = true;
-                    }
-                },
-                _acceptAgent: function () {
-                    this.chat._mission._agent = this.chat._agent._id;
-                    this.chat._mission.status = 'accepted';
-                    app.socket.emit('update-mission', this.chat._mission);
                 }
-            });
-        })();
+            }
+
+            _sendMessage = function () {
+                var mission = this.mission ? this.mission : this.chat._mission;
+                var data = {
+                    message: this._message,
+                    _sender: app.user._id,
+                    _receiver: (app.role == 'agent') ? mission._sponsor : this.chat._agent._id,
+                    mission: mission,
+                    chat: this.chat ? this.chat._id : null
+                }
+                app.socket.emit('new-message', data);
+                this._message = '';
+            }
+
+            _getMessageObject = function (withMission) {
+                if (withMission) {
+                    return {
+                        message: this._message,
+                        _sender: app.user._id,
+                        _receiver: (app.role == 'agent') ? this.mission._sponsor : this.chat._agent._id,
+                        mission: this.mission
+                    }
+                }
+                else {
+                    return {
+                        message: this._message,
+                        _sender: app.user._id,
+                        _receiver: (app.role == 'agent') ? this.mission._sponsor : this.chat._agent._id
+                    }
+                }
+            }
+
+            _chatChanged = function (e) {
+                if (this.chat) {
+                    if (app.role == 'sponsor') {
+                        this._updateUI(this.chat._agent.avatar);
+                    }
+                    else if (app.role == 'agent') {
+                        this._updateUI(this.chat._sponsor.avatar);
+                    }
+
+                    this.hasPostulate = false;
+                    this._postulateChanged(null);
+                }
+                else {
+                    this._updateUI('');
+                }
+
+                this._scrollDown();
+            }
+
+            _updateUI = function (avatar) {
+                this.$.header.style.backgroundImage = this._randomGradient();
+                this.$.avatar.style.backgroundImage = avatar;
+            }
+
+            _computeSideClass = function (item, length) {
+                return this._applyIsMine(item, 'element');
+            }
+
+            _computeMessageClass = function (item, length) {
+                return this._applyIsMine(item, 'message');
+            }
+
+            _computeDateClass = function (item, length) {
+                var str = this._applyIsMine(item, 'date');
+                return this._applyIsMine(item, 'date');
+            }
+
+            _randomGradient = function () {
+                return "url('../../images/gradient-" + this.gradientIndex + "_300x300.png')";
+            }
+
+            _computeDate = function (item, length) {
+                var date = new Date(item.date);
+                return date.toLocaleDateString();
+            }
+
+            _computeStyle = function (item, length) {
+                if (app.role == 'agent') {
+                    if (app.user._id == item._sender) {
+                        return 'background-image: ' + this.chat._agent.avatar + ';';
+                    }
+                    else {
+                        return 'background-image: ' + this.chat._sponsor.avatar + ';';
+                    }
+                }
+                else if (app.role == 'sponsor') {
+                    if (app.user._id == item._sender) {
+                        return 'background-image: ' + this.chat._sponsor.avatar + ';';
+                    }
+                    else {
+                        return 'background-image: ' + this.chat._agent.avatar + ';';
+                    }
+                }
+            }
+
+            _computeAvatarClass = function (item, length) {
+                return this._applyIsMine(item, 'avatar');
+            }
+
+            _scrollDown = function () {
+                this.$.chat.render();
+                this.$.content.scrollTop = this.$.content.scrollHeight;
+            }
+
+            _applyIsMine = function (item, value) {
+                if (app.user._id == item._sender) {
+                    return value + ' my-' + value;
+                }
+                else {
+                    return value + ' other-' + value;
+                }
+            }
+
+            _messageCheck = function (e) {
+                if (this._message != '') {
+                    this.disableButton = false;
+                }
+                else {
+                    this.disableButton = true;
+                }
+            }
+
+            _acceptAgent = function () {
+                this.chat._mission._agent = this.chat._agent._id;
+                this.chat._mission.status = 'accepted';
+                app.socket.emit('update-mission', this.chat._mission);
+            }
+        }
+
+        customElements.define(SaChatBox.is, SaChatBox);
 
     </script>
 </dom-module>

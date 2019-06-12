@@ -1,5 +1,4 @@
-﻿
-<link rel="import" href="sa-dashboard-toolbar.html" />
+﻿<link rel="import" href="sa-dashboard-toolbar.html" />
 <link rel="import" href="../sa-messages/sa-messages.html" />
 
 <dom-module id="sa-dashboard">
@@ -11,7 +10,6 @@
             padding: 0;
             height: 100%;
         }
-
     </style>
     <template>
         <sa-dashboard-toolbar filter="{{route}}"></sa-dashboard-toolbar>
@@ -25,13 +23,14 @@
     </template>
 
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-dashboard',
-                properties: {
-                }
-            });
-        })();
+        class SaDashboard extends Polymer.Element {
+            static get is() { return 'sa-dashboard'; }
+            static get properties() {
+                return {
+                };
+            }
+        }
+        customElements.define(SaDashboard.is, SaDashboard);
 
     </script>
 </dom-module>

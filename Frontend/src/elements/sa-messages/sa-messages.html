@@ -1,5 +1,4 @@
-﻿
-<link rel="import" href="../sa-chats/sa-chats-list.html" />
+﻿<link rel="import" href="../sa-chats/sa-chats-list.html" />
 <link rel="import" href="../sa-missions/sa-mission-card.html" />
 <link rel="import" href="../sa-chats/sa-chat-box.html" />
 
@@ -9,7 +8,8 @@
             display: flex;
             margin-top: 15px;
             justify-content: space-around;
-            --sa-mission-card:{
+
+            --sa-mission-card: {
                 margin: 0;
             }
 
@@ -24,50 +24,42 @@
             justify-content: space-between;
         }
 
-        sa-chat-box {
-        }
+        sa-chat-box {}
     </style>
     <template>
         <div id="messages-list">
-            <sa-chats-list id="chats"
-                           chats="{{model.chats}}"
-                           user-role="{{role}}" 
-                           selected-chat="{{currentChat}}"
-                           gradient-index="{{gradientIndex}}"></sa-chats-list>
+            <sa-chats-list id="chats" chats="{{model.chats}}" user-role="{{role}}" selected-chat="{{currentChat}}"
+                gradient-index="{{gradientIndex}}"></sa-chats-list>
         </div>
-        <sa-chat-box chats="{{model.chats}}" 
-                     chat="{{currentChat}}"
-                     gradient-index="{{gradientIndex}}"></sa-chat-box>
-        <sa-mission-card mission="{{currentChat._mission}}"
-                         hide
-                         show-level
-                         favorites="{{model.favoriteMissions}}"
-                         postulateds="{{model.postulatedMissions}}"></sa-mission-card>
+        <sa-chat-box chats="{{model.chats}}" chat="{{currentChat}}" gradient-index="{{gradientIndex}}"></sa-chat-box>
+        <sa-mission-card mission="{{currentChat._mission}}" hide show-level favorites="{{model.favoriteMissions}}"
+            postulateds="{{model.postulatedMissions}}"></sa-mission-card>
     </template>
 
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-messages',
-                properties: {
+        class SaMessages extends Polymer.Element {
+            static get is() { return 'sa-messages'; }
+            static get properties() {
+                return {
                     role: {
                         type: String,
                         value: 'agent'
                     },
                     gradientIndex: 0,
-                },
-                ready: function (e) {
-                    app.addEventListener('route-changed', function (e) {
-                        if (app.route == 'dashboard') {
-                            this.currentChat = app.currentChat;
-                        }
-                        else if (app.route == 'missions') {
-                            app.currentChat = null;
-                        }
-                    }.bind(this));
-                }
-            });
-        })();
+                };
+            }
+            ready = function (e) {
+                app.addEventListener('route-changed', function (e) {
+                    if (app.route == 'dashboard') {
+                        this.currentChat = app.currentChat;
+                    }
+                    else if (app.route == 'missions') {
+                        app.currentChat = null;
+                    }
+                }.bind(this));
+            }
+        }
+        customElements.define(SaMessages.is, SaMessages);
 
     </script>
 </dom-module>

@@ -9,8 +9,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: stretch;
-            width:42px;
-            margin:5px;
+            width: 42px;
+            margin: 5px;
         }
 
         #month {
@@ -38,19 +38,18 @@
     </style>
 
     <template>
-            <div id="month"><span>[[month]]</span></div>
-            <div id="day"><span>[[day]]</span></div>
+        <div id="month"><span>[[month]]</span></div>
+        <div id="day"><span>[[day]]</span></div>
 
-        <sa-translation element="sa-date-card"
-                        translations="{{_translations}}"></sa-translation>
+        <sa-translation element="sa-date-card" translations="{{_translations}}"></sa-translation>
     </template>
 
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-date-card',
+        class SaDateCard extends Polymer.Element {
+            static get is() { return 'sa-date-card'; }
 
-                properties: {
+            static get properties() {
+                return {
                     date: {
                         type: String,
                         observer: '_hasChanged'
@@ -61,29 +60,34 @@
                         type: Object,
                         observer: '_hasChanged'
                     }
-                },
-                ready: function () {
-                    this._getString();
-                },
-                _hasChanged: function (e) {
-                    this._getString();
-                },
-                _getString: function () {
-                    var date = new Date(this.date.date);
-                    var now = new Date(Date.now());
+                };
+            }
 
-                    this.day = date.getUTCDate() + 1;
-                    
-                    if (this._translations) {
-                        var month = date.toLocaleString('en', { month: 'long' }).toLowerCase();
-                        this.month = this._translations.texts[month];
-                    }
-                },
-                hilight: function () {
-                    this.$$('#month').style.backgroundColor = '#cd0000';
+            ready = function () {
+                this._getString();
+            }
+
+            _hasChanged = function (e) {
+                this._getString();
+            }
+
+            _getString = function () {
+                var date = new Date(this.date.date);
+                var now = new Date(Date.now());
+
+                this.day = date.getUTCDate() + 1;
+
+                if (this._translations) {
+                    var month = date.toLocaleString('en', { month: 'long' }).toLowerCase();
+                    this.month = this._translations.texts[month];
                 }
-            });
-        })();
+            }
+
+            hilight = function () {
+                this.$$('#month').style.backgroundColor = '#cd0000';
+            }
+        }
+        customElements.define(SaDateCard.is, SaDateCard);
     </script>
 </dom-module>
 
@@ -91,8 +95,8 @@
     <style>
         :host {
             color: #feffff;
-            width:42px;
-            margin:5px;
+            width: 42px;
+            margin: 5px;
         }
 
         .date {
@@ -114,16 +118,15 @@
     <script>
         (function () {
             Polymer({
-                is: 'sa-empty-date',
+                static get is() { return 'sa-empty-date'; }
 
-                properties: {
-                },
-                color:function(color){
-                    this.$$('.date').style.color = color;
-                }
-            });
+                static get properties() {
+                    return {
+                    },
+                        color: function(color) {
+                            this.$$('.date').style.color = color;
+                        }
+                });
         })();
     </script>
 </dom-module>
-
-

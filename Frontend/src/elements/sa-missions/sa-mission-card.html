@@ -15,8 +15,8 @@
             cursor: pointer;
             margin: 5px;
             min-width: 300px;
-            max-width: 300px;    
-            background-color: rgba(0,0,0,0);
+            max-width: 300px;
+            background-color: rgba(0, 0, 0, 0);
             @apply(--sa-mission-card);
         }
 
@@ -27,8 +27,8 @@
             flex-wrap: wrap;
             background-color: rgba(4, 4, 4, 0.10);
             border-top-left-radius: 5px;
-            border-top-right-radius: 5px;    
-            color: rgba(255,255,255,0.0);
+            border-top-right-radius: 5px;
+            color: rgba(255, 255, 255, 0.0);
         }
 
         .gain {
@@ -65,9 +65,9 @@
             justify-content: flex-end;
         }
 
-            .command > paper-icon-button {
-                width: 30px;
-            }
+        .command>paper-icon-button {
+            width: 30px;
+        }
 
         .middle {
             height: 175px;
@@ -85,7 +85,7 @@
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
             cursor: default;
-            color: rgba(255,255,255,0.0);
+            color: rgba(255, 255, 255, 0.0);
         }
 
         paper-button {
@@ -96,10 +96,10 @@
             padding: 0 0.57em;
         }
 
-            paper-button iron-icon {
-                margin-right: 5px;
-                width: 18px;
-            }
+        paper-button iron-icon {
+            margin-right: 5px;
+            width: 18px;
+        }
 
         #description {
             color: #b3b3b3;
@@ -167,13 +167,25 @@
             <div id="[[footer]]" class="footer ">
                 <iron-pages id="role-page" selected="1">
                     <div id="sponsor-command" class="command">
-                        <paper-button id="delete" on-tap="_deleteMission"><iron-icon id="delete-icon" icon="delete"></iron-icon><span id="delete-span">[[_translations.texts.delete]]</span></paper-button>
-                        <paper-button id="edit" on-tap="_editMission"><iron-icon id="edit-icon" icon="create"></iron-icon><span id="postulate-span">[[_translations.texts.edit]]</span></paper-button>
+                        <paper-button id="delete" on-tap="_deleteMission">
+                            <iron-icon id="delete-icon" icon="delete"></iron-icon><span
+                                id="delete-span">[[_translations.texts.delete]]</span>
+                        </paper-button>
+                        <paper-button id="edit" on-tap="_editMission">
+                            <iron-icon id="edit-icon" icon="create"></iron-icon><span
+                                id="postulate-span">[[_translations.texts.edit]]</span>
+                        </paper-button>
                     </div>
 
                     <div id="agent-command" class="command">
-                        <paper-button id="favorite" on-tap="_addToFavorites"><iron-icon id="favorite-icon" icon="favorite"></iron-icon><span id="favorite-span">[[_translations.texts.add_to_favorites]]</span></paper-button>
-                        <paper-button id="postulate" on-tap="_postulateMission"><iron-icon id="postulated-icon" icon="check"></iron-icon><span id="postulate-span">[[_translations.texts.postulate]]</span></paper-button>
+                        <paper-button id="favorite" on-tap="_addToFavorites">
+                            <iron-icon id="favorite-icon" icon="favorite"></iron-icon><span
+                                id="favorite-span">[[_translations.texts.add_to_favorites]]</span>
+                        </paper-button>
+                        <paper-button id="postulate" on-tap="_postulateMission">
+                            <iron-icon id="postulated-icon" icon="check"></iron-icon><span
+                                id="postulate-span">[[_translations.texts.postulate]]</span>
+                        </paper-button>
                     </div>
 
                 </iron-pages>
@@ -181,18 +193,16 @@
 
         </paper-card>
 
-        <sa-translation id="translations"
-                        element="sa-mission-card"
-                        translations="{{_translations}}"></sa-translation>
+        <sa-translation id="translations" element="sa-mission-card" translations="{{_translations}}"></sa-translation>
 
     </template>
 
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-mission-card',
+        class SaMissionCard extends Polymer.Element {
+            static get is() { return 'sa-mission-card'; }
 
-                properties: {
+            static get properties() {
+                return {
                     mission: {
                         type: Object,
                         observer: 'init'
@@ -214,183 +224,204 @@
                     favorites: [],
                     postulateds: [],
                     lang: String
-                },
-                observers: [
-        'favoriteMissionsChanged(favorites.*)',
-        'postulatedMissionsChanged(postulateds.*)'
-                ],
-                ready: function () {
-                    app.addEventListener('on-change-language', function (e) {
-                        this.lang = app.lang;
-                    }.bind(this));
-                },
-                favoriteMissionsChanged: function (record) {
-                    if (!this.mission) { return; }
-                    if (record.path.includes('splices') || record.path == 'favorites') {
-                        this._setFavoriteColor();
-                    }
-                },
-                _computeKindName: function (subKind, lang) {
-                    if (this.kind) {
-                        if (this.lang == 'fr') {
-                            return this.mission._subType.name.fr;
-                        }
-                        else if (this.lang == 'en') {
-                            return this.mission._subType.name.en;
-                        }
-                    }
-                },
-                postulatedMissionsChanged: function (record) {
-                    if (!this.mission) { return; }
-                    if (record.path.includes('splices') || record.path == 'postulateds') {
-                        this._setPostulatedColor();
-                    }
-                },
-                _setFavoriteColor: function () {
-                    if (this.favorites && this.favorites.indexOfObject('_mission', this.mission._id) != -1) {
-                        this.$.favorite.style.color = '#cc0000';
-                    }
-                    else {
-                        this.$.favorite.style.color = '#999999';
-                    }
-                },
-                _setPostulatedColor: function () {
-                    if (this.postulateds && this.postulateds.indexOfObject('_mission', this.mission._id) != -1) {
-                        this.$.postulate.style.color = '#00cc00';
-                    }
-                    else {
-                        this.$.postulate.style.color = '#999999';
-                    }
-                },
-                attached: function () {
-                    app.addEventListener('role-changed', function (e) {
-                        this._setRolePart();
-                    }.bind(this));
+                };
+            }
 
-                    this.init();
-                },
-                handleChange: function (e) {
-                    this.init();
-                },
-                init: function (e) {
-                    if (!this.mission || !this.mission._type) {
-                        return;
-                    }
+            static get observers() {
+                return [
+                    'favoriteMissionsChanged(favorites.*)',
+                    'postulatedMissionsChanged(postulateds.*)'
+                ];
+            }
 
-                    this.cardName = 'card-mission-' + this.mission._type.css + '-' + this.index;
-                    this.middle = this.cardName + '-middle';
-                    this.footer = this.cardName + '-footer';
+            ready = function () {
+                app.addEventListener('on-change-language', function (e) {
+                    this.lang = app.lang;
+                }.bind(this));
+            }
 
-                    var id = '#' + this.cardName;
-
-                    this.$$(id).style.backgroundImage = 'url(/images/kinds/' + this.mission._type.image.path + ')';
-                    this.$$(id).style.backgroundPosition = this.mission._type.image.xOffset + ' ' + this.mission._type.image.yOffset;
-                    this.$$(id).style.backgroundSize = this.mission._type.image.size;
-
-                    this.$$('.middle').style.backgroundColor = '#efefef';
-                    this.$$('.footer').style.backgroundColor = '#efefef';
-
-                    this.$$('.header').style.color = '#eeeeee';
-                    this.$$('.footer').style.color = '#999999';
-
-                    this._computeLevel();
-                    this.$$('sa-dates').refresh();
-
-                    if (this.showLevel) {
-                        this.$$('#image-collapse').show();
-                    }
-                    else {
-                        this.$$('#image-collapse').hide();
-                    }
-
+            favoriteMissionsChanged = function (record) {
+                if (!this.mission) { return; }
+                if (record.path.includes('splices') || record.path == 'favorites') {
                     this._setFavoriteColor();
-                    this._setPostulatedColor();
-                    this._setRolePart();
-                },
-                _deleteMission: function (e) {
-                    this.fire('delete-mission', { mission: this.mission });
-                },
-                _setRolePart: function () {
-                    if (app.role == 'agent') {
-                        this.$$('#role-page').select(1);
-                    }
-                    else {
-                        this.$$('#role-page').select(0);
-                    }
-                },
-                _editMission: function (e) {
-                    this.fire('edit-mission', { mission: this.mission });
-                },
-                _computeLevel: function (level) {
-                    var image;
-                    switch (this.mission.level) {
-                        default:
-                        case 0:
-                            image = 'easy';
-                            break;
-                        case 1:
-                            image = 'simple';
-                            break;
-                        case 2:
-                            image = 'normal';
-                            break;
-                        case 3:
-                            image = 'advanced';
-                            break;
-                        case 4:
-                            image = 'difficult';
-                            break;
-                    }
-                    this.$$('#level-image').style.backgroundImage = 'url("/images/levels/' + image + '.png")';
-                    this.$$('#level-background').style.background = this.mission._type.color;
-                    this.$$('#level-image').style.border = '1px solid ' + this.mission._type.color;
-                    this.$.level.style.background = this.mission._type.color;
-                    if (this._translations)
-                        this.levelLabel = this._translations.texts[image];
-                },
-                _mouseOver: function (e) {
-                    if (!this.acceptEvent) { return; }
+                }
+            }
 
-                    var div = this.querySelector('paper-card');
-                    if (!div) { return; }
-
-                    div.elevation = 5;
-                    this.$$('#image-collapse').show();
-                },
-                _mouseOut: function (e) {
-                    if (!this.acceptEvent) { return; }
-
-                    var div = this.querySelector('paper-card');
-                    if (!div) { return; }
-
-                    div.elevation = 1;
-                    this.$$('#image-collapse').hide();
-                },
-                _addToFavorites: function (e) {
-                    if (this.favorites && this.favorites.indexOfObject('_mission', this.mission._id) != -1) {
-                        app.socket.emit('delete-favorite-mission', { _mission: this.mission._id });
+            _computeKindName = function (subKind, lang) {
+                if (this.kind) {
+                    if (this.lang == 'fr') {
+                        return this.mission._subType.name.fr;
                     }
-                    else {
-                        app.socket.emit('add-favorite-mission', { _mission: this.mission._id });
-                    }
-                },
-                _postulateMission: function (e) {
-                    if (this.postulateds && this.postulateds.indexOfObject('_mission', this.mission._id) == -1) {
-                        app.socket.emit('add-postulated-mission', { _mission: this.mission._id });
+                    else if (this.lang == 'en') {
+                        return this.mission._subType.name.en;
                     }
                 }
-            });
-        })();
+            }
+
+            postulatedMissionsChanged = function (record) {
+                if (!this.mission) { return; }
+                if (record.path.includes('splices') || record.path == 'postulateds') {
+                    this._setPostulatedColor();
+                }
+            }
+
+            _setFavoriteColor = function () {
+                if (this.favorites && this.favorites.indexOfObject('_mission', this.mission._id) != -1) {
+                    this.$.favorite.style.color = '#cc0000';
+                }
+                else {
+                    this.$.favorite.style.color = '#999999';
+                }
+            }
+
+            _setPostulatedColor = function () {
+                if (this.postulateds && this.postulateds.indexOfObject('_mission', this.mission._id) != -1) {
+                    this.$.postulate.style.color = '#00cc00';
+                }
+                else {
+                    this.$.postulate.style.color = '#999999';
+                }
+            }
+
+            attached = function () {
+                app.addEventListener('role-changed', function (e) {
+                    this._setRolePart();
+                }.bind(this));
+
+                this.init();
+            }
+
+            handleChange = function (e) {
+                this.init();
+            }
+
+            init = function (e) {
+                if (!this.mission || !this.mission._type) {
+                    return;
+                }
+
+                this.cardName = 'card-mission-' + this.mission._type.css + '-' + this.index;
+                this.middle = this.cardName + '-middle';
+                this.footer = this.cardName + '-footer';
+
+                var id = '#' + this.cardName;
+
+                this.$$(id).style.backgroundImage = 'url(/images/kinds/' + this.mission._type.image.path + ')';
+                this.$$(id).style.backgroundPosition = this.mission._type.image.xOffset + ' ' + this.mission._type.image.yOffset;
+                this.$$(id).style.backgroundSize = this.mission._type.image.size;
+
+                this.$$('.middle').style.backgroundColor = '#efefef';
+                this.$$('.footer').style.backgroundColor = '#efefef';
+
+                this.$$('.header').style.color = '#eeeeee';
+                this.$$('.footer').style.color = '#999999';
+
+                this._computeLevel();
+                this.$$('sa-dates').refresh();
+
+                if (this.showLevel) {
+                    this.$$('#image-collapse').show();
+                }
+                else {
+                    this.$$('#image-collapse').hide();
+                }
+
+                this._setFavoriteColor();
+                this._setPostulatedColor();
+                this._setRolePart();
+            }
+
+            _deleteMission = function (e) {
+                this.fire('delete-mission', { mission: this.mission });
+            }
+
+            _setRolePart = function () {
+                if (app.role == 'agent') {
+                    this.$$('#role-page').select(1);
+                }
+                else {
+                    this.$$('#role-page').select(0);
+                }
+            }
+
+            _editMission = function (e) {
+                this.fire('edit-mission', { mission: this.mission });
+            }
+
+            _computeLevel = function (level) {
+                var image;
+                switch (this.mission.level) {
+                    default:
+                    case 0:
+                        image = 'easy';
+                        break;
+                    case 1:
+                        image = 'simple';
+                        break;
+                    case 2:
+                        image = 'normal';
+                        break;
+                    case 3:
+                        image = 'advanced';
+                        break;
+                    case 4:
+                        image = 'difficult';
+                        break;
+                }
+                this.$$('#level-image').style.backgroundImage = 'url("/images/levels/' + image + '.png")';
+                this.$$('#level-background').style.background = this.mission._type.color;
+                this.$$('#level-image').style.border = '1px solid ' + this.mission._type.color;
+                this.$.level.style.background = this.mission._type.color;
+                if (this._translations)
+                    this.levelLabel = this._translations.texts[image];
+            }
+
+            _mouseOver = function (e) {
+                if (!this.acceptEvent) { return; }
+
+                var div = this.querySelector('paper-card');
+                if (!div) { return; }
+
+                div.elevation = 5;
+                this.$$('#image-collapse').show();
+            }
+
+            _mouseOut = function (e) {
+                if (!this.acceptEvent) { return; }
+
+                var div = this.querySelector('paper-card');
+                if (!div) { return; }
+
+                div.elevation = 1;
+                this.$$('#image-collapse').hide();
+            }
+
+            _addToFavorites = function (e) {
+                if (this.favorites && this.favorites.indexOfObject('_mission', this.mission._id) != -1) {
+                    app.socket.emit('delete-favorite-mission', { _mission: this.mission._id });
+                }
+                else {
+                    app.socket.emit('add-favorite-mission', { _mission: this.mission._id });
+                }
+            }
+
+            _postulateMission = function (e) {
+                if (this.postulateds && this.postulateds.indexOfObject('_mission', this.mission._id) == -1) {
+                    app.socket.emit('add-postulated-mission', { _mission: this.mission._id });
+                }
+            }
+        }
+
+        customElements.define(SaMissionCard.is, SaMissionCard);
     </script>
 </dom-module>
 
 
 <dom-module id="sa-mission-card-empty">
     <style>
-        :host {
-        }
+        :host {}
 
-        paper-card{            
+        paper-card {
             align-self: center;
             border-radius: 7px;
             cursor: pointer;
@@ -410,14 +441,15 @@
     </template>
 
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-mission-card-empty',
+        class SaMissionCardEmpty extends Polymer.Element {
+                static get is() { return 'sa-mission-card-empty'; }
 
-                properties: {
+                static get properties() {
+                    return {
+                    };
                 }
-            });
-        })();
+        };
+        customElements.define(SaMissionCardEmpty.is, SaMissionCardEmpty);
 
     </script>
 </dom-module>

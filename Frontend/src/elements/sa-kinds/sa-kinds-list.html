@@ -17,14 +17,14 @@
         }
 
         .card {
-            --sa-kind-card:{
+            --sa-kind-card: {
                 min-width: 300px;
                 max-width: 300px;
             }
         }
 
         .card-2 {
-            --sa-kind-card:{
+            --sa-kind-card: {
                 min-width: 624px;
                 max-width: 624px;
             }
@@ -36,9 +36,9 @@
             @apply(--sa-kind-card);
         }
 
-        paper-spinner{
-            width:50px;
-            height:50px;
+        paper-spinner {
+            width: 50px;
+            height: 50px;
             margin-top: 30vh;
         }
     </style>
@@ -46,9 +46,7 @@
     <template>
         <div class="grid">
             <template id="list" is="dom-repeat" items="[[kinds]]">
-                <sa-kind-card class$="[[item.class]]"
-                                      kind="[[item]]"
-                                      on-tap="_showMissions">
+                <sa-kind-card class$="[[item.class]]" kind="[[item]]" on-tap="_showMissions">
                 </sa-kind-card>
             </template>
         </div>
@@ -57,38 +55,43 @@
     </template>
 
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-kinds-list',
+        class SaKindList extends Polymer.Element {
+            static get is() { return 'sa-kinds-list'; }
 
-                properties: {
+            static get properties() {
+                return {
                     kinds: {
                         type: Object,
                         observer: 'kindsChanged'
                     }
-                },
-                ready: function () {                   
-                },
-                attached: function () {
-                },
-                kindsChanged: function () {
-                    this.kinds.forEach(function (element, index, array) {
-                        if (element.size === 1) {
-                            element.class = 'card';
-                        }
-                        else if (element.size === 2) {
-                            element.class = 'card-2';
-                        }
-                        else if (element.size === 3) {
-                            element.class = 'card-3';
-                        }
-                    });
-                    this.$.list.render();
-                },
-                _showMissions: function (e) {
-                    this.fire('show-missions', { kind: e.model.item });
-                }
-            });
-        })();
+                };
+            }
+
+            ready = function () {
+            }
+
+            attached = function () {
+            }
+
+            kindsChanged = function () {
+                this.kinds.forEach(function (element, index, array) {
+                    if (element.size === 1) {
+                        element.class = 'card';
+                    }
+                    else if (element.size === 2) {
+                        element.class = 'card-2';
+                    }
+                    else if (element.size === 3) {
+                        element.class = 'card-3';
+                    }
+                });
+                this.$.list.render();
+            }
+
+            _showMissions = function (e) {
+                this.fire('show-missions', { kind: e.model.item });
+            }
+        }
+        customElements.define(SaKindList.is, SaKindList);
     </script>
 </dom-module>

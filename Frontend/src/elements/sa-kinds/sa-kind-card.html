@@ -3,19 +3,19 @@
 <dom-module id="sa-kind-card">
     <style>
         :host {
-            color:#feffff;
-        } 
-        
+            color: #feffff;
+        }
+
         paper-card {
             align-self: center;
             width: 300px;
             background-image: url(../../images/missions/02.jpg);
             background-position: 100% 0%;
             background-repeat: no-repeat;
-            border-radius:7px;
+            border-radius: 7px;
             margin: 17px 10px 3px 10px;
             @apply(--sa-kind-card);
-         }
+        }
 
         .header {
             height: 280px;
@@ -23,11 +23,11 @@
             justify-content: flex-start;
             flex-flow: column;
             display: flex;
-            border-top-left-radius:5px;
-            border-top-right-radius:5px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
         }
 
-        .middle {            
+        .middle {
             height: 48px;
             background-color: #333333;
             flex-direction: row;
@@ -35,10 +35,10 @@
             justify-content: flex-start;
             align-items: center;
         }
-            
-            .middle > div {
-                margin-left: 10px;
-            }
+
+        .middle>div {
+            margin-left: 10px;
+        }
 
         .footer {
             height: 85px;
@@ -46,8 +46,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border-bottom-left-radius:5px;
-            border-bottom-right-radius:5px;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
         }
 
         /*.footer::after {
@@ -60,38 +60,38 @@
                 width: 100%;
             }*/
 
-        .header-content{
-            display:none;
-            flex-direction:column;
-            align-items:flex-start;
-            height:100%;
-            background-color:rgba(0, 0, 0, 0.36);
-            padding:0 15px;
-            border-top-left-radius:5px;
-            border-top-right-radius:5px;
+        .header-content {
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.36);
+            padding: 0 15px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
         }
 
-        .header-content > iron-icon{
+        .header-content>iron-icon {
             width: 75px;
-            height:38%;
-            align-self:center;
+            height: 38%;
+            align-self: center;
         }
 
-        .infos{
-            align-self:center;
-            text-transform:uppercase;
+        .infos {
+            align-self: center;
+            text-transform: uppercase;
         }
 
-        .infos-colored{            
-            font-weight:bolder;
+        .infos-colored {
+            font-weight: bolder;
         }
 
-        .header-title{
-            font-size:28px;
+        .header-title {
+            font-size: 28px;
         }
 
-        .count{
-            font-size:50px;
+        .count {
+            font-size: 50px;
         }
     </style>
 
@@ -120,79 +120,82 @@
 
         </paper-card>
 
-        <sa-translation id="translation"
-                        element="sa-kind-card"
-                        translations="{{_translations}}"></sa-translation>
+        <sa-translation id="translation" element="sa-kind-card" translations="{{_translations}}"></sa-translation>
     </template>
 
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-kind-card',
+        class SaKindCard extends Polymer.Element {
+            static get is() { return 'sa-kind-card'; }
 
-                properties: {
+            static get properties() {
+                return {
                     kind: Object,
                     lang: String
-                },
-                attached: function () {
-                    app.addEventListener('on-change-language', function (e) {
-                        this.lang = app.lang;
-                    }.bind(this));
+                };
+            }
 
+            attached = function () {
+                app.addEventListener('on-change-language', function (e) {
                     this.lang = app.lang;
+                }.bind(this));
 
-                    this.cardName = 'card' + this.kind.css;
-                    var divs = this.querySelectorAll('#' + this.kind.css);
-                    if (divs == null) return;
+                this.lang = app.lang;
 
-                    for (var idx = 0; idx < divs.length; ++idx) {
-                        divs[idx].style.background = this.kind.color;
-                    }
+                this.cardName = 'card' + this.kind.css;
+                var divs = this.querySelectorAll('#' + this.kind.css);
+                if (divs == null) return;
 
-                    var div = this.querySelector('.infos-colored');
-                    if (!div) { return; }
-                    div.style.color = this.kind.color;
-
-                    var card = this.querySelector('#' + this.cardName);
-
-                    if (card == null) return;
-                    card.style.backgroundImage = 'url(../../images/kinds/' + this.kind.image.path + ')';
-                    card.style.backgroundPosition = this.kind.image.xOffset + ' ' + this.kind.image.yOffset;
-                    card.style.backgroundSize = 'cover';//this.kind.image.scale;
-                },
-                _computeKindName: function(kind, lang){
-                    if (this.kind) {
-                        if (this.lang == 'fr') {
-                            return this.kind.name.fr;
-                        }
-                        else if (this.lang == 'en') {
-                            return this.kind.name.en;
-                        }
-                    }
-                },
-                _mouseOver: function (e) {
-                    var div = this.querySelector('paper-card');
-                    if (!div) { return; }
-
-                    div.elevation = 5;
-
-                    div = this.querySelector('.header-content');
-                    if (!div) { return; }
-
-                    div.style.display = 'flex';
-                },
-                _mouseOut: function (e) {
-                    var div = this.querySelector('paper-card');
-                    if (!div) { return; }
-
-                    div.elevation = 1;
-
-                    div = this.querySelector('.header-content');
-                    if (!div) { return; }
-
-                    div.style.display = 'none';
+                for (var idx = 0; idx < divs.length; ++idx) {
+                    divs[idx].style.background = this.kind.color;
                 }
-            });
-        })();
+
+                var div = this.querySelector('.infos-colored');
+                if (!div) { return; }
+                div.style.color = this.kind.color;
+
+                var card = this.querySelector('#' + this.cardName);
+
+                if (card == null) return;
+                card.style.backgroundImage = 'url(../../images/kinds/' + this.kind.image.path + ')';
+                card.style.backgroundPosition = this.kind.image.xOffset + ' ' + this.kind.image.yOffset;
+                card.style.backgroundSize = 'cover';//this.kind.image.scale;
+            }
+
+            _computeKindName = function (kind, lang) {
+                if (this.kind) {
+                    if (this.lang == 'fr') {
+                        return this.kind.name.fr;
+                    }
+                    else if (this.lang == 'en') {
+                        return this.kind.name.en;
+                    }
+                }
+            }
+
+            _mouseOver = function (e) {
+                var div = this.querySelector('paper-card');
+                if (!div) { return; }
+
+                div.elevation = 5;
+
+                div = this.querySelector('.header-content');
+                if (!div) { return; }
+
+                div.style.display = 'flex';
+            }
+
+            _mouseOut = function (e) {
+                var div = this.querySelector('paper-card');
+                if (!div) { return; }
+
+                div.elevation = 1;
+
+                div = this.querySelector('.header-content');
+                if (!div) { return; }
+
+                div.style.display = 'none';
+            }
+        }
+        customElements.define(SaKindCard.is, SaKindCard);
     </script>
 </dom-module>

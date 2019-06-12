@@ -1,166 +1,165 @@
-
 <link rel="import" href="../sa-translations/sa-translation.html" />
 
 <dom-module id="sa-date-picker">
     <style>
         :host {
             display: flex;
-            flex-direction:column;
-            align-items:center;
+            flex-direction: column;
+            align-items: center;
             min-width: 320px;
         }
 
         [header] {
-            background-color:#494949;
-            color:#b8b8b8;
-            border-radius:2px;
+            background-color: #494949;
+            color: #b8b8b8;
+            border-radius: 2px;
             height: 24px;
             line-height: 40px;
-            width:77%;
-            display:flex;
-            justify-content:center;
+            width: 77%;
+            display: flex;
+            justify-content: center;
             @apply(--sa-datepicker-header);
         }
 
-            [header] > div {
-                @apply(--layout-horizontal);
-                @apply(--layout-justified);
-                @apply(--sa-datepicker-header-parts);
-            }
+        [header]>div {
+            @apply(--layout-horizontal);
+            @apply(--layout-justified);
+            @apply(--sa-datepicker-header-parts);
+        }
 
-                [header] > div > div {
-                    @apply(--layout);
-                    @apply(--layout-center-center);
-                }
+        [header]>div>div {
+            @apply(--layout);
+            @apply(--layout-center-center);
+        }
 
-                [header] > div.month-display,
-                [header] > div.year-display {
-                    margin: 0 15px;
-                    @apply(--sa-datepicker-header-display);
-                }
+        [header]>div.month-display,
+        [header]>div.year-display {
+            margin: 0 15px;
+            @apply(--sa-datepicker-header-display);
+        }
 
-            [header] div.month-display > div:hover ::content [prev-month],
-            [header] div.month-display > div:hover ::content [next-month],
-            [header] div.year-display > div:hover ::content [prev-year],
-            [header] div.year-display > div:hover ::content [next-year],
-            [header] div.extended-display > div:hover ::content [go-selected],
-            [header] div.extended-display > div:hover ::content [go-today] {
-                cursor: pointer;
-                color: #cccccc;
-                @apply(--sa-datepicker-header-icon-hover);
-            }
+        [header] div.month-display>div:hover ::content [prev-month],
+        [header] div.month-display>div:hover ::content [next-month],
+        [header] div.year-display>div:hover ::content [prev-year],
+        [header] div.year-display>div:hover ::content [next-year],
+        [header] div.extended-display>div:hover ::content [go-selected],
+        [header] div.extended-display>div:hover ::content [go-today] {
+            cursor: pointer;
+            color: #cccccc;
+            @apply(--sa-datepicker-header-icon-hover);
+        }
 
-            [header] .go-today {
-                padding-left: 5px;
-                cursor: pointer;
-                @apply(--sa-datepicker-header-today);
-            }
+        [header] .go-today {
+            padding-left: 5px;
+            cursor: pointer;
+            @apply(--sa-datepicker-header-today);
+        }
 
-            [header] .go-selected {
-                cursor: pointer;
-                @apply(--sa-datepicker-header-selected);
-            }
+        [header] .go-selected {
+            cursor: pointer;
+            @apply(--sa-datepicker-header-selected);
+        }
 
-            [header] #currentYear,
-            [header] #currentMonth {
-                cursor: pointer;
-                @apply(--sa-datepicker-header-label);
-            }
+        [header] #currentYear,
+        [header] #currentMonth {
+            cursor: pointer;
+            @apply(--sa-datepicker-header-label);
+        }
 
-                [header] #currentYear:hover,
-                [header] #currentMonth:hover {
-                    cursor: pointer;
-                    color: #BC5005;
-                    @apply(--sa-datepicker-header-label-hover);
-                }
+        [header] #currentYear:hover,
+        [header] #currentMonth:hover {
+            cursor: pointer;
+            color: #BC5005;
+            @apply(--sa-datepicker-header-label-hover);
+        }
 
         [content] {
             position: relative;
             overflow: hidden;
-            display:flex;
-            justify-content:center;
-            align-items:stretch;
-            height:237px;
-            width:100%;
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            height: 237px;
+            width: 100%;
         }
 
         table {
             width: 100%;
-            flex-grow:1;
+            flex-grow: 1;
         }
 
-        #calendar{
-            width:100%;
+        #calendar {
+            width: 100%;
         }
 
-            table td {
-                line-height: 25px;
-                text-align: center;
-                padding: 0;
-                @apply(--sa-datepicker-cell);
-            }
+        table td {
+            line-height: 25px;
+            text-align: center;
+            padding: 0;
+            @apply(--sa-datepicker-cell);
+        }
 
-            table thead{
-                color:#b8b8b8;
-            }
+        table thead {
+            color: #b8b8b8;
+        }
 
-        td > div {
-            color:#666666;
+        td>div {
+            color: #666666;
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius:2px;
+            border-radius: 2px;
             height: 30px;
-            font-size:24px;
-            margin:1px;
+            font-size: 24px;
+            margin: 1px;
             @apply(--sa-datepicker-number);
         }
 
-            td > div:hover {
-            border-radius:2px;
-                background-color: #33cc33;
-                cursor: pointer;
-                @apply(--sa-datepicker-number-hover);
-            }
+        td>div:hover {
+            border-radius: 2px;
+            background-color: #33cc33;
+            cursor: pointer;
+            @apply(--sa-datepicker-number-hover);
+        }
 
-            td > div.today {
-                border-radius:2px;
-                cursor: pointer;
-                background-color: #BC5005;
-                color: #ffffff;
-                @apply(--sa-datepicker-today);
-            }
+        td>div.today {
+            border-radius: 2px;
+            cursor: pointer;
+            background-color: #BC5005;
+            color: #ffffff;
+            @apply(--sa-datepicker-today);
+        }
 
-            td > div.today:hover {
-                border-radius:2px;
-                cursor: pointer;
-                background-color: #33cc33;
-                color: #ffffff;
-                @apply(--sa-datepicker-today);
-            }
+        td>div.today:hover {
+            border-radius: 2px;
+            cursor: pointer;
+            background-color: #33cc33;
+            color: #ffffff;
+            @apply(--sa-datepicker-today);
+        }
 
-            td > div.selected {
-                border-radius:2px;
-                cursor: pointer;
-                background-color: #33cc33;
-                color: #ffffff;
-                @apply(--sa-datepicker-selected);
-            }
-            
-            td > div.agent-selected {
-                border-radius:2px;
-                cursor: pointer;
-                background-color: #ff0000;
-                color: #ffffff;
-                @apply(--sa-datepicker-second-selected);
-            }
-            
-            td > div.both-selected {
-                cursor: pointer;
-                color: #ffffff;
-                background-color:green;
-                @apply(--sa-datepicker-both-selected);
-            }
+        td>div.selected {
+            border-radius: 2px;
+            cursor: pointer;
+            background-color: #33cc33;
+            color: #ffffff;
+            @apply(--sa-datepicker-selected);
+        }
+
+        td>div.agent-selected {
+            border-radius: 2px;
+            cursor: pointer;
+            background-color: #ff0000;
+            color: #ffffff;
+            @apply(--sa-datepicker-second-selected);
+        }
+
+        td>div.both-selected {
+            cursor: pointer;
+            color: #ffffff;
+            background-color: green;
+            @apply(--sa-datepicker-both-selected);
+        }
 
         #yearList {
             @apply(--layout-horizontal);
@@ -170,28 +169,28 @@
             @apply(--sa-datepicker-yearlist);
         }
 
-            #yearList.hidden {
-                display: none !important;
-            }
+        #yearList.hidden {
+            display: none !important;
+        }
 
-            #yearList > div {
-                cursor: pointer;
-                margin: 5px;
-                @apply(--sa-datepicker-yearlist-item);
-            }
+        #yearList>div {
+            cursor: pointer;
+            margin: 5px;
+            @apply(--sa-datepicker-yearlist-item);
+        }
 
-                #yearList > div:hover {
-                    color: #BC5005;
-                    @apply(--sa-datepicker-yearlist-item-hover);
-                }
+        #yearList>div:hover {
+            color: #BC5005;
+            @apply(--sa-datepicker-yearlist-item-hover);
+        }
 
-                #yearList > div.year-current {
-                    @apply(--sa-datepicker-yearlist-item-current);
-                }
+        #yearList>div.year-current {
+            @apply(--sa-datepicker-yearlist-item-current);
+        }
 
-                #yearList > div.year-selected {
-                    @apply(--sa-datepicker-yearlist-item-selected);
-                }
+        #yearList>div.year-selected {
+            @apply(--sa-datepicker-yearlist-item-selected);
+        }
 
         #monthList {
             @apply(--layout-horizontal);
@@ -202,34 +201,34 @@
             @apply(--sa-datepicker-monthlist);
         }
 
-            #monthList.hidden {
-                display: none !important;
-            }
-
-            #monthList > div {
-                cursor: pointer;
-                @apply(--sa-datepicker-monthlist-item);
-            }
-
-                #monthList > div:hover {
-                    color: #BC5005;
-                    @apply(--sa-datepicker-monthlist-item-hover);
-                }
-
-        .button{
-            display:flex;
-            align-items:center;
-            color:#cbcbcb;
-            font-weight:600;
+        #monthList.hidden {
+            display: none !important;
         }
 
-        .before{
-            background-color:#8f8f8f;
-            pointer-events:none;
+        #monthList>div {
+            cursor: pointer;
+            @apply(--sa-datepicker-monthlist-item);
         }
 
-        .after{
-            background-color:#ffffff;
+        #monthList>div:hover {
+            color: #BC5005;
+            @apply(--sa-datepicker-monthlist-item-hover);
+        }
+
+        .button {
+            display: flex;
+            align-items: center;
+            color: #cbcbcb;
+            font-weight: 600;
+        }
+
+        .before {
+            background-color: #8f8f8f;
+            pointer-events: none;
+        }
+
+        .after {
+            background-color: #ffffff;
         }
     </style>
     <template>
@@ -238,19 +237,31 @@
                 <div id="currentMonth">{{currentMonth}}</div>
             </div>
             <div class="year-display" hidden$="{{hiddenYear}}">
-                <div on-click="_prevYearHandler"><content select="[prev-year]"></content></div>
+                <div on-click="_prevYearHandler">
+                    <content select="[prev-year]"></content>
+                </div>
                 <div on-click="_toggleYearList" id="currentYear">{{date.year}}</div>
-                <div on-click="_nextYearHandler"><content select="[next-year]"></content></div>
+                <div on-click="_nextYearHandler">
+                    <content select="[next-year]"></content>
+                </div>
             </div>
             <div class="extended-display">
-                <div on-click="_goSelectedHandler"><content select="[go-selected]"></content></div>
-                <div on-click="_goTodayHandler"><content select="[go-today]"></content></div>
+                <div on-click="_goSelectedHandler">
+                    <content select="[go-selected]"></content>
+                </div>
+                <div on-click="_goTodayHandler">
+                    <content select="[go-today]"></content>
+                </div>
             </div>
         </div>
         <div content>
-            <div class="button" on-click="_prevMonthHandler"><content select="[prev-month]"></content></div>
+            <div class="button" on-click="_prevMonthHandler">
+                <content select="[prev-month]"></content>
+            </div>
             <div id="calendar" cellpadding="0" cellspacing="0"></div>
-            <div class="button" on-click="_nextMonthHandler"><content select="[next-month]"></content></div>
+            <div class="button" on-click="_nextMonthHandler">
+                <content select="[next-month]"></content>
+            </div>
             <div id="yearList" class="hidden">
                 <template is="dom-repeat" items="{{yearList}}">
                     <div on-click="_selectYear" class$="[[_yearClass(item)]]">{{item}}</div>
@@ -262,119 +273,122 @@
                 </template>
             </div>
         </div>
-        <sa-translation element="sa-date-picker"
-                        translations="{{_translations}}"></sa-translation>
+        <sa-translation element="sa-date-picker" translations="{{_translations}}"></sa-translation>
 
     </template>
 </dom-module>
 <script>
-    Polymer({
-        is: 'sa-date-picker',
+    class SaDatePicker extends Polymer.Element {
+        static get is() { return 'sa-date-picker'; }
 
-        properties: {
+        static get properties() {
+            return {
 
-            hiddenYear: {
-                type: Boolean,
-                value: false
-            },
-            /**
-            * This property can be used to localize the elements day labels.
-            */
-            dayLabels: {
-                type: Array,
-                value: function () {
-                    return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                }
-            },
-
-            /**
-            * This property can be used to localize the elements month labels.
-            */
-            monthLabels: {
-                type: Array,
-                value: function () {
-                    return ['January', 'February', 'March', 'April',
-                    'May', 'June', 'July', 'August', 'September',
-                    'October', 'November', 'December'];
-                }
-            },
-
-            /**
-            * Private internal property that holds the current month and year displayed.
-            */
-            showDate: {
-                type: Object,
-                value: function () {
-                    return {
-                        year: 0,
-                        month: 1,
-                        day: 1
-                    };
+                hiddenYear: {
+                    type: Boolean,
+                    value: false
                 },
-                readOnly: true
-            },
-
-            /**
-            * The currently selected date.
-            * Object => {{year: String, month: String, day: String}}
-            */
-            date: {
-                type: String,
-                value: function () {
-                    var d = new Date();
-                    return {
-                        year: d.getFullYear(),
-                        month: d.getMonth() + 1,
-                        day: null
+                /**
+                * This property can be used to localize the elements day labels.
+                */
+                dayLabels: {
+                    type: Array,
+                    value = function () {
+                        return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                     }
                 },
-                observer: '_dateChanged'
-            },
 
-            dates: {
-                type: Array,
-                value: [],
-                notify: true
-            },
+                /**
+                * This property can be used to localize the elements month labels.
+                */
+                monthLabels: {
+                    type: Array,
+                    value = function () {
+                        return ['January', 'February', 'March', 'April',
+                            'May', 'June', 'July', 'August', 'September',
+                            'October', 'November', 'December'];
+                    }
+                },
 
-            otherDates: {
-                type: Array,
-                value: [],
-                notify: true
-            },
+                /**
+                * Private internal property that holds the current month and year displayed.
+                */
+                showDate: {
+                    type: Object,
+                    value = function () {
+                        return {
+                            year: 0,
+                            month: 1,
+                            day: 1
+                        };
+                    },
+                    readOnly: true
+                },
 
-            /**
-             * How many future years the selection list should show.
-             */
-            yearsFwd: {
-                type: Number,
-                value: 0
-            },
+                /**
+                * The currently selected date.
+                * Object => {{year: String, month: String, day: String}}
+                */
+                date: {
+                    type: String,
+                    value = function () {
+                        var d = new Date();
+                        return {
+                            year: d.getFullYear(),
+                            month: d.getMonth() + 1,
+                            day: null
+                        }
+                    },
+                    observer: '_dateChanged'
+                },
 
-            /**
-             * How many past years the selection list should show.
-             */
-            yearsBack: {
-                type: Number,
-                value: 100
-            },
-            disabled: {
-                type: Boolean,
-                value: false
-            },
-            _translations: {
-                type: Object,
-                observer: '_translationsChanged'
-            }
-        },
+                dates: {
+                    type: Array,
+                    value: [],
+                    notify: true
+                },
 
-        observers: [
-          '_showDateYearChanged(showDate.year)'
-        ],
+                otherDates: {
+                    type: Array,
+                    value: [],
+                    notify: true
+                },
+
+                /**
+                 * How many future years the selection list should show.
+                 */
+                yearsFwd: {
+                    type: Number,
+                    value: 0
+                },
+
+                /**
+                 * How many past years the selection list should show.
+                 */
+                yearsBack: {
+                    type: Number,
+                    value: 100
+                },
+                disabled: {
+                    type: Boolean,
+                    value: false
+                },
+                _translations: {
+                    type: Object,
+                    observer: '_translationsChanged'
+                }
+            };
+        }
+
+        static get observers() {
+            return [
+                '_showDateYearChanged(showDate.year)'
+            ];
+        }
 
         // Element Lifecycle
 
-        ready: function () {
+        ready = function () {
             var d = new Date();
             var list = [];
             this._currYear = d.getFullYear()
@@ -385,21 +399,23 @@
             }
 
             this.yearList = list;
-        },
+        }
 
-        attached: function () {
+        attached = function () {
             this.$.calendar.addEventListener('click', this._selectionHandler.bind(this));
-        },
+        }
 
-        detached: function () {
+        detached = function () {
             this.$.calendar.removeEventListener('click', this._selectionHandler.bind(this));
-        },
-        _translationsChanged: function (e) {
+        }
+
+        _translationsChanged = function (e) {
             var date = new Date(this.showDate.year, this.showDate.month);
             var month = date.toLocaleString('en', { month: 'long' }).toLowerCase();
             this.currentMonth = this._translations.texts[month];
             this._genTable(this.showDate.year, this.showDate.month);
-        },
+        }
+
         // Element Behavior
 
         /**
@@ -410,7 +426,7 @@
         * @detail {{year: String, month: String, day: String}}
         */
 
-        _yearClass: function (item) {
+        _yearClass = function (item) {
             var cls = 'year-item';
             if (item == this._currYear) {
                 cls += ' year-current';
@@ -419,12 +435,12 @@
                 cls += ' year-selected';
             }
             return cls;
-        },
+        }
 
         /**
         * Fires the `date-selected` event if some date was selected.
         */
-        _selectionHandler: function (e) {
+        _selectionHandler = function (e) {
             if (this.disabled) {
                 //this._secondUserSelected(e);
                 return;
@@ -443,7 +459,7 @@
 
                 for (var idx = 0; idx < this.dates.length; ++idx) {
                     var date = new Date(this.dates[idx].date);
-                    if(date.getUTCDate() === day - 1 && 
+                    if (date.getUTCDate() === day - 1 &&
                         date.getUTCMonth() === this.showDate.month &&
                         date.getUTCFullYear() === this.showDate.year) {
                         found = idx;
@@ -458,7 +474,7 @@
                     var date = new Date(this.showDate.year, this.showDate.month, day);
                     this.push('dates', {
                         date: date.toISOString(),
-                        laps : [false, false, false, false]
+                        laps: [false, false, false, false]
                     });
                 }
 
@@ -470,9 +486,9 @@
 
                 this.fire('date-selected', { index: found, year: this.date.year, month: this.date.month, day: this.date.day });
             }
-        },
+        }
 
-        _secondUserSelected:function(e){
+        _secondUserSelected = function (e) {
             if (e.target && e.target.nodeName == 'DIV' && e.target.classList.contains('day')) {
                 var found = -1;
 
@@ -480,7 +496,7 @@
 
                 for (var idx = 0; idx < this.otherDates.length; ++idx) {
                     var date = new Date(this.otherDates[idx]);
-                    if(date.getUTCDate() === day - 1 && 
+                    if (date.getUTCDate() === day - 1 &&
                         date.getUTCMonth() === this.showDate.month &&
                         date.getUTCFullYear() === this.showDate.year) {
                         found = idx;
@@ -501,24 +517,24 @@
                     year: this.showDate.year,
                     month: this.showDate.month + 1,
                     day: parseInt(e.target.textContent || e.target.innerText)
-                };                
+                };
             }
-        },
+        }
 
         /**
         * Show the next month.
         */
-        _nextMonthHandler: function () {
+        _nextMonthHandler = function () {
             this.set('showDate.month', this.showDate.month == 11 ? 0 : this.showDate.month + 1);
             this.set('showDate.year', this.showDate.month <= 0 ? this.showDate.year + 1 : this.showDate.year);
 
             this.notifyPath('date.year', this.showDate.year);
-            
+
             this.currentMonth = this._getMonthLabel();
             this._genTable(this.showDate.year, this.showDate.month);
-        },
+        }
 
-        _showDateYearChanged: function () {
+        _showDateYearChanged = function () {
             if (!this.yearList) return;
 
             var year = this.showDate.year;
@@ -535,70 +551,70 @@
                     break;
                 }
             }
-        },
+        }
 
         /**
         * Show the previous month.
         */
-        _prevMonthHandler: function () {
+        _prevMonthHandler = function () {
             this.set('showDate.month', this.showDate.month <= 0 ? 11 : this.showDate.month - 1);
             this.set('showDate.year', this.showDate.month == 11 ? this.showDate.year - 1 : this.showDate.year);
 
             this.notifyPath('date.year', this.showDate.year);
-            
+
             this.currentMonth = this._getMonthLabel();
             this._genTable(this.showDate.year, this.showDate.month);
-        },
+        }
 
         /**
         * Show the next year.
         */
-        _nextYearHandler: function () {
+        _nextYearHandler = function () {
             this.set('showDate.year', this.showDate.year += 1);
             this.notifyPath('date.year', this.showDate.year);
             this._genTable(this.showDate.year, this.showDate.month);
-        },
+        }
 
         /**
         * Show the previous year.
         */
-        _prevYearHandler: function () {
+        _prevYearHandler = function () {
             this.set('showDate.year', this.showDate.year -= 1);
             this.notifyPath('date.year', this.showDate.year);
             this._genTable(this.showDate.year, this.showDate.month);
-        },
+        }
 
         /**
         * Switch to current month.
         */
-        _goTodayHandler: function () {
+        _goTodayHandler = function () {
             var date = new Date();
             this.showDate.month = date.getMonth();
             this.showDate.year = date.getFullYear();
 
             this.notifyPath('date.year', this.showDate.year);
-            
+
             this.currentMonth = this._getMonthLabel();
             this._genTable(this.showDate.year, this.showDate.month);
-        },
+        }
 
         /**
         * Switch view to month of selected day.
         */
-        _goSelectedHandler: function () {
+        _goSelectedHandler = function () {
             this.showDate.month = this.date.month - 1;
             this.showDate.year = this.date.year;
 
             this.notifyPath('date.year', this.showDate.year);
-            
+
             this.currentMonth = this._getMonthLabel();
             this._genTable(this.showDate.year, this.showDate.month);
-        },
+        }
 
         /**
         * Toggle visibility of the month selection list.
         */
-        _toggleMonthList: function () {
+        _toggleMonthList = function () {
             if (!this.$.yearList.classList.contains('hidden')) {
                 this._hideYearList();
             }
@@ -608,40 +624,40 @@
             } else {
                 this._hideMonthList();
             }
-        },
+        }
 
         /**
         * Show month selection.
         */
-        _showMonthList: function () {
+        _showMonthList = function () {
             this.$.calendar.style.visibility = 'hidden';
             Polymer.dom(this.$.monthList).classList.remove('hidden');
-        },
+        }
 
         /**
         * Hide month selection.
         */
-        _hideMonthList: function () {
+        _hideMonthList = function () {
             Polymer.dom(this.$.monthList).classList.add('hidden');
             this.$.calendar.style.visibility = 'visible';
-        },
+        }
 
         /**
         * Switch to the selected month.
         */
-        _selectMonth: function (e) {
+        _selectMonth = function (e) {
             this._toggleMonthList();
 
             this.showDate.month = e.model.index;
             this.notifyPath('date.year', this.showDate.year);
             this.currentMonth = this._getMonthLabel();
             this._genTable(this.showDate.year, this.showDate.month);
-        },
+        }
 
         /**
         * Toggle visibility of the year selection list.
         */
-        _toggleYearList: function () {
+        _toggleYearList = function () {
             if (!this.$.monthList.classList.contains('hidden')) {
                 this._hideMonthList();
             }
@@ -651,40 +667,40 @@
             } else {
                 this._hideYearList();
             }
-        },
+        }
 
         /**
         * Show year selection list.
         */
-        _showYearList: function () {
+        _showYearList = function () {
             this.$.calendar.style.visibility = 'hidden';
             Polymer.dom(this.$.yearList).classList.remove('hidden');
-        },
+        }
 
         /**
         * Hide year selection list.
         */
-        _hideYearList: function () {
+        _hideYearList = function () {
             Polymer.dom(this.$.yearList).classList.add('hidden');
             this.$.calendar.style.visibility = 'visible';
-        },
+        }
 
         /**
         * Switch to the selected year.
         */
-        _selectYear: function (e) {
+        _selectYear = function (e) {
             this._toggleYearList();
 
             this.set('showDate.year', e.model.item);
             this.notifyPath('date.year', this.showDate.year);
             this._genTable(this.showDate.year, this.showDate.month);
-        },
+        }
 
         /**
         * Switch to the right calendar page, based on the set date.
         * @param {Object} newDate
         */
-        _dateChanged: function (newDate) {
+        _dateChanged = function (newDate) {
             var date = new Date();
             var month = parseInt(newDate.month) || 1;
             var year = parseInt(newDate.year) || date.getFullYear();
@@ -715,8 +731,9 @@
 
             this.currentMonth = this._getMonthLabel();
             this._genTable(this.showDate.year, this.showDate.month);
-        },
-        _getMonthLabel:function(){
+        }
+
+        _getMonthLabel = function () {
             if (this._translations) {
                 var date = new Date(this.showDate.year, this.showDate.month);
                 var month = date.toLocaleString('en', { month: 'long' }).toLowerCase();
@@ -725,14 +742,14 @@
             else {
                 return this.monthLabels[this.showDate.month];
             }
-        },
+        }
 
         /**
         * Renders the calendar page for the selected date.
         * @param year
         * @param month
         */
-        _getDaysLabels:function(){
+        _getDaysLabels = function () {
             if (this._translations) {
                 return [
                     this._translations.texts.sunday,
@@ -746,8 +763,9 @@
             else {
                 return this.dayLabels;
             }
-        },
-        _genTable: function (year, month) {
+        }
+
+        _genTable = function (year, month) {
             this.currentMonth = this._getMonthLabel();
             this.notifyPath('date.year', this.showDate.year);
 
@@ -819,7 +837,7 @@
                                 var first = new Date(this.dates[0].date);
                                 var last = new Date(this.dates[this.dates.length - 1].date);
                                 var date = new Date(year, month, day);
-                                if(date < first || date > last){
+                                if (date < first || date > last) {
                                     classes.push('before');
                                 }
                                 else {
@@ -838,10 +856,10 @@
                                 }
                             }
                         }
-                        
+
                         if (day == thisDay && thisMonth == month && thisYear == year) {
                             classes.push('today');
-                        }                        
+                        }
 
                         html += '<td><div id="' + this.showDate.year + this.showDate.month + day + '" class="day ' + classes.join(' ') + '">' + day + '</div>';
                         day++;
@@ -864,5 +882,6 @@
             this.$.calendar.innerHTML = '';
             calEl.appendChild(table);
         }
-    });
+    }
+    customElements.define(SaDatePicker.is, SaDatePicker);
 </script>

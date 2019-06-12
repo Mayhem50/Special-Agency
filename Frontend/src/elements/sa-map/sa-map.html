@@ -69,11 +69,10 @@
     </template>
 
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-map',
+        class SaMap extends Polymer.Element {
+                static get is() { return 'sa-map'; }
 
-                properties: {
+                static get properties() { return  {
                     zoom:Number,
                     map: Object,
                     disabled:{
@@ -98,11 +97,13 @@
                     },
                     circle: Object,
                     lang : String
-                },
-                attached: function () {
+                };}
+                
+                attached = function () {
                     this.getLocation();
-                },
-                mapApiLoaded: function (e) {
+                }
+
+                mapApiLoaded = function (e) {
                     this.autocomplete = new google.maps.places.Autocomplete(this.$.autocomplete.inputElement);
                     google.maps.event.addListener(this.autocomplete, 'place_changed', function () {
                         var place = this.autocomplete.getPlace();
@@ -124,20 +125,23 @@
                         }));
 
                     }.bind(this));
-                },
-                getLocation: function () {
+                }
+
+                getLocation = function () {
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(function (position) {
                             this.set('longitude', position.coords.longitude);
                             this.set('latitude', position.coords.latitude);
                         }.bind(this));
                     }
-                },
-                setLocation:function(longitude, latitude){
+                }
+
+                setLocation = function(longitude, latitude){
                     this.set('longitude', longitude);
                     this.set('latitude', latitude);
-                },
-                drawMarker: function (longitude, latitude, address) {
+                }
+
+                drawMarker = function (longitude, latitude, address) {
                     var latlng = { lat: latitude, lng: longitude };
                     
                     this.markers.push(new google.maps.Marker({
@@ -146,15 +150,17 @@
                         title: address,
                         position: latlng
                     }));
-                },
-                clearMarkers: function () {
+                }
+
+                clearMarkers = function () {
                     if(this.markers)
                         this.markers.forEach(function (marker) {
                             marker.setMap(null);
                         });
                     this.markers = [];
-                },
-                drawCircle: function (longitude, latitude) {
+                }
+
+                drawCircle = function (longitude, latitude) {
                     var latlng = { lat: latitude, lng: longitude };
                     this.circle = new google.maps.Circle({
                         strokeColor: '#FF0000',
@@ -166,13 +172,14 @@
                         center: latlng,
                         radius: 100
                     });
-                },
-                clearCircle: function () {
+                }
+
+                clearCircle = function () {
                     if(this.circle)
                         this.circle.setMap(null);
                 }
-            });
-        })();
+            }
+            customElements.define(SaMap.is, SaMap);
 
     </script>
 </dom-module>

@@ -1,5 +1,4 @@
-﻿
-<dom-module id="sa-kind-toolbar">
+﻿<dom-module id="sa-kind-toolbar">
     <style>
         :host {
             display: flex;
@@ -37,11 +36,11 @@
             cursor: pointer;
         }
 
-            #toolbar-button > iron-icon {
-                padding: 0;
-                width: 40px;
-                height: 100%;
-            }
+        #toolbar-button>iron-icon {
+            padding: 0;
+            width: 40px;
+            height: 100%;
+        }
 
         #toolbar-deco {
             flex: 0 0 40px;
@@ -51,7 +50,7 @@
         #toolbar-content {
             flex: 1 0 150px;
             align-self: stretch;
-            height:100%;
+            height: 100%;
         }
 
         #toolbar-dummy {
@@ -59,15 +58,17 @@
             align-self: stretch;
         }
 
-        .tab{
-            width:10%;
-            display:flex;
-            align-items:center;
+        .tab {
+            width: 10%;
+            display: flex;
+            align-items: center;
         }
     </style>
 
     <template>
-        <div id="toolbar-button" on-tap="_backToKinds"><iron-icon icon="chevron-left"></iron-icon></div>
+        <div id="toolbar-button" on-tap="_backToKinds">
+            <iron-icon icon="chevron-left"></iron-icon>
+        </div>
         <div id="toolbar-image">&nbsp;</div>
         <div id="toolbar-text">
             <span>{{_computeKindName(kind, lang)}}</span>
@@ -81,11 +82,11 @@
     </template>
 
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-kind-toolbar',
+        class SaKindToolbar extends Polymer.Element {
+            static get is() { return 'sa-kind-toolbar'; }
 
-                properties: {
+            static get properties() {
+                return {
                     kind: {
                         type: Object,
                         observer: '_updateContent'
@@ -94,7 +95,7 @@
                         type: Boolean,
                         observer: '_updateContent'
                     },
-                    _tabCount : {
+                    _tabCount: {
                         type: Number,
                         value: 0
                     },
@@ -102,110 +103,117 @@
                         type: Array,
                         value: []
                     },
-                    lang : String
-                },
-                attached:function(){                    
-                    app.addEventListener('on-change-language', function (e) {
-                        this.lang = app.lang;
-                    }.bind(this));
+                    lang: String
+                };
+            }
 
+            attached = function () {
+                app.addEventListener('on-change-language', function (e) {
                     this.lang = app.lang;
-                },
-                _computeKindName: function (kind, lang) {
-                    if (this.kind) {
-                        if (this.lang == 'fr') {
-                            return this.kind.name.fr;
-                        }
-                        else if (this.lang == 'en') {
-                            return this.kind.name.en;
-                        }
+                }.bind(this));
+
+                this.lang = app.lang;
+            }
+
+            _computeKindName = function (kind, lang) {
+                if (this.kind) {
+                    if (this.lang == 'fr') {
+                        return this.kind.name.fr;
                     }
-                },
-                _updateContent: function () {
-                    this._changeColor();
-
-                    if (!this.kind) { return; }
-
-                    div = this.querySelector('#toolbar-image');
-                    if (div == null) { return; }
-                    div.style.backgroundImage = 'url(../../images/kinds/' + this.kind.image.path + ')';
-                    div.style.backgroundPosition = this.kind.image.toolbarXOffset + ' ' + this.kind.image.toolbarYOffset;
-                    div.style.backgroundSize = this.kind.image.toolbarScale;
-
-                },
-                _backToKinds: function (e) {
-                    this.fire('back-to-previous-page');
-                },
-                _changeColor: function () {
-                    var color;
-                    var div;
-
-                    if (this.createMission) {
-                        color = "#339933";
-
-                        div = this.querySelector('#toolbar-dummy');
-                        if (div)
-                            div.style.background = color;
+                    else if (this.lang == 'en') {
+                        return this.kind.name.en;
                     }
-                    else {
-                        if (this.kind)
-                            color = this.kind.color;
+                }
+            }
 
-                        div = this.querySelector('#toolbar-dummy');
-                        if (div)
-                            div.style.background = "rgba(0, 0, 0, 0)";
-                    }
+            _updateContent = function () {
+                this._changeColor();
 
-                    div = this.querySelector('#toolbar-deco');
-                    if (div == null) { return; }
-                    div.style.background = color;
+                if (!this.kind) { return; }
 
-                    div = this.querySelector('#toolbar-text');
-                    if (div == null) { return; }
-                    div.style.background = color;
-                },
-                //addMissionTab: function (mission) {
-                //    var tab = document.createElement('div');
-                //    tab.id = mission._id;
-                //    tab.style.backgroundColor = mission._type.color;
-                //    tab.classList.add('tab');
-                //    tab.style.display = 'flex';
-                //    tab.style.alignItems = 'center';
-                //    tab.style.width = '32%';
-                //    tab.style.height = '100%';
-                //    tab.style.alignSelf = 'stretch'
+                div = this.querySelector('#toolbar-image');
+                if (div == null) { return; }
+                div.style.backgroundImage = 'url(../../images/kinds/' + this.kind.image.path + ')';
+                div.style.backgroundPosition = this.kind.image.toolbarXOffset + ' ' + this.kind.image.toolbarYOffset;
+                div.style.backgroundSize = this.kind.image.toolbarScale;
 
-                //    tab.innerHTML = '<div class="text-tab">' + mission.creationDate + '</div><paper-icon-button icon="close" on-tap="_onCloseTab"/>';
-                //    this.$$('#toolbar-content').appendChild(tab);
+            }
 
-                //    div = this.querySelector('#toolbar-text');
-                //    if (div == null) { return; }
-                //    div.style.background = '#383838';
+            _backToKinds = function (e) {
+                this.fire('back-to-previous-page');
+            }
 
-                //    this._missions.push(mission);
-                //},
-                //_onCloseTab: function (e) {
-                //    for (var idx = 0; idx < this._missions.length; ++idx) {
-                //        if (this._missions[idx]._id == e.target.id) {
-                //            this._missions.splice(idx, 1);
-                //            this.selectTab(this._missions[this._missions.length - 1]);
-                //            return;
-                //        }
-                //    }
-                //},
-                //selectTab: function (id) {
-                //    var divs = this.querySelectorAll('tab');
+            _changeColor = function () {
+                var color;
+                var div;
 
-                //    for (var idx; divs.length; ++idx) {
-                //        if (divs[idx].id == id) {
-                //            divs[idx].style.background = this.kind.color;
-                //        }
-                //        else{
-                //            divs[idx].style.background = '#383838';
-                //        }
-                //    }
-                //}
-            });
-        })();
+                if (this.createMission) {
+                    color = "#339933";
+
+                    div = this.querySelector('#toolbar-dummy');
+                    if (div)
+                        div.style.background = color;
+                }
+                else {
+                    if (this.kind)
+                        color = this.kind.color;
+
+                    div = this.querySelector('#toolbar-dummy');
+                    if (div)
+                        div.style.background = "rgba(0, 0, 0, 0)";
+                }
+
+                div = this.querySelector('#toolbar-deco');
+                if (div == null) { return; }
+                div.style.background = color;
+
+                div = this.querySelector('#toolbar-text');
+                if (div == null) { return; }
+                div.style.background = color;
+            }
+
+            //addMissionTab = function (mission) {
+            //    var tab = document.createElement('div');
+            //    tab.id = mission._id;
+            //    tab.style.backgroundColor = mission._type.color;
+            //    tab.classList.add('tab');
+            //    tab.style.display = 'flex';
+            //    tab.style.alignItems = 'center';
+            //    tab.style.width = '32%';
+            //    tab.style.height = '100%';
+            //    tab.style.alignSelf = 'stretch'
+
+            //    tab.innerHTML = '<div class="text-tab">' + mission.creationDate + '</div><paper-icon-button icon="close" on-tap="_onCloseTab"/>';
+            //    this.$$('#toolbar-content').appendChild(tab);
+
+            //    div = this.querySelector('#toolbar-text');
+            //    if (div == null) { return; }
+            //    div.style.background = '#383838';
+
+            //    this._missions.push(mission);
+            //},
+            //_onCloseTab = function (e) {
+            //    for (var idx = 0; idx < this._missions.length; ++idx) {
+            //        if (this._missions[idx]._id == e.target.id) {
+            //            this._missions.splice(idx, 1);
+            //            this.selectTab(this._missions[this._missions.length - 1]);
+            //            return;
+            //        }
+            //    }
+            //},
+            //selectTab = function (id) {
+            //    var divs = this.querySelectorAll('tab');
+
+            //    for (var idx; divs.length; ++idx) {
+            //        if (divs[idx].id == id) {
+            //            divs[idx].style.background = this.kind.color;
+            //        }
+            //        else{
+            //            divs[idx].style.background = '#383838';
+            //        }
+            //    }
+            //}
+        }
+        customElements.define(SaKindToolbar.is, SaKindToolbar);
     </script>
 </dom-module>

@@ -1,35 +1,27 @@
-﻿
-<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html" />
+﻿<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html" />
 
 <dom-module id="sa-xhr">
     <style>
         :host {
-            display:none !important;
+            display: none !important;
         }
     </style>
     <template>
-        <iron-ajax id="xhr"
-                   url="[[url]]"
-                   content-type="application/json"
-                   handle-as="json"
-                   loading="{{isLoading}}"
-                   body="[[body]]"
-                   params="[[params]]"
-                   method="[[method]]"
-                   on-response="_handleResponse"
-                   last-response="{{_xhrResponse}}">
+        <iron-ajax id="xhr" url="[[url]]" content-type="application/json" handle-as="json" loading="{{isLoading}}"
+            body="[[body]]" params="[[params]]" method="[[method]]" on-response="_handleResponse"
+            last-response="{{_xhrResponse}}">
         </iron-ajax>
     </template>
 
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-xhr',
+        class SaXhr extends Polymer.Element {
+            static get is() { return 'sa-xhr'; }
 
-                properties: {
-                    token : {
-                        type : Boolean,
-                        value : false
+            static get properties() {
+                return {
+                    token: {
+                        type: Boolean,
+                        value: false
                     },
                     result: {
                         type: Object,
@@ -52,34 +44,38 @@
                         type: Boolean,
                         value: false
                     },
-                    isLoading : {
+                    isLoading: {
                         type: Boolean,
                         notify: true
                     },
                     _xhrResponse: Object
-                },
-                attached: function () {
-                    if (this.auto) {
-                        this.request();
-                    }
-                },
-                _handleResponse: function () {
-                    if (!this._xhrResponse) { return; }
+                };
+            }
 
-                    if (this._xhrResponse.success) {
-                        this.result = this._xhrResponse.result;
-                        this.fire('result', { result: this.result });
-                    }
-                },
-                request: function () {
-                    if (this.token) {
-                        this.params.access_token = window.sessionStorage.token;
-                    }
-                    this.$.xhr.generateRequest();
+            attached = function () {
+                if (this.auto) {
+                    this.request();
                 }
-            });
-        })();
+            }
+
+            _handleResponse = function () {
+                if (!this._xhrResponse) { return; }
+
+                if (this._xhrResponse.success) {
+                    this.result = this._xhrResponse.result;
+                    this.fire('result', { result: this.result });
+                }
+            }
+
+            request = function () {
+                if (this.token) {
+                    this.params.access_token = window.sessionStorage.token;
+                }
+                this.$.xhr.generateRequest();
+            }
+        }
+
+        customElements.define(SaXhr.is, SaXhr);
 
     </script>
 </dom-module>
-

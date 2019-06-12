@@ -1,16 +1,16 @@
-﻿
-<dom-module id="sa-dashboard-toolbar">
+﻿<dom-module id="sa-dashboard-toolbar">
     <style>
         :host {
             display: flex;
-            background-color:#383838;
-            padding:0 26vw;
+            background-color: #383838;
+            padding: 0 26vw;
+
             --paper-tab: {
                 width: 8vw;
                 padding: 0;
-                color:#fff;
-                text-transform:uppercase;
-                font-weight:100;
+                color: #fff;
+                text-transform: uppercase;
+                font-weight: 100;
             }
 
             --paper-tabs: {
@@ -21,7 +21,7 @@
             --paper-tabs-selection-bar: {
                 height: 6px;
             }
-            
+
             --paper-tabs-selection-bar-color: #fff;
         }
     </style>
@@ -32,24 +32,24 @@
             <paper-tab data-route="agenda">{{_translations.texts.agenda}}</paper-tab>
         </paper-tabs>
 
-        <sa-translation id="translation"
-                        element="sa-dashboard-toolbar"
-                        translations="{{_translations}}"></sa-translation>
+        <sa-translation id="translation" element="sa-dashboard-toolbar" translations="{{_translations}}">
+        </sa-translation>
     </template>
 
     <script>
-        (function () {
-            Polymer({
-                is: 'sa-dashboard-toolbar',
+        class SaDashboardToolbar extends Polymer.Element {
+            static get is() { return 'sa-dashboard-toolbar'; }
 
-                properties: {
+            static get properties() {
+                return {
                     filter: {
                         type: String,
                         value: 'messages',
-                        notify:true
+                        notify: true
                     }
-                }
-            });
-        })();
+                };
+            }
+        }
+        customElements.define(SaDashboardToolbar.is, SaDashboardToolbar);
     </script>
 </dom-module>

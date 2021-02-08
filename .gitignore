@@ -5,3 +5,4 @@ dist
 .ntvs_analysis.dat
 *.suo
 obj/
+node_modules

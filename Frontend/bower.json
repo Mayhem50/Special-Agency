@@ -1,17 +1,8 @@
 {
   "name": "special-agency",
   "devDependencies": {
-    "platinum-elements": "PolymerElements/platinum-elements#*",
-    "neon-elements": "PolymerElements/neon-elements#*",
-    "test-fixture": "PolymerElements/test-fixture#*",
-    "paper-card": "PolymerElements/paper-card#*",
-    "paper-date-picker": "polymer-paper-datepicker#*",
-    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#*",
-    "paper-button": "PolymerElements/paper-button#*",
-    "paper-checkbox": "PolymerElements/paper-checkbox#*",
-    "google-map": "GoogleWebComponents/google-map#*",
-    "paper-badge": "PolymerElements/paper-badge#*",
-    "google-apis": "GoogleWebComponents/google-apis#*",
+    "google-map": "GoogleWebComponents/google-map",
+    "google-apis": "GoogleWebComponents/google-apis",
     "page": "page.js#^1.11.4"
   },
   "version": "0.0.1",

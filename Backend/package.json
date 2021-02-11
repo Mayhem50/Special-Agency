@@ -57,6 +57,8 @@
   },
   "homepage": "http://github.com/Mayhem50/Special-Agency#readme",
   "scripts": {
-    "start": "node ./dist/app.js"
+    "start": "node ./dist/app.js",
+    "build": "npx tsc",
+    "postinstall": "npm run build"
   }
 }

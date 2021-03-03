@@ -16,7 +16,7 @@ export default (passport: PassportStatic) => {
         //then edit your /etc/hosts local file to point on your private IP.
         //Also both sign-in button + callbackURL has to be share the same url, otherwise two cookies will be created and lead to lost your session
         //if you use it.
-        callbackURL: "http://127.0.0.1:3000/users/google-callback",
+        callbackURL: config.GOOGLE_CLIENT.callbackUrl,
         passReqToCallback: true
       },
       (accessToken: string, refreshToken: string, profile: any, done: VerifyCallback) => {

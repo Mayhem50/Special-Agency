@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { createServer } from "./services/server.js";
 import { createSocket } from "./services/socket.io.js";
-import passport from "./services/passport";
+import passport from "./services/auth";
 
 import Router from "./routes/v1/rest/index";
 

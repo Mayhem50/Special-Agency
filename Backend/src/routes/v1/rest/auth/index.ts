@@ -1,8 +1,8 @@
-﻿import { Router } from "express";
+import { Router } from "express";
 import jwtauth from "../../../../services/jwt-auth/rest";
 import { getUserById } from "../../../../models/user";
 import { failResponse, successResponse } from "../../../../utils/express-response";
-import { create, authenticate, logout } from "../../../../services/passport";
+import { create, authenticate, logout } from "../../../../services/auth";
 import GoogleRouter from './socials/google';
 
 const router = Router();

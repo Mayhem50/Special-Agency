@@ -1,0 +1,201 @@
+﻿
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html" />
+<link rel="import" href="../sa-xhr/sa-xhr.html" />
+<link rel="import" href="sa-chat-list-item.html" />
+
+<dom-module id="sa-chats-list">
+    <style>
+        :host {
+            width: 600px;
+            border-radius: 7px;
+            display: flex;
+            flex-direction: column;
+            height: 795px;
+            justify-content: space-between;
+            @apply(--sa-chats-list);
+        }
+
+        #header {
+            height: 50px;
+            display: flex;
+            background-color: #3a3a3a;
+            color: #7c7c7c;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            padding-right:5px;
+        }
+
+        #header-icon {
+            width: 40px;
+        }
+
+        #header-agent{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-grow:2;
+        }
+
+        #header-text {
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-grow: 15;
+        }
+
+        #header-date {
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-grow:3;
+        }
+
+        #content {
+            flex-grow: 2;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(48, 48, 48, 0.40);
+        }
+
+        #footer {
+            height: 50px;
+            background-color: #efefef;
+            color: #7c7c7c;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+    </style>
+    <template>
+        <div id="header">
+            <div id="header-icon">
+                &nbsp;
+            </div>
+            <div id="header-agent">{{_translations.texts.names}}</div>
+            <div id="header-text">{{_translations.texts.messages}}</div>
+            <div id="header-date">{{_translations.texts.dates}}</div>
+        </div>
+        <div id="content">
+            <template id="list" is="dom-repeat" items="[[chats]]" sort="_sortChat" filter="_filterChat" observers="unreads">
+                <sa-chat-list-item chat="[[item]]" on-click="_getChat" on-mouseenter="_onMouseEnter" on-mouseleave="_onMouseLeave"></sa-chat-list-item>
+            </template>
+        </div>
+        <div id="footer">
+
+        </div>
+
+        <sa-translation id="translation"
+                        element="sa-chats-list"
+                        translations="{{_translations}}"></sa-translation>
+    </template>
+    <script>
+        (function () {
+            Polymer({
+                static get is() { return 'sa-chats-list'; }
+
+                static get properties() { return  {
+                    chats: Object,
+                    selectedChat: {
+                        type: Object,
+                        notify: true
+                    },
+                    _xhrUrl: String,
+                    params: Object,
+                    mission: {
+                        type: Object,
+                        observer: '_needRender'
+                    },
+                    gradientIndex: {
+                        type: Number,
+                        notify: true
+                    },
+                    previousItem:Object
+                },
+                observers: [
+        'chatsChanged(chats.*)'
+                ],
+                chatsChanged: function (record) {
+                    console.log(record);
+                    if ((record.path.includes('agentUnreads') && app.role == 'agent') ||
+                        (record.path.includes('sponsorUnreads') && app.role == 'sponsor')) {
+                        var index = getIndexInArrayFromPath(record.path);
+                        var divs = this.querySelectorAll('sa-chat-list-item');
+
+                        for (var idx = 0; idx < divs.length; ++idx) {
+                            if (divs[idx].chat._id == this.chats[index]._id) {
+                                if (this.selectedChat && this.chats[index]._id == this.selectedChat._id && !this.mission) {
+                                    divs[idx].updateChat(this.chats[index]);
+                                    this.async(function(){app.socket.emit('read-chat', this.chats[idx])}.bind(this), 150);
+                                    divs[idx].activeBackground();
+                                }
+                                else {
+                                    divs[idx].chat = this.chats[index];
+                                    divs[idx].setBackground();
+                                }
+                            }                            
+                        }
+                    }
+                },
+                attached: function () {
+                    app.addEventListener('role-changed', function (e) {
+                        this._needRender();
+                        this.selectedChat = null;
+                    }.bind(this));
+                },
+                _sortChat: function(A, B){
+                    var dateA = new Date(A.date);
+                    var dateB = new Date(B.date);
+
+                    return dateA > dateB;
+                },
+                _filterChat: function (item) {
+                    var ret = true;
+
+                    if (this.mission) {
+                        ret &= item._mission._id == this.mission._id;
+                    }
+                    if (app.role == 'agent') {
+                        ret &= item._agent._id == app.user._id;
+                    }
+                    else if (app.role == 'sponsor') {
+                        ret &= item._sponsor._id == app.user._id;
+                    }
+
+                    return ret;
+                },
+                _needRender: function (e) {
+                    this.$.list.render();
+                },
+                _getChat: function (e) {
+                    if (this.previousItem) {
+                        this.previousItem.setBackground();
+                    }
+                    
+                    var idx = this.chats.indexOfObject('_id', e.model.item._id);
+
+                    if (idx > -1) {
+                        var divs = this.querySelectorAll('sa-chat-list-item');
+                        if (divs) {
+                            this.gradientIndex = divs[e.model.index].gradientIndex;
+                        }
+                        else {
+                            this.gradientIndex = 7;
+                        }
+                        this.set('selectedChat', this.chats[idx]);
+                        app.socket.emit('read-chat', this.chats[idx]);
+                        this.fire('chat-selected', { chat: this.chats[idx] });
+                    }
+                    this.previousItem = e.currentTarget;
+                },
+                _onMouseEnter: function (e) {
+                    e.currentTarget.activeBackground();
+                },
+                _onMouseLeave: function (e) {
+                    if (this.selectedChat && this.selectedChat._id == e.currentTarget.chat._id) { return;}
+                    e.currentTarget.setBackground();
+                }
+            });
+        })();
+
+    </script>
+</dom-module>
+

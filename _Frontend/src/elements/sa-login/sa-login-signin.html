@@ -1,0 +1,161 @@
+﻿<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html" />
+<link rel="import" href="../sa-xhr/sa-xhr.html" />
+
+<dom-module id="sa-login-signin">
+    <style>
+        :host {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+
+            --paper-input-container-underline: {
+                height: 0;
+            }
+
+            --paper-input-container-underline-focus: {
+                height: 0;
+            }
+
+            --paper-input-container-underline-disabled: {
+                height: 0;
+            }
+
+            --paper-input-container-input: {
+                color: #909090;
+            }
+
+            --paper-checkbox-unchecked-background-color:#606060;
+            --paper-checkbox-unchecked-color:rgba(0, 0, 0, 0);
+
+            --paper-checkbox-box-unchecked: {
+                border-radius: 5px;
+            }
+
+            --paper-checkbox-label-color:#909090;
+            --paper-checkbox-checked-color:rgba(0, 0, 0, 0);
+        }
+
+        .inputs {}
+
+        .inputs paper-input {
+            margin: 5px 10px;
+            border: solid 1px;
+            border-radius: 5px;
+            font-size: 16px;
+            height: 40px;
+            padding: 2px 15px;
+            background-color: #363636;
+            color: #909090;
+            border: none;
+        }
+
+        .passport-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding: 0 5px;
+        }
+
+        .passport-buttons paper-fab {
+            background-color: #0593d3;
+            margin: 5px;
+        }
+
+        .button {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .button paper-button {
+            text-transform: none;
+            background-color: #0593d3;
+            width: 83%;
+            margin: 5px auto;
+        }
+
+        .checkbox {
+            margin: 2px auto;
+        }
+    </style>
+    <template>
+        <div class="inputs">
+            <paper-input always-float-label="false" no-label-float="true" id="email" is="email" label="Email"
+                name="{{_translations.texts.email}}" value="{{_email::input}}"></paper-input>
+            <paper-input always-float-label="false" no-label-float="true" id="password" is="password"
+                label="{{_translations.texts.password}}" type="password" name="password" value="{{_password::input}}">
+            </paper-input>
+        </div>
+        <div class="checkbox">
+            <paper-checkbox noink is="remember" label="{{_translations.texts.remember_me}}" checked="{{_remember}}">
+                Remember Me</paper-checkbox>
+        </div>
+        <div class="button">
+            <paper-button on-click="_signin" raised>{{_translations.texts.signin}}</paper-button>
+        </div>
+        <paper-spinner active="[[_isLoading]]"></paper-spinner>
+
+        <sa-translation id="translation" element="sa-login-signin" translations="{{_translations}}"></sa-translation>
+
+        <sa-xhr id="xhr" url="/users/login" body="{{_infos}}" method="POST" on-result="_handleResponse"
+            result="{{_response}}" is-loading="{{_isLoading}}"></sa-xhr>
+
+    </template>
+
+    <script>
+        class SaLoginSignin extends Polymer.Element {
+            static get is() { return 'sa-login-signin'; }
+
+            static get properties() {
+                return {
+                    user: {
+                        type: Object,
+                        notify: true
+                    },
+                    _email: {
+                        type: String
+                    },
+                    _password: {
+                        type: String
+                    }
+                };
+            }
+
+            _signin = function (event) {
+                this.signin({
+                    email: this._email,
+                    password: this._password
+                });
+            }
+
+            signin = function (infos) {
+                this._infos = infos;
+                this.$.xhr.request();
+            }
+
+            _handleResponse = function () {
+                if (!this._response) {
+                    return;
+                }
+
+                if (this._remember === true) {
+                    window.localStorage.token = this._response.token;
+                    window.localStorage.remember = true;
+                    window.localStorage.setItem('email', this._infos.email);
+                    window.localStorage.setItem('id', this._response.id);
+                    window.localStorage.setItem('user', JSON.stringify(this._response.user));
+                }
+
+                window.sessionStorage.token = this._response.token;
+                window.sessionStorage.setItem('email', this._infos.email);
+                window.sessionStorage.setItem('id', this._response.id);
+                window.sessionStorage.setItem('user', JSON.stringify(this._response.user));
+
+                app.onLogIn();
+            }
+        }
+        customElements.define(SaLoginSignin.is, SaLoginSignin);
+    </script>
+</dom-module>

@@ -1,0 +1,85 @@
+<script src="../../bower_components/page/page.js"></script>
+<script>
+    window.addEventListener('WebComponentsReady', function () {
+        //page('/', function () {            
+        //    isAuthenticated('missions');
+        //});
+
+        //page('/login', function () {
+        //    isAuthenticated('profile', function () {
+        //        app.get_profile = !app.get_profile;
+        //    });
+        //});
+
+        //page('/logout', function () {
+        //    clearToken();
+        //    app.onLogOut();
+        //});
+
+        //page('/profile', function (data) {
+        //    isAuthenticated('profile', function () {
+        //        app.get_profile = !app.get_profile;
+        //    });
+        //});
+
+        //page('/users', function () {
+        //    app.route = 'users';
+        //});
+
+        //page('/users/:name', function (data) {
+        //    app.route = 'user-info';
+        //    app.params = data.params;
+        //});
+
+        //page('/missions', function () {
+        //    app.route = 'missions';
+        //        app.filter = !app.filter;
+        //});
+
+        //// add #! before urls
+        //page({
+        //    hashbang: true
+        //});        
+
+        
+    });
+
+    function clearToken() {
+        window.localStorage.clear();
+        window.sessionStorage.clear();
+    }
+
+    function isAuthenticated(route, successCb, failCb) {
+        console.log(window.sessionStorage.token);
+        $.ajax({
+            url: '/token',
+            data: {
+                access_token : window.sessionStorage.token
+            },
+            statusCode : {
+                200: function () {
+                    console.log('200');
+                    app.route = route;
+                    app.isLogged = true;
+                    if (successCb)
+                        successCb();
+                },
+                403: function () {
+                    console.log('403');
+                    app.route = 'login';
+                    app.isLogged = false;
+                    if (failCb)
+                        failCb();
+                },
+                404: function () {
+                    console.log('404');
+                    app.route = 'login';
+                    app.isLogged = false;
+                    if (failCb)
+                        failCb();
+                }
+            },
+            type : 'POST'
+        });
+    }    
+</script>

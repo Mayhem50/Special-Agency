@@ -1,0 +1,67 @@
+﻿<dom-module id="sa-toolbar-not-logged">
+    <style>
+        :host {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+
+            --paper-tabs-selection-bar-color: #000;
+
+            --paper-tab: {
+                width: 100px;
+            }
+
+            --paper-tabs: {
+                height: 67px;
+            }
+
+            --paper-tabs-selection-bar: {
+                height: 6px;
+            }
+
+            --paper-tabs-selection-bar-color:#cccccc;
+        }
+
+        img {
+            height: 64px;
+        }
+    </style>
+
+    <template>
+
+        <div>
+            <img src="../../images/logo/Img-03.png" />
+        </div>
+        <paper-tabs noink attr-for-selected="data-route" selected="{{route}}">
+            <paper-tab data-route="home">{{_translations.texts.concept}}</paper-tab>
+            <paper-tab data-route="missions">{{_translations.texts.missions}}</paper-tab>
+            <paper-tab data-route="agents">{{_translations.texts.agents}}</paper-tab>
+            <paper-tab data-route="sponsors">{{_translations.texts.sponsors}}</paper-tab>
+            <paper-tab data-route="news">{{_translations.texts.news}}</paper-tab>
+            <paper-tab data-route="support">{{_translations.texts.support}}</paper-tab>
+        </paper-tabs>
+        <div>{{_translations.texts.become_agent}}</div>
+        <paper-icon-button icon="search"></paper-icon-button>
+
+        <sa-translation id="translation" element="sa-toolbar-not-logged" translations="{{_translations}}">
+        </sa-translation>
+    </template>
+
+    <script>
+        class SaToolbarNotLogged extends Polymer.Element {
+            static get is() { return 'sa-toolbar-not-logged'; }
+
+            static get properties() {
+                return {
+                    route: {
+                        type: String,
+                        value: 'home',
+                        notify: true
+                    }
+                };
+            }
+        }
+        customElements.define(SaToolbarNotLogged.is, SaToolbarNotLogged);
+    </script>
+</dom-module>

@@ -1,0 +1,193 @@
+﻿<link rel="import" href="sa-mission-infos.html" />
+<link rel="import" href="sa-missions-list.html" />
+<link rel="import" href="sa-mission-filter-toolbar.html" />
+<link rel="import" href="sa-mission-toolbar.html" />
+<link rel="import" href="../sa-kinds/sa-kinds-list.html" />
+<link rel="import" href="../sa-kinds/sa-kind-toolbar.html" />
+
+<dom-module id="sa-missions">
+    <style>
+        :host {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 0;
+            height: 100%;
+        }
+    </style>
+    <template>
+        <iron-pages id="toolbar" selected="0">
+            <sa-mission-toolbar filter="{{_mainFilter}}"></sa-mission-toolbar>
+            <sa-kind-toolbar id="tabs" kind="{{_selectedKind}}" on-back-to-previous-page="_backToPreviousPage"
+                create-mission="{{createMission}}"></sa-kind-toolbar>
+        </iron-pages>
+        <iron-pages id="pages" attr-for-selected="data-page" selected="missions">
+            <section data-page="missions">
+                <sa-missions-list missions="{{model.missions}}" favorites="{{model.favoriteMissions}}"
+                    postulateds="{{model.postulatedMissions}}" kind="{{_selectedKind}}" on-show-mission="_onShowMission"
+                    on-edit-mission="_onEditMission"></sa-missions-list>
+            </section>
+            <section data-page="kinds">
+                <sa-kinds-list kinds="{{model.kinds}}" on-show-missions="_onShowMissionsOfKind"></sa-kinds-list>
+            </section>
+            <section data-page="infos" id="infos-section">
+                <sa-mission-infos id="infos" kind="{{_selectedKind}}" kinds="{{model.kinds}}" chats="{{model.chats}}"
+                    postulateds="{{model.postulatedMissions}}" action="{{_infosAction}}" on-close-infos="_onCloseInfos">
+                </sa-mission-infos>
+            </section>
+        </iron-pages>
+
+    </template>
+
+    <script>
+        class SaMission extends Polymer.Element {
+            static get is() { return 'sa-missions'; }
+
+            static get properties() {
+                return {
+                    _mainFilter: {
+                        type: String,
+                        observer: '_mainFilterChange'
+                    },
+                    _missionsFilter: Object,
+                    createMission: {
+                        type: Boolean,
+                        notify: true,
+                        observer: '_onBeginCreation'
+                    },
+                    _fromPages: {
+                        type: Array,
+                        value: []
+                    },
+                    _infosAction: String,
+                    clear: {
+                        type: Boolean,
+                        observer: '_onClear'
+                    },
+                    route: {
+                        type: String,
+                        observer: '_routeChanged'
+                    },
+                    model: Object
+                };
+            }
+            attached = function () {
+            }
+
+            _routeChanged = function (e) {
+                if (app.route == 'missions' && app.isLogged && !this.createMission) {
+                    this._restore();
+                }
+                else if (this.createMission) {
+                    return;
+                }
+                else {
+                    this.createMission = false;
+                }
+            }
+
+            _onClear = function (e) {
+                if (this.clear) {
+                    this._fromPages = [];
+                    this._restore();
+                }
+            }
+
+            _restore = function () {
+                this._selectedKind = null;
+                this._showPage('missions');
+                this.$.toolbar.select(0);
+            }
+
+            _onBeginCreation = function (e) {
+                if (this.createMission) {
+                    this._showPage('creation');
+                }
+                else {
+                    this._backToPreviousPage(null);
+                }
+            }
+
+            _onEditMission = function (e) {
+                this.$.infos.mission = e.detail.mission;
+                this._showPage('edition');
+            }
+
+            _onShowMission = function (e) {
+                this.$.infos.mission = e.detail.mission;
+                this._showPage('consultation');
+            }
+
+            _onShowMissionsOfKind = function (e) {
+                this._selectedKind = e.detail.kind;
+                this._showPage('missions');
+                this.$.toolbar.selected = 1;
+            }
+
+            _onCloseInfos = function (e) {
+                this._backToPreviousPage(null);
+            }
+
+            _backToPreviousPage = function (e) {
+                var page = this._fromPages.pop();
+
+                if (this.$.pages.selected === 'infos' && page == 'missions') {
+                    var backpage = this._fromPages[this._fromPages.length - 1];
+
+                    if (backpage == 'kinds' && this._mainFilter == 'missions' || backpage == 'missions') {
+                        this.$.toolbar.select(0);
+                        this._selectedKind = null;
+                    }
+                    else if (backpage == 'kinds')
+                        this.$.toolbar.select(1);
+                }
+
+                this.createMission = false;
+                this._showPage(page);
+            }
+
+            _showPage = function (page) {
+                if (this.$.pages.selected != 'infos') {
+                    if (this._fromPages.length > 10) {
+                        this._fromPages.splice(0, 1);
+                    }
+                    this._fromPages.push(this.$.pages.selected);
+                }
+
+                this._infosAction = page;
+
+                switch (page) {
+                    case 'kinds':
+                        this.$.infos.mission = null;
+                        this.$.toolbar.select(0);
+                        break;
+                    case 'missions':
+                        this.$.infos.mission = null;
+                        //this.$$('sa-missions-list').needRender();
+                        break;
+                    case 'creation':
+                    case 'edition':
+                    case 'consultation':
+                        this._infosAction = page;
+                        this.$.toolbar.select(1);
+                        page = 'infos';
+                        break;
+                }
+
+                this.fire('show-page', { 'page': page });
+                this.$.pages.select(page);
+            }
+
+            _mainFilterChange = function (e) {
+                switch (this._mainFilter) {
+                    case 'missions':
+                        this._restore();
+                        break;
+                    case 'kinds': this._showPage('kinds');
+                        break;
+                }
+            }
+        }
+        customElements.define(SaMission.is, SaMission);
+    </script>
+</dom-module>

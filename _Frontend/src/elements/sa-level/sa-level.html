@@ -1,0 +1,50 @@
+﻿<dom-module id="sa-level">
+    <style>
+        :host {
+            display: flex;
+            background-color: #ffffff;
+            border: 1px solid #808080;
+            padding: 4px;
+        }
+
+        .image {
+            width: 62px;
+            height: 30px;
+        }
+
+        .text {
+            width: 320px;
+            text-align: center;
+            color: #2b2b2b;
+        }
+    </style>
+    <template>
+        <div class="image"></div>
+        <div class="text">[[text]]</div>
+    </template>
+
+    <script>
+        class SaLevel extends Polymer.Element {
+            static get is() { return 'sa-level'; }
+
+            static get properties() {
+                return {
+                    image: {
+                        type: String,
+                        observer: '_setImage'
+                    },
+                    text: String
+                };
+            }
+
+            _setImage = function (e) {
+                var div = this.querySelector('.image');
+                if (div) {
+                    div.style.backgroundImage = 'url(' + this.image + ')';
+                }
+            }
+        }
+        customElements.define(SaLevel.is, SaLevel);
+
+    </script>
+</dom-module>

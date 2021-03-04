@@ -1,0 +1,121 @@
+﻿<dom-module id="sa-toolbar-logged">
+    <style>
+        :host {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+
+            --paper-tab: {
+                width: 135px;
+                padding: 0;
+                text-transform: uppercase;
+            }
+
+            --paper-tabs: {
+                height: 60px;
+                align-self: flex-end;
+            }
+
+            --paper-tabs-selection-bar: {
+                height: 0px;
+            }
+
+            --paper-tab-content-unselected: {
+                background-color: #272727;
+            }
+
+            --paper-tab-content: {
+                background-color: #383838;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+        }
+
+
+        img {
+            height: 50px;
+            margin: 7px 0;
+        }
+
+        paper-button {
+            background-color: #339933;
+            margin: 0;
+        }
+
+        #button {
+            align-self: flex-end;
+            height: 52px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            padding: 6px 10px 0;
+        }
+    </style>
+
+    <template>
+
+        <div>
+            <img src="../../images/logo/Img-03.png" />
+        </div>
+        <paper-tabs noink attr-for-selected="data-route" selected="{{route}}">
+            <paper-tab data-route="missions">{{_translations.texts.missions}}</paper-tab>
+            <paper-tab data-route="dashboard">{{_translations.texts.dashboard}}</paper-tab>
+        </paper-tabs>
+        <div>Support</div>
+        <div id="button">
+            <paper-button on-tap="_onCreateMission">{{_translations.texts.create_mission}}</paper-button>
+        </div>
+        <paper-icon-button icon="search"></paper-icon-button>
+
+        <sa-translation id="translation" element="sa-toolbar-logged" translations="{{_translations}}"></sa-translation>
+    </template>
+
+    <script>
+        class SaToolbarLogged extends Polymer.Element {
+            static get is() { return 'sa-toolbar-logged'; }
+
+            static get properties() {
+                return {
+                    route: {
+                        type: String,
+                        value: 'missions',
+                        notify: true
+                    },
+                    createMission: {
+                        type: Boolean,
+                        value: false,
+                        notify: true,
+                        observer: '_createMissionChanged'
+                    }
+                };
+            }
+
+            ready = function () {
+                this.route = 'missions';
+            }
+
+            _onCreateMission = function (e) {
+                this.createMission = !this.createMission;
+            }
+            _createMissionChanged = function (e) {
+                if (!this._translations) { return; }
+
+                if (this.createMission) {
+                    this.$.button.style.background = "#339933";
+                    this.$$('paper-button').style.background = '#cd0000';
+                    this.$$('paper-button').innerHTML = this._translations.texts.cancel_mission;
+                    this.route = 'missions';
+                }
+                else {
+                    this.$.button.style.background = "rgba(0, 0, 0, 0)";
+                    this.$$('paper-button').style.background = '#339933';
+                    this.$$('paper-button').innerHTML = this._translations.texts.create_mission;
+                }
+            }
+        }
+
+        customElements.define(SaToolbarLogged.is, SaToolbarLogged);
+    </script>
+</dom-module>

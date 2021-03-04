@@ -1,0 +1,454 @@
+﻿<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../sa-login/sa-login-signin.html" />
+<link rel="import" href="../sa-login/sa-login-signup.html" />
+
+<dom-module id="sa-drawer">
+    <style>
+        :host {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #2b2b2b;
+            height: 100%;
+            overflow: hidden;
+
+            --paper-tab: {
+                padding: 0;
+                text-transform: uppercase;
+                color: #a6a6a6;
+            }
+
+            --paper-tabs: {
+                height: 40px;
+                width: 90%;
+                padding: 3px 0 0;
+                background-color: #363636;
+            }
+
+            --paper-tabs-selection-bar: {
+                height: 0px;
+            }
+
+            --paper-tab-content-unselected: {
+                background-color: #363636;
+            }
+
+            --paper-tab-content: {
+                background-color: #2b2b2b;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+        }
+
+        .not-logged-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        #avatar-container {
+            width: 100%;
+            flex-grow: 1;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #avatar {
+            width: 155px;
+            height: 155px;
+            background-repeat: no-repeat;
+            border-radius: 50%;
+        }
+
+        .footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #toggle-button {
+            text-transform: none;
+            background-color: #9b2531;
+            width: 85%;
+            border-radius: 5px;
+        }
+
+        .content {
+            width: 100%;
+            background-color: #2b2b2b;
+            flex-grow: 62;
+            display: flex;
+            justify-content: center;
+        }
+
+        .signin {
+            margin: auto;
+        }
+
+        iron-collapse {
+            width: 100%;
+        }
+
+        .dummy {
+            height: 56.4vh;
+        }
+
+        .dummy2 {
+            height: 28vh;
+        }
+
+        #signin-collapse {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .is-logged {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            background-color: #363636;
+        }
+
+        #sing-out-button {
+            text-transform: none;
+            background-color: #472a2e;
+            width: 99%;
+            border-radius: 0px;
+            color: #cccccc;
+        }
+
+        iron-pages {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .tab {
+            background-color: #2b2b2b;
+            flex-grow: 1;
+            padding: 5px;
+        }
+
+        #role {
+            flex-grow: 2;
+        }
+
+        .slice {
+            background-color: #363636;
+            margin-top: 2px;
+            height: 35px;
+            color: #727272;
+            padding: 0 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .active-slice {
+            color: #d8d8d8;
+            background-color: #454545;
+        }
+
+        .first-slice {
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .last-slice {
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
+        .id {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            color: #454545;
+            margin: 7px;
+        }
+
+        .badge {
+            background-color: rgba(190, 0, 0, 0.89);
+            border-radius: 50%;
+            color: #939393;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+
+    <template>
+        <div id="avatar-container">
+            <div id="avatar"></div>
+        </div>
+        <div class="content">
+            <iron-pages id="drawer-page" selected="[[isLogged]]">
+
+                <div class="not-logged-container">
+                    <iron-collapse id="signin-collapse">
+                        <div class="signin">
+                            <sa-login-signin user="{{user}}"></sa-login-signin>
+                            <div class="dummy"><span>&nbsp;</span></div>
+                        </div>
+                    </iron-collapse>
+                    <div class="footer">
+                        <paper-button id="toggle-button" on-tap="_toggleView"></paper-button>
+                        <iron-collapse id="signup-collapse" on-transition-end="_openSignIn">
+                            <div class="signin">
+                                <sa-login-signup user="{{user}}"></sa-login-signup>
+                            </div>
+                            <div class="dummy2"><span>&nbsp;</span></div>
+                        </iron-collapse>
+                    </div>
+                </div>
+                <div class="is-logged">
+                    <paper-tabs noink selected="{{role}}" attr-for-selected="data-role" on-iron-select="_onRoleChanged">
+                        <paper-tab data-role="agent">{{_translations.texts.agent}}</paper-tab>
+                        <paper-tab data-role="sponsor">{{_translations.texts.sponsor}}</paper-tab>
+                    </paper-tabs>
+                    <iron-pages id="role" selected="{{role}}" attr-for-selected="data-role">
+                        <div id="agent-tab" class="tab" data-role="agent">
+                            <div class="id">
+                                <span>{{_translations.texts.agent}}</span><span>:&nbsp;</span><span>[[user.agentID]]</span>
+                            </div>
+                            <div id="agent-messages" class="slice first-slice" on-click="goToAgentMessages">
+                                <div>{{_translations.texts.messages}}</div>
+                                <div id="badge-agent-messages" class="badge">{{agentUnreads}}</div>
+                            </div>
+                            <div id="all" class="slice active-slice" on-click="goToMissionsFiltered">
+                                {{_translations.texts.all_missions}}</div>
+                            <div id="favorite" class="slice" on-click="goToMissionsFiltered">
+                                {{_translations.texts.favorites_missions}}</div>
+                            <div id="postulated" class="slice" on-click="goToMissionsFiltered">
+                                {{_translations.texts.postulated_missions}}</div>
+                            <div id="accepted" class="slice" on-click="goToMissionsFiltered">
+                                {{_translations.texts.accepted_missions}}</div>
+                            <div id="ended" class="slice last-slice" on-click="goToMissionsFiltered">
+                                {{_translations.texts.missions_done}}</div>
+                            <!--<div class="slice last-slice">Upcoming RDV</div>-->
+                        </div>
+                        <div id="sponsor-tab" class="tab" data-role="sponsor">
+                            <div class="id">
+                                <span>{{_translations.texts.sponsor}}</span><span>:&nbsp;</span><span>[[user.agentID]]</span>
+                            </div>
+                            <div id="sponsor-messages" class="slice first-slice" on-click="goToSponsorMessages">
+                                <div>{{_translations.texts.messages}}</div>
+                                <div id="badge-sponsor-messages" class="badge">{{sponsorUnreads}}</div>
+                            </div>
+                            <div class="slice">{{_translations.texts.draft_missions}}</div>
+                            <div class="slice">{{_translations.texts.missions_posted}}</div>
+                            <div class="slice last-slice">{{_translations.texts.missions_done}}</div>
+                        </div>
+                    </iron-pages>
+
+                    <paper-button id="sing-out-button" on-tap="_logOut">{{_translations.texts.logout}}</paper-button>
+                </div>
+
+            </iron-pages>
+        </div>
+
+        <sa-translation id="translation" element="sa-drawer" translations="{{_translations}}"></sa-translation>
+    </template>
+
+    <script>
+        class SaDrawer extends Polymer.Element {
+            static get is() { return 'sa-drawer'; }
+
+            static get properties() {
+                return {
+                    isLogged: Boolean,
+                    tabSelected: {
+                        type: Number,
+                        value: 0
+                    },
+                    user: {
+                        type: Object,
+                        observer: '_userChanged'
+                    },
+                    role: {
+                        type: String,
+                        value: 'agent'
+                    },
+                    _translations: {
+                        type: Object,
+                        observer: '_getTranslations'
+                    }
+                };
+            }
+
+            static get observers() {
+                return [
+                    'chatsChanged(model.chats.*)'
+                ];
+            }
+
+            attached = function () {
+                this._userChanged(null);
+
+                this.$$('#signin-collapse').show();
+                this.$$('#signup-collapse').hide();
+                this.$$('#avatar-container').style.backgroundImage = this._randomGradient();
+            }
+
+            _getTranslations = function (e) {
+                if (this._translations) {
+                    this.$$('#toggle-button').innerText = this._translations.texts.signup;
+                }
+            }
+
+            chatsChanged = function (record) {
+                console.log('drawer ' + record.path);
+                if (record.path.includes('chats')) {
+                    var sponsorUnreads = 0;
+                    var agentUnreads = 0;
+
+                    for (var idx = 0; idx < this.model.chats.length; ++idx) {
+                        if (this.model.chats[idx]._sponsor._id == app.user._id) {
+                            sponsorUnreads += this.model.chats[idx].sponsorUnreads;
+                        }
+                        else if (this.model.chats[idx]._agent._id == app.user._id) {
+                            agentUnreads += this.model.chats[idx].agentUnreads;
+                        }
+                    }
+
+                    if (sponsorUnreads > 0) {
+                        this.$$('#badge-sponsor-messages').classList.remove('hidden');
+                        this.sponsorUnreads = sponsorUnreads;
+                    }
+                    else {
+                        this.$$('#badge-sponsor-messages').classList.add('hidden');
+                    }
+
+                    if (agentUnreads > 0) {
+                        this.$$('#badge-agent-messages').classList.remove('hidden');
+                        this.agentUnreads = agentUnreads;
+                    }
+                    else {
+                        this.$$('#badge-agent-messages').classList.add('hidden');
+                    }
+                }
+            }
+
+            _randomGradient = function () {
+                var number = Math.floor(Math.random() * (8));
+                return "url('../../images/gradient-" + 7 + "_300x300.png')";
+            }
+
+            _onSignup = function (e) {
+                this.querySelector('sa-login-signin').signin({
+                    email: e.detail.email,
+                    password: e.detail.password
+                });
+            }
+
+            _computeSelectedPage = function () {
+                if (app.isLogged) {
+                    return "profile";
+                }
+                else {
+                    return "not-logged";
+                }
+            }
+
+            _userChanged = function (e) {
+                if (this.user)
+                    this.$.avatar.style.background = this.user.avatar;
+                else
+                    this.$.avatar.style.background = "url('../../images/default_avatar.png')";
+            }
+
+            _toggleView = function (e) {
+                if (this.$$('#signin-collapse').opened) {
+                    this.$$('#toggle-button').innerText = this._translations.texts.signin;
+                    this.$$('#signin-collapse').hide();
+                    this.$$('#signup-collapse').show();
+                }
+                else {
+                    this.$$('#signup-collapse').hide();
+                    this.$$('#toggle-button').innerText = this._translations.texts.signup;
+                }
+            }
+
+            _openSignIn = function (e) {
+                if (!this.$$('#signup-collapse').opened) {
+                    this.$$('#signin-collapse').show();
+                }
+            }
+
+            _logOut = function (e) {
+                clearToken();
+                app.onLogOut();
+                this._userChanged(null);
+            }
+
+            goToAgentMessages = function (e) {
+                app.route = 'dashboard';
+                this._activateSlice(e.target.id);
+            }
+
+            goToSponsorMessages = function (e) {
+                app.route = 'dashboard';
+            }
+
+            goToMissionsFiltered = function (e) {
+                var filters = ['favorite', 'postulated', 'ended', 'accepted'];
+
+                var index = filters.indexOf(e.target.id);
+
+                if (index > -1) { filters.splice(index, 1); }
+
+                filters.forEach(function (filter) {
+                    var id = '#' + filter;
+                    this.$$(id).classList.remove('active-slice');
+                }.bind(this));
+
+                app.route = 'missions';
+                var active = !e.target.classList.contains('active-slice');
+                app.fire('show-missions-filtered', { activate: active, filter: e.target.id, remove: filters });
+                this._activateSlice(e.target.id);
+            }
+
+            _activateSlice = function (slice) {
+                var slices = null;
+
+                if (app.role == 'agent')
+                    slices = ['agent-messages', 'all', 'favorite', 'postulated', 'ended', 'accepted'];
+                else
+                    slices = ['sponsor-messages', 'draft', 'posted', 'ended'];
+
+                slices.forEach(function (elt) {
+                    var id = '#' + elt;
+
+                    if (elt == slice && elt.includes('message') && this.$$(id).classList.contains('active-slice')) {
+                    }
+                    else if (elt == slice && !this.$$(id).classList.contains('active-slice'))
+                        this.$$(id).classList.add('active-slice');
+                    else
+                        this.$$(id).classList.remove('active-slice');
+                }.bind(this));
+            }
+
+            goToAcceptedMissions = function (e) {
+                app.route = 'missions';
+            }
+
+            _onRoleChanged = function (e) {
+                app.role = this.role;
+                app.fire('role-changed');
+            }
+        }
+        customElements.define(SaDrawer.is, SaDrawer);
+    </script>
+</dom-module>

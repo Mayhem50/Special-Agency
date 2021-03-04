@@ -1,0 +1,24 @@
+{
+  "name": "special-agency",
+  "devDependencies": {
+    "google-map": "GoogleWebComponents/google-map",
+    "google-apis": "GoogleWebComponents/google-apis",
+    "page": "page.js#^1.11.4"
+  },
+  "version": "0.0.1",
+  "homepage": "http://github.com/Mayhem50/Special-Agency",
+  "authors": [
+    "Mayhem50 <regnier.ben@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "resolutions": {
+    "platinum-sw": "^1.2.0"
+  }
+}

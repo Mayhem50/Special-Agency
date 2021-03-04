@@ -1,0 +1,92 @@
+﻿<link rel="import" href="../sa-date-card/sa-date-card.html" />
+
+<dom-module id="sa-dates">
+    <style>
+        :host {
+            color: #feffff;
+            display: flex;
+            background-color: rgba(0, 255, 144, 0.00);
+            flex-wrap: nowrap;
+            padding: 5px 20px;
+            @apply(--sa-dates);
+        }
+
+        @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) {
+            :host {
+                bottom: 6px;
+                background-color: rgba(0, 255, 144, 0.00);
+                justify-content: space-around;
+                flex-wrap: nowrap;
+                align-items: stretch;
+                padding: 6px 9px;
+            }
+        }
+    </style>
+    <template>
+        <template id="dates" is="dom-repeat" items="[[dates]]" filter="filter" sort="_sortDates">
+            <sa-date-card id$="[[_setId(index)]]" date="[[item]]"></sa-date-card>
+        </template>
+        <sa-empty-date></sa-empty-date>
+    </template>
+
+    <script>
+        class SaDates extends Polymer.Element {
+            static get is() { return 'sa-dates'; }
+
+            static get properties() {
+                return {
+                    dates: {
+                        type: Array,
+                        value: []
+                    },
+                    limit: {
+                        type: Number,
+                        value: 4
+                    }
+                };
+            }
+
+            _setId = function (index) {
+                return 'sa-date-card-' + index;
+            }
+
+            filter = function (item) {
+                this.$$('sa-empty-date').style.display = 'none';
+                this.$$('sa-empty-date').color('#ffffff');
+                var index = this.dates.indexOf(item);
+                if (index < this.limit - 1) {
+                    //var date = new Date(item);
+                    //var now = new Date(Date.now());
+                    //var diff = (date.getTime() - now.getTime()) / (24 * 3600 * 1000);
+
+                    //if (diff < 5 && diff > 0) {
+                    //    //this.$$('#sa-date-card-' + index).hilight();
+                    //}
+
+
+                    return true;
+                }
+                else {
+                    this.$$('sa-empty-date').style.display = null;
+                    return false;
+                }
+
+                return false;
+            }
+
+            _sortDates = function (a, b) {
+                var A = new Date(a);
+                var B = new Date(b);
+
+                return A - B;
+            }
+
+            refresh = function () {
+                this.$$('sa-empty-date').style.display = 'none';
+                this.$.dates.render();
+            }
+        }
+
+        customElements.define(SaDates.is, SaDates);
+    </script>
+</dom-module>

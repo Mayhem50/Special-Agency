@@ -1,0 +1,31 @@
+html {
+  --dark-primary-color: #0f7c77;
+  --default-primary-color: rgba(0, 34, 111, 0.68);
+  --drawer-background-color: #2b2b2b;
+  --app-bar-background-color: #2b2b2bdc;
+  --drawer-background-secondary-color: #3e3e3e;
+  --light-primary-color: #c5cae9;
+  --text-primary-color: #ffffff; /*text/icons*/
+  --accent-color: #9b2531;
+  --primary-background-color: #c5cae9;
+  --primary-text-color: #212121;
+  --secondary-text-color: #727272;
+  --disabled-text-color: #bdbdbd;
+  --divider-color: #b6b6b6;
+  /* Components */
+  /* paper-drawer-panel */
+  --drawer-menu-color: #ffffff;
+  --drawer-border-color: 1px solid #ccc;
+  --drawer-toolbar-border-color: 1px solid rgba(0, 0, 0, 0.22);
+  /* paper-menu */
+  --paper-menu-background-color: #fff;
+  --menu-link-color: #111111;
+
+  --facebook-color: #1778F2;
+  --twitter-color: #1DA1F2;
+
+  --mdc-theme-primary: var(--secondary-text-color);
+  --mdc-theme-on-surface: var(--secondary-text-color);
+
+  --error: #d40000;
+}

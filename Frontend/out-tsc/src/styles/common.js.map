@@ -1,0 +1,1 @@
+{"version":3,"file":"common.js","sourceRoot":"","sources":["../../../src/styles/common.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,GAAG,EAAE,MAAM,aAAa,CAAC;AAElC,eAAe,GAAG,CAAA;;;;CAIjB,CAAC","sourcesContent":["import { css } from 'lit-element';\n\nexport default css`\n  .error {\n    color: var(--error);\n  }\n`;\n"]}

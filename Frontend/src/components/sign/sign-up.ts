@@ -3,10 +3,11 @@ import '@material/mwc-textfield';
 import '@material/mwc-button';
 import '@material/mwc-icon-button';
 import '@material/mwc-circular-progress';
-import ApiResources from '../../services/api-resources';
+import ApiResources, { FecthInfo } from '../../services/api-resources';
 import CommonStyles from '../../styles/common';
 import Styles from './styles';
 
+declare const gapi: any;
 class SignUp extends LitElement {
   @property({ type: String, attribute: false }) email = 'regnier.ben@gmail.com';
   @property({ type: String, attribute: false }) password = 'x';
@@ -16,6 +17,8 @@ class SignUp extends LitElement {
   @property({ type: Boolean, attribute: false }) loading = false;
   @property({ type: Boolean, attribute: false }) success = false;
   @property({ type: String, attribute: false }) error = '';
+
+  private auth2: any;
 
   static getStyles() {
     return [
@@ -89,18 +92,11 @@ class SignUp extends LitElement {
     );
   }
 
-  private async sign() {
+  private async sign(fetchInfo: FecthInfo, payload: any){
     try {
       this.loading = true;
       this.error = '';
-      const data = await ApiResources.fetch(ApiResources.SIGNUP, {
-        credential: { email: this.email, password: this.password },
-        user: {
-          firstName: this.firstName,
-          lastName: this.lastName,
-        },
-      });
-      console.log(JSON.stringify(data));
+      const data = await ApiResources.fetch(fetchInfo, payload);
       setTimeout(() => {
         this.dispatchEvent(
           new CustomEvent('on-success', {
@@ -116,12 +112,54 @@ class SignUp extends LitElement {
     }
   }
 
-  private async signGoogle() {
-    try {
-      ApiResources.fetch(ApiResources.SIGNUP_GOOGLE);
-    } catch (error) {
-      console.log(error);
-    }
+  private async signEmail() {
+    this.sign(ApiResources.SIGNUP, {
+      credential: { email: this.email, password: this.password },
+      user: {
+        firstName: this.firstName,
+        lastName: this.lastName,
+      },
+    })
+  }
+
+  private signGoogle(profile: any){
+    const payload = {
+      credential: {
+        email: profile.getEmail(),
+        id: profile.getId(),
+      },
+      user: {
+        firstName: profile.getGivenName(),
+        lastName: profile.getFamilyName(),
+        avatar: profile.getImageUrl(),
+      },
+    };
+    this.sign(ApiResources.SIGNUP_GOOGLE, payload);
+  }
+
+  firstUpdated() {
+    gapi.load('auth2', () => {
+      this.auth2 = gapi.auth2.init({
+        client_id:
+          '117559842854-shljqkvbvh0lfeo125ir2dpurfkqc8hs.apps.googleusercontent.com',
+        cookiepolicy: 'single_host_origin',
+      });
+      this.attachSignin(this.shadowRoot!!.getElementById('google-button'));
+    });
+  }
+
+  attachSignin(element: HTMLElement | null) {
+    this.auth2.attachClickHandler(
+      element,
+      {},
+      async (googleUser: any) => {
+        const profile = googleUser.getBasicProfile();
+        this.signGoogle(profile);
+      },
+      (error: any) => {
+        console.error(JSON.stringify(error, undefined, 2));
+      }
+    );
   }
 
   render() {
@@ -140,7 +178,7 @@ class SignUp extends LitElement {
           <iron-icon icon="vaadin:facebook"></iron-icon>
         </mwc-icon-button>
 
-        <mwc-icon-button google @click="${this.signGoogle}">
+        <mwc-icon-button id="google-button">
           <img src="/assets/images/sign/google.svg" />
         </mwc-icon-button>
       </div>
@@ -192,7 +230,7 @@ class SignUp extends LitElement {
 
         <mwc-button
           ?disabled="${this.isButtonDisabled()}"
-          @click="${this.sign}"
+          @click="${this.signEmail}"
         >
           ${this.loading
             ? html`

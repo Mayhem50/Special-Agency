@@ -39,7 +39,7 @@ export default {
         body: body ? JSON.stringify(body) : undefined,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: token ? `Bearer ${token}` : '',
+          Authorization: token ? `Bearer ${token}` : ''
         },
       });
 

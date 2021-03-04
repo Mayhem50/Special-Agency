@@ -1,7 +1,7 @@
 ﻿import passport from "passport";
 import signin from "./signin";
 import signup from "./signup";
-//import googleAuth from "./passport-google.js";
+import googleAuth from "./google.js";
 import { getUserById, User } from "../../models/user";
 import { PassportStatic } from "passport";
 import { NextFunction, Request, Response } from "express";
@@ -24,7 +24,7 @@ function initPassport(passport: PassportStatic) {
   // Setting up Passport Strategies for Login and SignUp/Registration
   signin(passport);
   signup(passport);
-  //googleAuth(passport);
+  googleAuth(passport);
 }
 
 initPassport(passport);
@@ -61,7 +61,20 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   })(req, res, next);
 }
 
-export function logout(req: Request, res: Response, next: NextFunction) {
+export function authenticateGoogle(req: Request, res: Response, next: NextFunction) {
+  passport.authenticate("google", (err, user, info) => {
+    console.log("login with Google");
+    if (err) return next(err);
+    if (!user) return failResponse(req, res, 500);
+    login(req, res, next, user);
+  })(req, res, next);
+}
+
+export function authenticateGoogleCallback(req: Request, res: Response, next: NextFunction) {
+  passport.authenticate("google", { failureRedirect: "/" });
+}
+
+export function logout(req: Request, res: Response) {
   console.log("logout");
   req.logout();
   successResponse(req, res);

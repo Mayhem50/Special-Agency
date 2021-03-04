@@ -21,7 +21,7 @@ import "./services/session";
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({origin: "http://localhost:8000"}));
 
 app.use(express.static(path.join(__dirname, "app")));
 

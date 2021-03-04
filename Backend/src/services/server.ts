@@ -18,7 +18,7 @@ export function createServer(app: Application) {
 	const server = http.createServer(app);
 
 	server.listen(app.get('port'), () => {
-		console.debug('Express server listening on port ' + server.address()?.toString());
+		console.debug('Express server listening on port ' + (server.address() as any)?.port);
 	});
 
 

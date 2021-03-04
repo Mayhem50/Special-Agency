@@ -17,7 +17,8 @@ export default (passport: PassportStatic) => {
         //Also both sign-in button + callbackURL has to be share the same url, otherwise two cookies will be created and lead to lost your session
         //if you use it.
         callbackURL: config.GOOGLE_CLIENT.callbackUrl,
-        passReqToCallback: true
+        passReqToCallback: true,
+        scope: ['profile', 'email']
       },
       (accessToken: string, refreshToken: string, profile: any, done: VerifyCallback) => {
         // asynchronous verification, for effect...

@@ -1,6 +1,6 @@
 ﻿import { Router } from "express";
-import passport from "../../../services/passport";
 
+import AuthRouter from "./auth";
 import UsersRouter from "./users";
 import MissionsRouter from "./missions/missions";
 import HelpersRouter from "./helpers";
@@ -15,6 +15,7 @@ const router = Router();
 const apiRouter = Router();
 
 apiRouter
+  .use(AuthRouter)
   .use(UsersRouter)
   .use(MissionsRouter)
   .use(HelpersRouter)

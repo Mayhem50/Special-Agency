@@ -1,4 +1,4 @@
-﻿import { PassportStatic } from "passport";
+import { PassportStatic } from "passport";
 import { Strategy, VerifyCallback } from "passport-google-oauth2";
 import User, { getUserById } from "../../models/user";
 import config from "../config";

@@ -1,7 +1,7 @@
 ﻿import passport from "passport";
 import signin from "./signin";
 import signup from "./signup";
-import Google from "./common.js";
+import Social from "./social.js";
 import { getUserById, User } from "../../models/user";
 import { PassportStatic } from "passport";
 import { NextFunction, Request, Response } from "express";
@@ -60,17 +60,13 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   })(req, res, next);
 }
 
-export async function authenticateGoogle(req: Request, res: Response, next: NextFunction) {
+export async function authenticateSocial(req: Request, res: Response, next: NextFunction) {
   try {
-    const user = await Google.signUp(req, res);
+    const user = await Social.signUp(req, res);
     login(req, res, next, user);
   } catch (error) {
     failResponse(req, res, 500, error)
   }
-}
-
-export function authenticateGoogleCallback(req: Request, res: Response, next: NextFunction) {
-  passport.authenticate("google", { failureRedirect: "/" });
 }
 
 export function logout(req: Request, res: Response) {

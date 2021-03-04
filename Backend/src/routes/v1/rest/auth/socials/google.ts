@@ -4,7 +4,7 @@ import { successResponse } from "../../../../../utils/express-response";
 
 const router = Router();
 
-router.post("/", (req, res, next) => {
+router.get("/", (req, res, next) => {
   console.log("Get user : Login");
   authenticateGoogle(req, res, next);
 });

@@ -1,7 +1,7 @@
 ﻿import passport from "passport";
 import signin from "./signin";
 import signup from "./signup";
-import Google from "./google.js";
+import Google from "./common.js";
 import { getUserById, User } from "../../models/user";
 import { PassportStatic } from "passport";
 import { NextFunction, Request, Response } from "express";
@@ -62,7 +62,7 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
 
 export async function authenticateGoogle(req: Request, res: Response, next: NextFunction) {
   try {
-    const user = await Google.signUpGoogle(req, res);
+    const user = await Google.signUp(req, res);
     login(req, res, next, user);
   } catch (error) {
     failResponse(req, res, 500, error)

@@ -4,7 +4,7 @@ import { addUser } from "../../models/user";
 import { failResponse, successResponse } from "../../utils/express-response";
 
 export default {
-  async signUpGoogle(req: Request, res: Response) {
+  async signUp(req: Request, res: Response) {
     try {
       let credential = await getCredential(req.body.credential.email);
       if (credential) return failResponse(req, res, 400, "User already exists");

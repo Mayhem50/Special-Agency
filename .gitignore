@@ -6,3 +6,5 @@ dist
 *.suo
 obj/
 node_modules
+
+Frontend/out-tsc/
